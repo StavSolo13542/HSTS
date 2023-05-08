@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import il.cshaifasweng.OCSFMediatorExample.client.PrimaryController;
 
 /**
  * JavaFX App
@@ -27,6 +28,7 @@ public class App extends Application {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
+        PrimaryController.ShowNames();
         scene = new Scene(loadFXML("primary"), 640, 480);
         stage.setScene(scene);
         stage.show();
