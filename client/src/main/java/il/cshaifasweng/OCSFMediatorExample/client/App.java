@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import il.cshaifasweng.OCSFMediatorExample.client.PrimaryController;
 
 /**
  * JavaFX App
@@ -27,7 +28,7 @@ public class App extends Application {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("primary"), 640, 480);
+        scene = new Scene(loadFXML("primary"), 630, 856);
         stage.setScene(scene);
         stage.show();
     }
@@ -40,8 +41,9 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
-    
-    
+
+    @Subscribe
+    public void OnShowNameEvent(ShowNameEvent event){}
 
     @Override
 	public void stop() throws Exception {
@@ -49,20 +51,6 @@ public class App extends Application {
     	EventBus.getDefault().unregister(this);
 		super.stop();
 	}
-    
-    @Subscribe
-    public void onWarningEvent(WarningEvent event) {
-    	Platform.runLater(() -> {
-    		Alert alert = new Alert(AlertType.WARNING,
-        			String.format("Message: %s\nTimestamp: %s\n",
-        					event.getWarning().getMessage(),
-        					event.getWarning().getTime().toString())
-        	);
-        	alert.show();
-    	});
-    	
-    }
-
 	public static void main(String[] args) {
         launch();
     }
