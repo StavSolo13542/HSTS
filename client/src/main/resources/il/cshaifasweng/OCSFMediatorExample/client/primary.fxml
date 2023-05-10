@@ -8,19 +8,26 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="491.0" prefWidth="630.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PrimaryController">
+<VBox alignment="CENTER" prefHeight="856.0" prefWidth="630.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PrimaryController">
    <children>
       <Label fx:id="header" text="Students Table" translateY="-70.0">
          <font>
             <Font name="System Bold" size="45.0" />
          </font></Label>
-      <Button fx:id="displayNamesBtn" mnemonicParsing="false" onAction="#ShowNames" text="Dispay Student Names" translateY="-75.0" />
+      <Button fx:id="displayNamesBtn" mnemonicParsing="false" onAction="#ShowNames" text="Display Student Names" translateY="-75.0" />
       <TableView fx:id="name_table" prefHeight="235.0" prefWidth="590.0" visible="false">
         <columns>
           <TableColumn prefWidth="75.0" text="C1" />
           <TableColumn prefWidth="75.0" text="C2" />
         </columns>
       </TableView>
+      <TableView fx:id="grades_table" prefHeight="200.0" prefWidth="200.0" translateY="-210.0" visible="false">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <Button fx:id="updateGradesBtn" mnemonicParsing="false" onAction="#UpdateGrades" text="Update Grades" translateX="245.0" translateY="-200.0" visible="false" />
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
