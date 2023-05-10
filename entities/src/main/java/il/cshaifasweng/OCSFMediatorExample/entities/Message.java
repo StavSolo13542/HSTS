@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class Message implements Serializable {
 
