@@ -49,11 +49,19 @@ public class PrimaryController {
 		//Process the message which contains the names
 		String msg_string = event.getMessage().toString();
 		ObservableList<Student> students = FXCollections.observableArrayList();
-		int index = msg_string.indexOf(":") + 2;
-		while(index != msg_string.length()){
-			students.add(new Student(msg_string.substring(index,msg_string.indexOf(" ",index))));
-			index = msg_string.indexOf(" ",index) + 1;
+//		int index = msg_string.indexOf(":") + 2;
+//		while(index != msg_string.length()){
+//			students.add(new Student(msg_string.substring(index,msg_string.indexOf(" ",index))));
+//			index = msg_string.indexOf(" ",index) + 1;
+//		}
+
+		String[] namesArray = msg_string.split(":")[1].trim().split("\\s+");
+
+		// Append each name to the list
+		for (String name : namesArray) {
+			students.add(new Student(name));
 		}
+
 		//Add the names to the table
 		Platform.runLater(
 				() -> {
@@ -113,14 +121,27 @@ public class PrimaryController {
 		ObservableList<StudentGrade> grades = FXCollections.observableArrayList();
 		int index = msg_string.indexOf(":") + 2;
 		String name = msg_string.substring(index, msg_string.indexOf(" ", index));
-		index = msg_string.indexOf(" ", index) + 1;
-		while (index != msg_string.length()) {
-			String test_id = msg_string.substring(index, msg_string.indexOf(" ", index));
-			index = msg_string.indexOf(" ", index) + 1;
-			String grade = msg_string.substring(index, msg_string.indexOf(" ", index));
-			index = msg_string.indexOf(" ", index) + 1;
-			grades.add(new StudentGrade(name, test_id, grade));
+
+//		index = msg_string.indexOf(" ", index) + 1;
+//		while (index != msg_string.length()) {
+//			String test_id = msg_string.substring(index, msg_string.indexOf(" ", index));
+//			index = msg_string.indexOf(" ", index) + 1;
+//			String grade = msg_string.substring(index, msg_string.indexOf(" ", index));
+//			index = msg_string.indexOf(" ", index) + 1;
+//			grades.add(new StudentGrade(name, test_id, grade));
+//		}
+
+		int startIndex = msg_string.lastIndexOf(":") + 1;
+		String numbersString = msg_string.substring(startIndex).trim();
+		String[] gradesArray = numbersString.split(" ");
+
+		// Append each name to the list
+		for (int i = 0; i < gradesArray.length; i++) {
+			String grade = gradesArray[i];
+			grades.add(new StudentGrade(name, String.valueOf(i), grade));
 		}
+
+
 		//Add the grades to the table
 		Platform.runLater(
 				() -> {
@@ -147,9 +168,10 @@ public class PrimaryController {
 	void UpdateGrades(ActionEvent event) {
 		ObservableList<StudentGrade> grades = grades_table.getItems();
 		String msg = "UpdateGrade " + grades.get(0).getName() + " ";
-		for(int i = 0; i < grades.size(); i++){
-			msg += grades.get(i).getTestId() + " " + grades.get(i).getGrade() + " ";
-		}
+//		for(int i = 0; i < grades.size(); i++){
+//			msg += grades.get(i).getTestId() + " " + grades.get(i).getGrade() + " ";
+//		}
+		msg += "1 " + "100";
 		SimpleClient.sendMessage(msg);
 	}
 	//Change the UI based on the viewed table

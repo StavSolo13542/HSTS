@@ -21,6 +21,8 @@ public class SimpleClient extends AbstractClient {
 	//Use EventBus to activate the relevant method based on the message
 	protected void handleMessageFromServer(Object msg) {
 		String msg_string = msg.toString();
+//		String msg_string = (String) msg;
+		msg_string = msg_string.replace("[", "").replace("]", "").replace(",","");
 		if (msg_string.startsWith("Student names:")){
 			EventBus.getDefault().post(new ShowNameEvent(new Message(msg_string)));
 		}
