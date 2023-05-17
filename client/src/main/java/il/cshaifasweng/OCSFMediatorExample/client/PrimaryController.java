@@ -168,10 +168,10 @@ public class PrimaryController {
 	void UpdateGrades(ActionEvent event) {
 		ObservableList<StudentGrade> grades = grades_table.getItems();
 		String msg = "UpdateGrade " + grades.get(0).getName() + " ";
-//		for(int i = 0; i < grades.size(); i++){
-//			msg += grades.get(i).getTestId() + " " + grades.get(i).getGrade() + " ";
-//		}
-		msg += "1 " + "100";
+		for(int i = 0; i < grades.size(); i++){
+			msg += grades.get(i).getTestId() + " " + grades.get(i).getGrade() + " ";
+		}
+//		msg += "1 " + "100";
 		SimpleClient.sendMessage(msg);
 	}
 	//Change the UI based on the viewed table

@@ -19,8 +19,7 @@ public class SimpleClient extends AbstractClient {
 
 	@Override
 	//Use EventBus to activate the relevant method based on the message
-	protected void handleMessageFromServer(Object msg) {
-		String msg_string = msg.toString();
+	protected void handleMessageFromServer(Object msg) {		String msg_string = msg.toString();
 //		String msg_string = (String) msg;
 		msg_string = msg_string.replace("[", "").replace("]", "").replace(",","");
 		if (msg_string.startsWith("Student names:")){
@@ -48,7 +47,7 @@ public class SimpleClient extends AbstractClient {
 	}
 	public static SimpleClient getClient() {
 		if (client == null) {
-			client = new SimpleClient("localhost", 3100);
+			client = new SimpleClient("192.168.1.213", 3100);
 		}
 		return client;
 	}

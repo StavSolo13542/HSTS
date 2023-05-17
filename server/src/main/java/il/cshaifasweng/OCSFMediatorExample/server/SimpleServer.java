@@ -13,7 +13,6 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -52,27 +51,59 @@ public class SimpleServer extends AbstractServer {
 		}
 	}
 
-	public static void updateGrades(String name, int test_id, String newGrade) throws Exception {
+	public static void updateGrades(/* String name, int test_id, String newGrade*/ String msg) throws Exception {
 		try (Session session = getSessionFactory().openSession()) {
-			String grades = getGradesAsString(name);
-			grades = grades.replace("Grades: ", "").replace("[", "").replace("]", "");
 
-			String[] parts = grades.split(" ");
-			parts[test_id] = newGrade;
+			String[] parts_name = msg.split(" ");
+			String command = parts_name[0];
+			String name = parts_name[1];
 
-			grades=grades.join(" ", parts);
+//			String grades = getGradesAsString(name);
+//			grades = grades.replace("Grades: ", "").replace("[", "").replace("]", "");
+//			String[] grades_array = grades.split(" ");
 
-//			gradesAsString.set(test_id, newGrade);
-//
-			// Begin a transaction
+			msg = msg.replace(command +" ", "").replace(name+" ", "");
+
+			// Extract the numbers from the input string
+			String[] parts = msg.split("\\s+");
+			List<Integer> numbers = new ArrayList<>();
+
+			for (int i = 2; i < parts.length; i += 2) {
+				numbers.add(Integer.parseInt(parts[i]));
+			}
+
+			// Calculate the matrix dimensions
+//			int numRows = 2;
+//			int numCols = numbers.size() / numRows;
+
+			// Generate the matrix
+//			int[][] matrix = new int[numRows][numCols];
+
 			session.getTransaction().begin();
-			Query query2 = session.createNativeQuery("UPDATE StudentsWithGrades SET grades = '" + grades + "' WHERE name = '" + name +"';");
+
+			String[] test_id_array = new String[parts.length/2];
+			String[] grades_array = new String[parts.length/2];
+
+			for (int i = 0; i < parts.length; i++) {
+				if (i % 2 == 0) {
+					test_id_array[i / 2] = parts[i];
+				} else {
+					grades_array[i / 2] = parts[i];
+				}
+			}
+
+			String newGrades = String.join(" ", grades_array);
+			Query query2 = session.createNativeQuery("UPDATE StudentsWithGrades SET grades = '" + newGrades+ "' WHERE name = '" + name +"';");
 			int rowsUpdated = query2.executeUpdate();
+				// Begin a transaction
+//				session.getTransaction().begin();
+//				Query query2 = session.createNativeQuery("UPDATE StudentsWithGrades SET grades = '" + grades + "' WHERE name = '" + name +"';");
+//				int rowsUpdated = query2.executeUpdate();
 
 			// Commit the transaction
 			session.getTransaction().commit();
 
-			String msg = "Updated: ";
+//			String msg = "Updated: ";
 //			return msg;
 		}
 	}
@@ -145,7 +176,8 @@ public class SimpleServer extends AbstractServer {
 
 //				grades.put(name,update_str);
 				//If validation succeeds then send success message
-			updateGrades(name, test_id, grade_str);
+//			updateGrades(name, test_id, grade_str);
+			updateGrades(msgString);
 			sendMessage("UpdateSuc",client);
 //			}
 		}
