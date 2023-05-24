@@ -1,5 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server.entities;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.persistence.*;
@@ -10,8 +12,9 @@ import javax.persistence.CascadeType;
 public class Pupil {
 //    private HashMap<String, String> grades;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "pupil_generator")
+    @GenericGenerator(name = "pupil_generator", strategy = "increment")
     @Column (name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column (name = "name")

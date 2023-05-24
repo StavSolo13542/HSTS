@@ -10,7 +10,9 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
+import il.cshaifasweng.OCSFMediatorExample.server.entities.Principal;
 import il.cshaifasweng.OCSFMediatorExample.server.entities.Pupil;
+import il.cshaifasweng.OCSFMediatorExample.server.entities.Teacher;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -30,6 +32,8 @@ public class App
     static SessionFactory getSessionFactory() throws HibernateException{
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(Pupil.class);
+        configuration.addAnnotatedClass(Teacher.class);
+        configuration.addAnnotatedClass(Principal.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -68,7 +72,33 @@ public class App
             cache errors.
              */
         session.flush();
-//        }
+    }
+
+    public static void generateTeachers() throws Exception{
+        Teacher teacher1 = new Teacher(1, "Tova");
+        session.save(teacher1);
+        Teacher teacher2 = new Teacher(2, "Sara");
+        session.save(teacher2);
+        Teacher teacher3 = new Teacher(3, "Bina");
+        session.save(teacher3);
+        Teacher teacher4 = new Teacher(4, "Limor");
+        session.save(teacher4);
+        Teacher teacher5 = new Teacher(5, "Michal");
+        session.save(teacher5);
+            /*
+             * The call to session.flush() updates the DB immediately without ending the transaction.
+             * Recommended to do after an arbitrary unit of work.
+             * MANDATORY to do if you are saving a large amount of data - otherwise you may get
+            cache errors.
+             */
+        session.flush();
+    }
+
+    public static void generatePrincipal() throws Exception{
+        Principal principal = new Principal(1, "Anat");
+        session.save(principal);
+
+        session.flush();
     }
 
     public static List<Pupil> getAllPupils() throws Exception{
@@ -81,6 +111,7 @@ public class App
 
     private static void printAllPupils() throws Exception{
         List<Pupil> pupils=getAllPupils();
+        System.out.println("All pupils are: ");
         if (pupils.isEmpty())
         {
             System.out.println("There are no pupils");
@@ -90,6 +121,7 @@ public class App
             System.out.println("Name: "+ pupil.getName());
             System.out.println("Grades: "+ pupil.getGrades().toString());
         }
+        System.out.println();
     }
 
     private static void deleteAllPupils() throws Exception {
@@ -102,6 +134,69 @@ public class App
         session.getTransaction().commit();
     }
 
+    public static List<Teacher> getAllTeachers() throws Exception{
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Teacher> query = builder.createQuery(Teacher.class);
+        query.from(Teacher.class);
+        List<Teacher> teachers = session.createQuery(query).getResultList();
+        return teachers;
+    }
+
+    private static void printAllTeachers() throws Exception{
+        List<Teacher> teachers=getAllTeachers();
+        System.out.println("All teachers are: ");
+        if (teachers.isEmpty())
+        {
+            System.out.println("There are no teachers");
+        }
+        for(Teacher teacher: teachers)
+        {
+            System.out.println("Name: "+ teacher.getName());
+        }
+        System.out.println();
+    }
+
+    private static void deleteAllTeachers() throws Exception {
+
+        String hql = "DELETE FROM Teacher";
+        Query query = session.createQuery(hql);
+        int rowCount = query.executeUpdate();
+        System.out.println("Deleted " + rowCount + " teachers.");
+
+        session.getTransaction().commit();
+    }
+
+    public static List<Principal> getAllPrincipals() throws Exception{
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Principal> query = builder.createQuery(Principal.class);
+        query.from(Principal.class);
+        List<Principal> principals = session.createQuery(query).getResultList();
+        return principals;
+    }
+
+    private static void printAllPrincipals() throws Exception{
+        List<Principal> principals=getAllPrincipals();
+        System.out.println("All principals are: ");
+        if (principals.isEmpty())
+        {
+            System.out.println("There are no principals");
+        }
+        for(Principal principal: principals)
+        {
+            System.out.println("Name: "+ principal.getName());
+        }
+        System.out.println();
+    }
+
+    private static void deleteAllPrincipals() throws Exception {
+
+        String hql = "DELETE FROM Principal";
+        Query query = session.createQuery(hql);
+        int rowCount = query.executeUpdate();
+        System.out.println("Deleted " + rowCount + " principals.");
+
+        session.getTransaction().commit();
+    }
 
     private static SimpleServer server;
     public static void main( String[] args ) throws IOException
@@ -115,10 +210,17 @@ public class App
 
             session.beginTransaction();
 
-//            generateStudentsWithGrades();
+
+            generatePrincipal();
+            generateTeachers();
+            generateStudentsWithGrades();
 
 //            deleteAllPupils();
+//            deleteAllTeachers();
+//            deleteAllPrincipals();
 
+            printAllPrincipals();
+            printAllTeachers();
             printAllPupils();
 
             session.getTransaction().commit();//Save everything
