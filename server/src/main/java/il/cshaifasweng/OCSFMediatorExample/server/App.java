@@ -211,9 +211,9 @@ public class App
             session.beginTransaction();
 
 
-            generatePrincipal();
-            generateTeachers();
-            generateStudentsWithGrades();
+//            generatePrincipal();
+//            generateTeachers();
+//            generateStudentsWithGrades();
 
 //            deleteAllPupils();
 //            deleteAllTeachers();
