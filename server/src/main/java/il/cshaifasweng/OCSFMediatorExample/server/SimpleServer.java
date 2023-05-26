@@ -57,11 +57,6 @@ public class SimpleServer extends AbstractServer {
 			String[] parts_name = msg.split(" ");
 			String command = parts_name[0];
 			String name = parts_name[1];
-
-//			String grades = getGradesAsString(name);
-//			grades = grades.replace("Grades: ", "").replace("[", "").replace("]", "");
-//			String[] grades_array = grades.split(" ");
-
 			msg = msg.replace(command +" ", "").replace(name+" ", "");
 
 			// Extract the numbers from the input string
@@ -71,14 +66,6 @@ public class SimpleServer extends AbstractServer {
 			for (int i = 2; i < parts.length; i += 2) {
 				numbers.add(Integer.parseInt(parts[i]));
 			}
-
-			// Calculate the matrix dimensions
-//			int numRows = 2;
-//			int numCols = numbers.size() / numRows;
-
-			// Generate the matrix
-//			int[][] matrix = new int[numRows][numCols];
-
 			session.getTransaction().begin();
 
 			String[] test_id_array = new String[parts.length/2];
@@ -102,23 +89,20 @@ public class SimpleServer extends AbstractServer {
 
 			// Commit the transaction
 			session.getTransaction().commit();
-
-//			String msg = "Updated: ";
-//			return msg;
 		}
 	}
-
-
+	//TODO check if the username and password match the ones in the database (in the role's table) and whether the user is not already logged in
+	//TODO if the user is valid and not already logged in then let him log in and return success message else return error message
+	//success message format: LogIn <<username>> <<role>> (role is one of the following options: "student", "teacher, "principle")
+	//error message format: InputError <<error description>>
+	private String logIn(String username, String password, String role){
+		return "";
+	}
 	HashMap<String, String> grades = new HashMap<>();
 	@Override
 	//Treating the message from the clint
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
 		String msgString = msg.toString();
-//		if(grades.size() == 0){
-//			grades.put("Alon", "1 100 2 100 3 100 ");
-//			grades.put("Michael", "1 99 2 99 3 99 ");
-//			grades.put("Tomer", "1 98 2 98 3 98 ");
-//		}
 		//Getting student names from the database and returning them to the client
 		if (msgString.equals("GetNames")) {
 			//message format: "Student names: <<name1>> <<name2>>... <<nameN>> "
@@ -129,7 +113,6 @@ public class SimpleServer extends AbstractServer {
 				throw new RuntimeException(e);
 			}
 
-//			sendMessage("Student names: Alon Michail Tomer ", client);
 		}
 		//Getting relevant grades from the database and returning them to the client
 		else if (msgString.startsWith("GetGrades")) {
@@ -141,10 +124,9 @@ public class SimpleServer extends AbstractServer {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-//			sendMessage("Grades: " + name + " " + grades.get(name), client);
 
 		}
-		//Update grades and inform the clint whether the update succeeded or not
+		//Update grades and inform the client whether the update succeeded or not
 		else if (msgString.startsWith("UpdateGrade")) {
 			//Validate the grades
 			int index = msgString.indexOf(" ") + 1;
@@ -154,32 +136,16 @@ public class SimpleServer extends AbstractServer {
 			int test_id =  Integer.parseInt(test_id_str);
 			String grade_str = parts[3];
 			int grade = Integer.parseInt(grade_str);
-
-//			Boolean flag = true;
-//			index = msgString.indexOf(" ", index) + 1;
-//			String update_str = msgString.substring(index);
-//			index = 0;
-//			while (index != update_str.length() && flag) {
-//				index = update_str.indexOf(" ", index) + 1;
-//				String grade = update_str.substring(index, update_str.indexOf(" ", index));
-//				if (!isGrade(grade)) {
-//					//If validation fails then send error message
-//					sendMessage("InputError",client);
-//					flag = false;
-//				}
-//				index = update_str.indexOf(" ", index) + 1;
-//			}
-//			//Extract the grades from the message and update the database
-//			if(flag){
-				//TODO extract grades from the message and update database (extraction can be done during validation)
-
-
-//				grades.put(name,update_str);
-				//If validation succeeds then send success message
-//			updateGrades(name, test_id, grade_str);
 			updateGrades(msgString);
 			sendMessage("UpdateSuc",client);
-//			}
+		}
+		//validates the entered information and either lets the respective user to proceed to the rest of the system
+		//(based on its role) or sends a relevant error message
+		else if (msgString.startsWith("LogIn")) {
+			String[] parts = msgString.split(" ");
+			String message = logIn(parts[1],parts[2],parts[3]);
+			message = "LogIn Alon student";
+			sendMessage(message,client);
 		}
 	}
 	//Send received message to the relevant client

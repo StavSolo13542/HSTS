@@ -2,12 +2,14 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Message;
 
-public class InputErrorEvent {
+public class SwitchScreenEvent {
     private String message;
 
     public String getMessage() {
         return message;
     }
 
-    public InputErrorEvent(String message) {this.message = message;}
+    public SwitchScreenEvent(String message) {
+        this.message = message;
+    }
 }

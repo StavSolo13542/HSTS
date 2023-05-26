@@ -19,8 +19,8 @@ public class SimpleClient extends AbstractClient {
 
 	@Override
 	//Use EventBus to activate the relevant method based on the message
-	protected void handleMessageFromServer(Object msg) {		String msg_string = msg.toString();
-//		String msg_string = (String) msg;
+	protected void handleMessageFromServer(Object msg) {
+		String msg_string = msg.toString();
 		msg_string = msg_string.replace("[", "").replace("]", "").replace(",","");
 		if (msg_string.startsWith("Student names:")){
 			EventBus.getDefault().post(new ShowNameEvent(new Message(msg_string)));
@@ -28,8 +28,11 @@ public class SimpleClient extends AbstractClient {
 		else if (msg_string.startsWith("Grades:")){
 			EventBus.getDefault().post(new ShowGradeEvent(new Message(msg_string)));
 		}
-		else if (msg_string.equals("InputError")){
-			EventBus.getDefault().post(new InputErrorEvent(new Message(msg_string)));
+		else if (msg_string.startsWith("InputError")){
+			EventBus.getDefault().post(new InputErrorEvent(msg_string));
+		}
+		else if (msg_string.startsWith("LogIn")){
+			EventBus.getDefault().post(new SwitchScreenEvent(msg_string+"_primary"));
 		}
 		else if (msg_string.equals("UpdateSuc")){
 			EventBus.getDefault().post(new UpdateSucEvent(new Message(msg_string)));
@@ -47,7 +50,7 @@ public class SimpleClient extends AbstractClient {
 	}
 	public static SimpleClient getClient() {
 		if (client == null) {
-			client = new SimpleClient("2.tcp.eu.ngrok.io", 13321);
+			client = new SimpleClient("localhost", 3100);
 		}
 		return client;
 	}

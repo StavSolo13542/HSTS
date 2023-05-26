@@ -209,20 +209,6 @@ public class App
             session = sessionFactory.openSession();
 
             session.beginTransaction();
-
-
-//            generatePrincipal();
-//            generateTeachers();
-//            generateStudentsWithGrades();
-
-//            deleteAllPupils();
-//            deleteAllTeachers();
-//            deleteAllPrincipals();
-
-            printAllPrincipals();
-            printAllTeachers();
-            printAllPupils();
-
             session.getTransaction().commit();//Save everything
 
         } catch (Exception e) {
