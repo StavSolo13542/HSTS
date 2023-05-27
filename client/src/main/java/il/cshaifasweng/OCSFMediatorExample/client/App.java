@@ -1,50 +1,107 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Message;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import il.cshaifasweng.OCSFMediatorExample.client.PrimaryController;
 
 /**
  * JavaFX App
  */
 public class App extends Application {
 
-    private static Scene scene;
+    private Scene scene;
     private SimpleClient client;
-
+    private Stage stage;
+    private String username;
     @Override
     public void start(Stage stage) throws IOException {
     	EventBus.getDefault().register(this);
     	client = SimpleClient.getClient();
     	client.openConnection();
-        scene = new Scene(loadFXML("primary"), 630, 856);
+        scene = new Scene(loadFXML("log_in"), 740, 511);
+        stage.setScene(scene);
+        stage.show();
+        this.stage = stage;
+    }
+    public void setWindowTitle(String title) {
+        stage.setTitle(title);
+    }
+    public void setContent(String pageName) throws IOException {
+        Parent root = loadFXML(pageName);
+        scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
-
-    static void setRoot(String fxml) throws IOException {
+    @Subscribe
+    public void switchScreen (SwitchScreenEvent event) {
+        String msg = event.getMessage();
+        String[] parts = msg.split(" ");
+        String screenName = "";
+        if (parts.length == 1) screenName = event.getMessage();
+        else {
+            username = parts[1];
+            screenName = parts[2];
+        }
+        switch (screenName) {
+            case "log_in":
+                Platform.runLater(() -> {
+                    setWindowTitle("Log In");
+                    try {
+                        setContent("log_in");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "student_primary":
+                Platform.runLater(() -> {
+                    setWindowTitle("Student - Main Page");
+                    try {
+                        setContent("student_primary");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "teacher_primary":
+                Platform.runLater(() -> {
+                    setWindowTitle("Teacher - Main Page");
+                    try {
+                        setContent("teacher_primary");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "principle_primary":
+                Platform.runLater(() -> {
+                    setWindowTitle("Principle - Main Page");
+                    try {
+                        setContent("principle_primary");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+        }
+    }
+    void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
     }
 
-    private static Parent loadFXML(String fxml) throws IOException {
+    static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
-
-    @Subscribe
-    public void OnShowNameEvent(ShowNameEvent event){}
-
     @Override
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub

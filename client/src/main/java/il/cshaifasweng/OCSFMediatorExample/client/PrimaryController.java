@@ -121,16 +121,6 @@ public class PrimaryController {
 		ObservableList<StudentGrade> grades = FXCollections.observableArrayList();
 		int index = msg_string.indexOf(":") + 2;
 		String name = msg_string.substring(index, msg_string.indexOf(" ", index));
-
-//		index = msg_string.indexOf(" ", index) + 1;
-//		while (index != msg_string.length()) {
-//			String test_id = msg_string.substring(index, msg_string.indexOf(" ", index));
-//			index = msg_string.indexOf(" ", index) + 1;
-//			String grade = msg_string.substring(index, msg_string.indexOf(" ", index));
-//			index = msg_string.indexOf(" ", index) + 1;
-//			grades.add(new StudentGrade(name, test_id, grade));
-//		}
-
 		int startIndex = msg_string.lastIndexOf(":") + 1;
 		String numbersString = msg_string.substring(startIndex).trim();
 		String[] gradesArray = numbersString.split(" ");
