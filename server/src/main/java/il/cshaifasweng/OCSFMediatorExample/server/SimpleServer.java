@@ -11,6 +11,7 @@ import java.util.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Message;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
@@ -91,12 +92,73 @@ public class SimpleServer extends AbstractServer {
 			session.getTransaction().commit();
 		}
 	}
-	//TODO check if the username and password match the ones in the database (in the role's table) and whether the user is not already logged in
-	//TODO if the user is valid and not already logged in then let him log in and return success message else return error message
+
 	//success message format: LogIn <<username>> <<role>> (role is one of the following options: "student", "teacher, "principle")
 	//error message format: InputError <<error description>>
-	private String logIn(String username, String password, String role){
-		return "";
+
+	private static String getTableName(String role)
+	{
+		if(role.equals("principle")) {
+			return "Principals";
+		}
+		else if(role.equals("teacher")) {
+			return "Teachers";
+		}
+		else if(role.equals("student"))
+		{
+				return "StudentsWithGrades";
+		}
+		else
+		{
+			return "";
+		}
+	}
+	private String logIn(String role, String username, String password)
+	{
+		String loginResultMessage;
+		int count = 0;
+		int isLoggedIn = 0;
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+
+			Query query1 = session.createNativeQuery("select count(*) from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
+			count = ((Number) query1.getSingleResult()).intValue();
+
+			if(count > 0)
+			{
+				Query query2 = session.createNativeQuery("select isLoggedIn from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
+				isLoggedIn = ((Number) query2.getSingleResult()).intValue();
+			}
+
+			// Commit the transaction
+			session.getTransaction().commit();
+		}
+
+		if (count > 0)
+		{
+			if(isLoggedIn == 0)
+			{
+				loginResultMessage = "LogIn "+  role;
+				try (Session session = getSessionFactory().openSession()) {
+					session.getTransaction().begin();
+
+					Query query3 = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = 1" +" where name = '" + username  + "' and password = '"+ password + "';");
+					int rowCount = query3.executeUpdate();
+
+					// Commit the transaction
+					session.getTransaction().commit();
+				}
+			}
+			else
+			{
+				loginResultMessage = "You are already logged in";
+			}
+		}
+		else
+		{
+			loginResultMessage = "The identification details are incorrect";
+		}
+		return loginResultMessage;
 	}
 	HashMap<String, String> grades = new HashMap<>();
 	@Override
@@ -143,8 +205,15 @@ public class SimpleServer extends AbstractServer {
 		//(based on its role) or sends a relevant error message
 		else if (msgString.startsWith("LogIn")) {
 			String[] parts = msgString.split(" ");
-			String message = logIn(parts[1],parts[2],parts[3]);
-			message = "LogIn Alon student";
+
+			String username = parts[1];
+			String password = parts[2];
+			String role = parts[3];
+
+			String message = logIn(role, username, password);
+
+			//message = "LogIn Alon student";
+
 			sendMessage(message,client);
 		}
 	}

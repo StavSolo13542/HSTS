@@ -43,27 +43,27 @@ public class App
     }
 
     public static void generateStudentsWithGrades() throws Exception{
-        Pupil pupil1 = new Pupil(1, "Alon", "100 95 100");
+        Pupil pupil1 = new Pupil(1, "Alon", "100 95 100", "pass_Alon_1", 0);
         session.save(pupil1);
-        Pupil pupil2 = new Pupil(2, "Tomer", "100 95 80");
+        Pupil pupil2 = new Pupil(2, "Tomer", "100 95 80", "pass_Tomer_2", 0);
         session.save(pupil2);
-        Pupil pupil3 = new Pupil(3, "Stav", "95 95 100");
+        Pupil pupil3 = new Pupil(3, "Stav", "95 95 100", "pass_Stav_3", 0);
         session.save(pupil3);
-        Pupil pupil4 = new Pupil(4, "Shahar", "100 100 100");
+        Pupil pupil4 = new Pupil(4, "Shahar", "100 100 100", "pass_Shahar_4", 0);
         session.save(pupil4);
-        Pupil pupil5 = new Pupil(5, "Michael", "90 95 100");
+        Pupil pupil5 = new Pupil(5, "Michael", "90 95 100", "pass_Michael_5", 0);
         session.save(pupil5);
-        Pupil pupil6 = new Pupil(6, "Sassi", "90 90 90");
+        Pupil pupil6 = new Pupil(6, "Sassi", "90 90 90", "pass_Sassi_6", 0);
         session.save(pupil6);
-        Pupil pupil7 = new Pupil(7, "Noam", "80 95 100");
+        Pupil pupil7 = new Pupil(7, "Noam", "80 95 100", "pass_Noam_7", 0);
         session.save(pupil7);
-        Pupil pupil8 = new Pupil(8, "Avi", "60 70 80");
+        Pupil pupil8 = new Pupil(8, "Avi", "60 70 80", "pass_Avi_8", 0);
         session.save(pupil8);
-        Pupil pupil9 = new Pupil(9, "Moshe", "100 80 100");
+        Pupil pupil9 = new Pupil(9, "Moshe", "100 80 100", "pass_Moshe_9", 0);
         session.save(pupil9);
-        Pupil pupil0 = new Pupil(10, "Ya'akov", "100 95 100");
+        Pupil pupil0 = new Pupil(10, "Ya'akov", "100 95 100", "pass_Ya'akov_10", 0);
         session.save(pupil0);
-        Pupil pupil11 = new Pupil(11, "David", "100 100 100");
+        Pupil pupil11 = new Pupil(11, "David", "100 100 100", "pass_David_11", 0);
         session.save(pupil11);
             /*
              * The call to session.flush() updates the DB immediately without ending the transaction.
@@ -75,15 +75,15 @@ public class App
     }
 
     public static void generateTeachers() throws Exception{
-        Teacher teacher1 = new Teacher(1, "Tova");
+        Teacher teacher1 = new Teacher(1, "Tova", "pass_Tova_1", 0);
         session.save(teacher1);
-        Teacher teacher2 = new Teacher(2, "Sara");
+        Teacher teacher2 = new Teacher(2, "Sara", "pass_Sara_2", 0);
         session.save(teacher2);
-        Teacher teacher3 = new Teacher(3, "Bina");
+        Teacher teacher3 = new Teacher(3, "Bina", "pass_Bina_3", 0);
         session.save(teacher3);
-        Teacher teacher4 = new Teacher(4, "Limor");
+        Teacher teacher4 = new Teacher(4, "Limor", "pass_Limor_4", 0);
         session.save(teacher4);
-        Teacher teacher5 = new Teacher(5, "Michal");
+        Teacher teacher5 = new Teacher(5, "Michal", "pass_Michal_5", 0);
         session.save(teacher5);
             /*
              * The call to session.flush() updates the DB immediately without ending the transaction.
@@ -95,7 +95,9 @@ public class App
     }
 
     public static void generatePrincipal() throws Exception{
-        Principal principal = new Principal(1, "Anat");
+        session.beginTransaction();
+
+        Principal principal = new Principal(1, "Anat", "pass_Anat_1", 0);
         session.save(principal);
 
         session.flush();
@@ -119,7 +121,9 @@ public class App
         for(Pupil pupil: pupils)
         {
             System.out.println("Name: "+ pupil.getName());
+            System.out.println("Password: "+ pupil.getPassword());
             System.out.println("Grades: "+ pupil.getGrades().toString());
+            System.out.println("is logged in: "+ pupil.getIsLoggedIn());
         }
         System.out.println();
     }
@@ -152,11 +156,14 @@ public class App
         for(Teacher teacher: teachers)
         {
             System.out.println("Name: "+ teacher.getName());
+            System.out.println("Password: "+ teacher.getPassword());
+            System.out.println("is logged in: "+ teacher.getIsLoggedIn());
         }
         System.out.println();
     }
 
     private static void deleteAllTeachers() throws Exception {
+        session.beginTransaction();
 
         String hql = "DELETE FROM Teacher";
         Query query = session.createQuery(hql);
@@ -184,11 +191,14 @@ public class App
         for(Principal principal: principals)
         {
             System.out.println("Name: "+ principal.getName());
+            System.out.println("Password: "+ principal.getPassword());
+            System.out.println("is logged in: "+ principal.getIsLoggedIn());
         }
         System.out.println();
     }
 
     private static void deleteAllPrincipals() throws Exception {
+        session.beginTransaction();
 
         String hql = "DELETE FROM Principal";
         Query query = session.createQuery(hql);
@@ -201,7 +211,9 @@ public class App
     private static SimpleServer server;
     public static void main( String[] args ) throws IOException
     {
-        server = new SimpleServer(3100);
+        server = new SimpleServer(3100); // for local use (in LAN)
+
+//        server = new SimpleServer(13010);
         server.listen();
 
         try {
@@ -209,6 +221,19 @@ public class App
             session = sessionFactory.openSession();
 
             session.beginTransaction();
+
+//            deleteAllPupils();
+//            deleteAllTeachers();
+//            deleteAllPrincipals();
+//
+//            generatePrincipal();
+//            generateTeachers();
+//            generateStudentsWithGrades();
+
+            printAllPrincipals();
+            printAllTeachers();
+            printAllPupils();
+
             session.getTransaction().commit();//Save everything
 
         } catch (Exception e) {

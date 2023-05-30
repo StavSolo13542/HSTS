@@ -36,6 +36,9 @@ public class LogInController {
         String password = passwordTF.getText();
         String role = roleCB.getSelectionModel().getSelectedItem();
         String message = "LogIn " + username + " " + password + " " + role;
+
+        System.out.println("the message is: " + message);//for debugging
+
         SimpleClient.sendMessage(message);
 
     }
