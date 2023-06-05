@@ -10,9 +10,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
-import il.cshaifasweng.OCSFMediatorExample.server.entities.Principal;
-import il.cshaifasweng.OCSFMediatorExample.server.entities.Pupil;
-import il.cshaifasweng.OCSFMediatorExample.server.entities.Teacher;
+import il.cshaifasweng.OCSFMediatorExample.server.entities.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,10 +19,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-/**
- * Hello world!
- *
- */
+//TODO: generate, getAll, print, delete methods for: Question and Course classes
+
 public class App 
 {
     private static Session session;
@@ -34,6 +30,9 @@ public class App
         configuration.addAnnotatedClass(Pupil.class);
         configuration.addAnnotatedClass(Teacher.class);
         configuration.addAnnotatedClass(Principal.class);
+        configuration.addAnnotatedClass(Question.class);
+        configuration.addAnnotatedClass(Course.class);
+        configuration.addAnnotatedClass(Subject.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -95,10 +94,18 @@ public class App
     }
 
     public static void generatePrincipal() throws Exception{
-        session.beginTransaction();
+//        session.beginTransaction();
 
         Principal principal = new Principal(1, "Anat", "pass_Anat_1", 0);
         session.save(principal);
+
+        session.flush();
+    }
+
+    public static void generateSubject() throws Exception
+    {
+        Subject biology = new Subject("Biology");
+        session.save(biology);
 
         session.flush();
     }
@@ -208,6 +215,37 @@ public class App
         session.getTransaction().commit();
     }
 
+    public static List<Subject> getAllSubjects() throws Exception{
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Subject> query = builder.createQuery(Subject.class);
+        query.from(Subject.class);
+        List<Subject> subjects = session.createQuery(query).getResultList();
+        return subjects;
+    }
+
+    private static void printAllSubject() throws Exception{
+        List<Subject> subjects=getAllSubjects();
+        System.out.println("All subjects are: ");
+        if (subjects.isEmpty())
+        {
+            System.out.println("There are no subjects");
+        }
+        for(Subject subject: subjects)
+        {
+            System.out.println("Name: "+ subject.getName());
+        }
+        System.out.println();
+    }
+
+    private static void deleteAllSubjects() throws Exception {
+
+        String hql = "DELETE FROM Subject";
+        Query query = session.createQuery(hql);
+        int rowCount = query.executeUpdate();
+        System.out.println("Deleted " + rowCount + " subjects.");
+
+    }
+
     private static SimpleServer server;
     public static void main( String[] args ) throws IOException
     {
@@ -225,14 +263,19 @@ public class App
 //            deleteAllPupils();
 //            deleteAllTeachers();
 //            deleteAllPrincipals();
+//            deleteAllSubjects();
 //
 //            generatePrincipal();
 //            generateTeachers();
 //            generateStudentsWithGrades();
 
-            printAllPrincipals();
-            printAllTeachers();
-            printAllPupils();
+//            generateSubject();
+
+//            printAllPrincipals();
+//            printAllTeachers();
+//            printAllPupils();
+
+            printAllSubject();
 
             session.getTransaction().commit();//Save everything
 
