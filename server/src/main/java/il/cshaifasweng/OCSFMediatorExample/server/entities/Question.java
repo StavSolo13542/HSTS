@@ -14,14 +14,19 @@ public class Question {
     private int id;
     @Column(name = "question_text")
     private String text;
-    @Column(name = "question_answer1")
-    private String answer1;
-    @Column(name = "question_answer2")
-    private String answer2;
-    @Column(name = "question_answer3")
-    private String answer3;
-    @Column(name = "question_answer4")
-    private String answer4;
+
+//    @Column(name = "answers_list")
+//    private List<String> answers;
+
+    @Column(name = "question_answer")
+    private String answer;
+
+//    @Column(name = "question_answer2")
+//    private String answer2;
+//    @Column(name = "question_answer3")
+//    private String answer3;
+//    @Column(name = "question_answer4")
+//    private String answer4;
     private int correct_answer;
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false)
@@ -36,12 +41,16 @@ public class Question {
     private String question_code_number;
 
 
-    public Question(String text, String answer1, String answer2, String answer3, String answer4, int correct_answer, Subject subject) {
+    public Question(String text, String answer, int correct_answer, Subject subject) {
         this.text = text;
-        this.answer1 = answer1;
-        this.answer2 = answer2;
-        this.answer3 = answer3;
-        this.answer4 = answer4;
+//        this.answer1 = answer1;
+//        this.answer2 = answer2;
+//        this.answer3 = answer3;
+//        this.answer4 = answer4;
+
+//        this.answers = List.copyOf(answers);
+        this.answer=answer;
+
         this.correct_answer = correct_answer;
         this.subject = subject;
         subject.addQuestion(this);
@@ -61,6 +70,78 @@ public class Question {
     {
         this.courses.add(course);
         course.addQuestion(this);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getCorrect_answer() {
+        return correct_answer;
+    }
+
+//    public List<String> getAnswers() {
+//        return answers;
+//    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public String getQuestion_code_number() {
+        return question_code_number;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setCorrect_answer(int correct_answer) {
+        this.correct_answer = correct_answer;
+    }
+
+//    public void setAnswers(List<String> answers) {
+//        this.answers = answers;
+//    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
+    public void setQuestion_code_number(String question_code_number) {
+        this.question_code_number = question_code_number;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
+    }
+
+    @Override
+    public String toString() {
+        String courses = "Courses' Name: ";
+        for (Course course : this.courses)
+        {
+            courses += course.getName() +", ";
+        }
+
+//        String answers = "Answers: ";
+//        for(String answer : this.answers)
+//        {
+//            answers += answer + ", ";
+//        }
+
+        String str = "Subject: " + this.subject.getName() + "\nQuestion: " +
+                this.text + "\n" + courses +"\n";// + answers +"\n";
+
+        return str;
     }
 
     public Question()

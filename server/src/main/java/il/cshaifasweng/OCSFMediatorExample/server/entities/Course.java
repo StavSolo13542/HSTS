@@ -22,6 +22,14 @@ public class Course {
         this.questions = new ArrayList<Question>();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     public void addQuestion(Question question){
         this.questions.add(question);
     }

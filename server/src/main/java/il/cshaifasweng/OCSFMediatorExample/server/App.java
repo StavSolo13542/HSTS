@@ -1,25 +1,21 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import java.io.IOException;
-
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-
 import il.cshaifasweng.OCSFMediatorExample.server.entities.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-//TODO: generate, getAll, print, delete methods for: Question and Course classes
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+//TODO: generate, getAll, print, delete methods for: Question class
 
 public class App 
 {
@@ -110,6 +106,33 @@ public class App
         session.flush();
     }
 
+    public static void generateCourse() throws Exception
+    {
+        Course introToAnimals = new Course("Introduction to Animals");
+        session.save(introToAnimals);
+
+        session.flush();
+    }
+
+    public static void generateQuestion() throws Exception
+    {
+        List<String> answers = new ArrayList<String>();
+        answers.add("Lion");
+        answers.add("Hippo");
+        answers.add("Bird");
+        answers.add("Snake");
+
+        String subjects_name = "Biology";
+
+        Query query = session.createQuery("SELECT s FROM Subject s WHERE s.name = :subjectName");
+        query.setParameter("subjectName", subjects_name);
+        Subject subject = (Subject) ((org.hibernate.query.Query<?>) query).uniqueResult();
+
+        Question q1 = new Question("Which is the largest animal:", "answer1", 2, subject);
+        session.save(q1);
+
+        session.flush();
+    }
     public static List<Pupil> getAllPupils() throws Exception{
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<Pupil> query = builder.createQuery(Pupil.class);
@@ -246,6 +269,68 @@ public class App
 
     }
 
+    public static List<Course> getAllCourses() throws Exception{
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Course> query = builder.createQuery(Course.class);
+        query.from(Course.class);
+        List<Course> courses = session.createQuery(query).getResultList();
+        return courses;
+    }
+
+    private static void printAllCourses() throws Exception{
+        List<Course> courses=getAllCourses();
+        System.out.println("All courses are: ");
+        if (courses.isEmpty())
+        {
+            System.out.println("There are no courses");
+        }
+        for(Course course: courses)
+        {
+            System.out.println("Name: "+ course.getName());
+        }
+        System.out.println();
+    }
+
+    private static void deleteAllCourses() throws Exception {
+
+        String hql = "DELETE FROM Course";
+        Query query = session.createQuery(hql);
+        int rowCount = query.executeUpdate();
+        System.out.println("Deleted " + rowCount + " courses.");
+
+    }
+
+    public static List<Question> getAllQuestions() throws Exception{
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Question> query = builder.createQuery(Question.class);
+        query.from(Question.class);
+        List<Question> questions = session.createQuery(query).getResultList();
+        return questions;
+    }
+
+    private static void printAllQuestions() throws Exception{
+            List<Question> questions=getAllQuestions();
+            System.out.println("All questions are: ");
+            if (questions.isEmpty())
+            {
+                System.out.println("There are no questions");
+            }
+            for(Question question: questions)
+            {
+                System.out.println(question);
+            }
+            System.out.println();
+    }
+
+    private static void deleteAllQuestions() throws Exception {
+
+        String hql = "DELETE FROM Question";
+        Query query = session.createQuery(hql);
+        int rowCount = query.executeUpdate();
+        System.out.println("Deleted " + rowCount + " questions.");
+
+    }
+
     private static SimpleServer server;
     public static void main( String[] args ) throws IOException
     {
@@ -263,19 +348,26 @@ public class App
 //            deleteAllPupils();
 //            deleteAllTeachers();
 //            deleteAllPrincipals();
+
 //            deleteAllSubjects();
-//
+//            deleteAllCourses();
+//            deleteAllQuestions();
+
 //            generatePrincipal();
 //            generateTeachers();
 //            generateStudentsWithGrades();
 
 //            generateSubject();
+//            generateCourse();
+//            generateQuestion();
 
 //            printAllPrincipals();
 //            printAllTeachers();
 //            printAllPupils();
 
             printAllSubject();
+            printAllCourses();
+            printAllQuestions();
 
             session.getTransaction().commit();//Save everything
 

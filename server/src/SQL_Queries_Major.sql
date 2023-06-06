@@ -6,4 +6,9 @@ select * from Principals;
 select * from Teachers;
 select * from StudentsWithGrades;
 
-select * from subjects;
+select * from Subjects;
+select * from Courses;
+select * from Questions;
+
+
+Select * from Subjects WHERE subject_name = 'Biology';
