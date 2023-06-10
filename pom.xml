@@ -38,7 +38,25 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<build>
+    <dependencies>
+        <dependency>
+            <groupId>org.codeartisans.javafx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>1.2</version>
+        </dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.2.3</version>
+		</dependency>
+    </dependencies>
+    <build>
 		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
 				defaults (may be moved to parent pom) -->
 			<plugins>

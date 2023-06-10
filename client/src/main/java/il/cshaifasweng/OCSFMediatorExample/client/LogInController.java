@@ -25,7 +25,6 @@ public class LogInController {
     private TextField usernameTF;
     @FXML
     void initialize(){
-        EventBus.getDefault().register(this);
         roleCB.getItems().add("student");
         roleCB.getItems().add("teacher");
         roleCB.getItems().add("principle");
@@ -41,18 +40,5 @@ public class LogInController {
 
         SimpleClient.sendMessage(message);
 
-    }
-    @Subscribe
-    //Display input error
-    public void DisplayInputError(InputErrorEvent event) {
-        String error_str = event.getMessage();
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR,
-                    String.format(error_str.substring(error_str.indexOf(" ") + 1))
-            );
-            alert.setTitle("Error!");
-            alert.setHeaderText("Error:");
-            alert.show();
-        });
     }
 }

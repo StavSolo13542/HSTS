@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
-
-import il.cshaifasweng.OCSFMediatorExample.server.entities.*;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,7 +19,7 @@ import java.util.List;
 public class App 
 {
     private static Session session;
-
+    public static Exam exam;
     static SessionFactory getSessionFactory() throws HibernateException{
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(Pupil.class);
@@ -128,8 +127,10 @@ public class App
         query.setParameter("subjectName", subjects_name);
         Subject subject = (Subject) ((org.hibernate.query.Query<?>) query).uniqueResult();
 
-        Question q1 = new Question("Which is the largest animal:", "answer1", 2, subject);
+        Question q1 = new Question("Which is the largest animal?", "Answer1: Lion Answer2: Hippo Answer3: Bird Answer4: Snake ", 2, subject);
+        Question q2 = new Question("Which is the smallest animal?", "Answer1: Ant Answer2: Bee Answer3: Humming Bird Answer4: Blue Whale ", 4, subject);
         session.save(q1);
+        session.save(q2);
 
         session.flush();
     }
@@ -344,7 +345,11 @@ public class App
             session = sessionFactory.openSession();
 
             session.beginTransaction();
-
+            List<Integer> scores = new ArrayList<Integer>();
+            scores.add(30);
+            scores.add(70);
+            exam = new Exam(0,getAllQuestions(),"123456", 90, true,"If nobody will submit the test in the first hour then ask for time addition",
+                    "Choose the correct answer in every question","Sara",scores);
 //            deleteAllPupils();
 //            deleteAllTeachers();
 //            deleteAllPrincipals();
@@ -363,10 +368,10 @@ public class App
 
 //            printAllPrincipals();
 //            printAllTeachers();
-//            printAllPupils();
+            printAllPupils();
 
-            printAllSubject();
-            printAllCourses();
+//            printAllSubject();
+//            printAllCourses();
             printAllQuestions();
 
             session.getTransaction().commit();//Save everything

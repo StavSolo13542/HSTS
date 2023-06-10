@@ -1,6 +1,5 @@
-package il.cshaifasweng.OCSFMediatorExample.server.entities;
+package il.cshaifasweng.OCSFMediatorExample.entities;
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +83,10 @@ public class Question {
 //        return answers;
 //    }
 
+    public String getAnswers() {
+        return answer;
+    }
+
     public List<Course> getCourses() {
         return courses;
     }
@@ -131,7 +134,7 @@ public class Question {
         {
             courses += course.getName() +", ";
         }
-
+        String answers = "Answers: " + this.answer + "Correct Answer: " + String.valueOf(this.correct_answer);
 //        String answers = "Answers: ";
 //        for(String answer : this.answers)
 //        {
@@ -139,11 +142,10 @@ public class Question {
 //        }
 
         String str = "Subject: " + this.subject.getName() + "\nQuestion: " +
-                this.text + "\n" + courses +"\n";// + answers +"\n";
+                this.text + "\n" + answers +"\n" + courses +"\n";
 
         return str;
     }
-
     public Question()
     {
 
