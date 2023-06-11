@@ -15,25 +15,16 @@ public class Question {
     @Column(name = "question_text")
     private String text;
 
-//    @Column(name = "answers_list")
-//    private List<String> answers;
+    @OneToMany(mappedBy = "to_question")
+    private List<Answer> answers;
 
-    @Column(name = "question_answer")
-    private String answer;
-
-//    @Column(name = "question_answer2")
-//    private String answer2;
-//    @Column(name = "question_answer3")
-//    private String answer3;
-//    @Column(name = "question_answer4")
-//    private String answer4;
-    private int correct_answer;
+    //private int correct_answer;
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
-            name = "question_subject",
+            name = "question_course",
             joinColumns = { @JoinColumn(name = "question_id") },
             inverseJoinColumns = { @JoinColumn(name = "course_id") }
     )
@@ -41,30 +32,28 @@ public class Question {
     private String question_code_number;
 
 
-    public Question(String text, String answer, int correct_answer, Subject subject) {
+    public Question(String text, Answer ans1, Answer ans2, Answer ans3, Answer ans4, Subject subject, Course course) {
         this.text = text;
-//        this.answer1 = answer1;
-//        this.answer2 = answer2;
-//        this.answer3 = answer3;
-//        this.answer4 = answer4;
-
-//        this.answers = List.copyOf(answers);
-        this.answer=answer;
-
-        this.correct_answer = correct_answer;
+        this.answers = new ArrayList<Answer>();
+        this.answers.add(ans1);
+        ans1.setQuestion(this);
+        this.answers.add(ans2);
+        ans2.setQuestion(this);
+        this.answers.add(ans3);
+        ans3.setQuestion(this);
+        this.answers.add(ans4);
+        ans4.setQuestion(this);
+        //this.correct_answer = correct_answer;
         this.subject = subject;
         subject.addQuestion(this);
         this.courses = new ArrayList<Course>();
-        String first_part = String.valueOf(this.subject.getId());;
-        String next_part = String.valueOf(this.id);;
-        if (this.subject.getId() < 10)
-            first_part = "0" + first_part;
-        if (this.id < 10)
-            next_part = "00" + next_part;
-        else if (this.id < 100)
-            next_part = "0" + next_part;
-        this.question_code_number = first_part + next_part;
+        this.courses.add(course);
+        course.addQuestion(this);
+
+        this.question_code_number = "need to update- check appropriate function";
     }
+
+
 
     public void addCourse(Course course)
     {
@@ -72,17 +61,19 @@ public class Question {
         course.addQuestion(this);
     }
 
+    public void addAnswer(Answer answer)
+    {
+        this.answers.add(answer);
+        answer.setQuestion(this);
+    }
+
     public int getId() {
         return id;
     }
 
-    public int getCorrect_answer() {
+    /*public int getCorrect_answer() {
         return correct_answer;
-    }
-
-//    public List<String> getAnswers() {
-//        return answers;
-//    }
+    }*/
 
     public List<Course> getCourses() {
         return courses;
@@ -101,12 +92,16 @@ public class Question {
     }
 
     public void setCorrect_answer(int correct_answer) {
-        this.correct_answer = correct_answer;
+        /*this.correct_answer = correct_answer;*/
     }
 
-//    public void setAnswers(List<String> answers) {
-//        this.answers = answers;
-//    }
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
 
     public void setCourses(List<Course> courses) {
         this.courses = courses;
@@ -129,19 +124,32 @@ public class Question {
         String courses = "Courses' Name: ";
         for (Course course : this.courses)
         {
-            courses += course.getName() +", ";
+            courses += course + ", ";
         }
+        String all_answers = "All answers: ";
+        Answer correct_answer = null;
+        for (Answer answer : this.answers)
+        {
+            if (answer.getIs_correct())
+                correct_answer = answer;
+            all_answers += answer + ", ";
+        }
+        return "Subject: " + this.subject + "\nQuestion: " +
+                this.text + "\n" + all_answers + "\nCorrect answer index: " +
+                correct_answer + "\n" + courses +"\n";
+    }
 
-//        String answers = "Answers: ";
-//        for(String answer : this.answers)
-//        {
-//            answers += answer + ", ";
-//        }
-
-        String str = "Subject: " + this.subject.getName() + "\nQuestion: " +
-                this.text + "\n" + courses +"\n";// + answers +"\n";
-
-        return str;
+    public void updateCode()
+    {
+        String first_part = String.valueOf(this.subject.getId());;
+        String next_part = String.valueOf(this.id);;
+        if (this.subject.getId() < 10)
+            first_part = "0" + first_part;
+        if (this.id < 10)
+            next_part = "00" + next_part;
+        else if (this.id < 100)
+            next_part = "0" + next_part;
+        this.question_code_number = first_part + next_part;
     }
 
     public Question()
