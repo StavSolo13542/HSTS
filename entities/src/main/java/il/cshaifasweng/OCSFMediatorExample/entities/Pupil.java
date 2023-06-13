@@ -3,11 +3,13 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "StudentsWithGrades")
+@Table(name = "Pupils")
 public class Pupil {
-//    private HashMap<String, String> grades;
+    //    private HashMap<String, String> grades;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "pupil_generator")
     @GenericGenerator(name = "pupil_generator", strategy = "increment")
@@ -21,23 +23,33 @@ public class Pupil {
     private String password;
 
     @Column (name = "isLoggedIn")
-    private int isLoggedIn;
+    private Boolean isLoggedIn;
 
-    @Column(name = "grades")
-    private String grades;
-//    private ArrayList<Integer> grades;
-    public Pupil(int id, String name, String grades, String password, int isLoggedIn)
+    //    @Column(name = "grades")
+//    private String grades;
+//    //    private ArrayList<Integer> grades;
+    @OneToMany(mappedBy = "pupil")
+    private List<Grade> grades;
+    public Pupil(String name, String password, Boolean isLoggedIn)
     {
-        super();
-        this.id=id;
+//        super();
         this.name = name;
-        this.grades = grades;
         this.password = password;
         this.isLoggedIn = isLoggedIn;
+        this.grades = new ArrayList<Grade>();
     }
 
     public Pupil() {
 
+    }
+    public List<Grade> getGrades()
+    {
+        return this.grades;
+    }
+
+    public void addGrade(Grade g)
+    {
+        this.grades.add(g);
     }
 
     public int getId() {
@@ -48,19 +60,15 @@ public class Pupil {
         return name;
     }
 
-    public String getGrades() {
-        return grades;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public int getIsLoggedIn() {
+    public Boolean getIsLoggedIn() {
         return isLoggedIn;
     }
 
-    public void setIsLoggedIn(int loggedIn) {
+    public void setIsLoggedIn(Boolean loggedIn) {
         isLoggedIn = loggedIn;
     }
 
@@ -72,9 +80,6 @@ public class Pupil {
         this.name = name;
     }
 
-    public void setGrades(String grades) {
-        this.grades = grades;
-    }
 
     public void setPassword(String password) {
         this.password = password;

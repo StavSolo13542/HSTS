@@ -46,17 +46,11 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new SwitchScreenEvent(parts[1]+"_primary"));
 		}
 		else if (msg_string.startsWith("EnterExam")){
-			Question q1 = new Question("Which is the largest animal?", "Answer1: Lion Answer2: Hippo Answer3: Bird Answer4: Snake ", 2, new Subject("Biology"));
-			Question q2 = new Question("Which is the smallest animal?", "Answer1: Ant Answer2: Bee Answer3: Humming Bird Answer4: Blue Whale ", 4, new Subject("Biology"));
 			ArrayList<Question> questions = new ArrayList<>();
-			questions.add(q1);
-			questions.add(q2);
 			List<Integer> scores = new ArrayList<Integer>();
 			scores.add(30);
 			scores.add(70);
-			currExam = new Exam(0,questions,"123456", 1, true,"If nobody will submit the test in the first hour then ask for time addition",
-					"Choose the correct answer in every question","Sara",scores);
-			if (!currExam.getComputed()) {
+			if (!(currExam.getExam_code_number().compareTo("a") == 0)) {
 				EventBus.getDefault().post(new SwitchScreenEvent("word_exam"));
 				EventBus.getDefault().post(new StartExamEvent("",currExam,name));
 			}

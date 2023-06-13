@@ -11,8 +11,6 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Message;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
-
-import static il.cshaifasweng.OCSFMediatorExample.server.App.exam;
 import static il.cshaifasweng.OCSFMediatorExample.server.App.getSessionFactory;
 
 public class SimpleServer extends AbstractServer {
@@ -102,7 +100,7 @@ public class SimpleServer extends AbstractServer {
 		}
 		else if(role.equals("student"))
 		{
-				return "StudentsWithGrades";
+				return "Pupils";
 		}
 		else
 		{
@@ -113,17 +111,16 @@ public class SimpleServer extends AbstractServer {
 	{
 		String loginResultMessage;
 		int count = 0;
-		int isLoggedIn = 0;
+		Boolean isLoggedIn = true;
 		try (Session session = getSessionFactory().openSession()) {
 			session.getTransaction().begin();
-
 			Query query1 = session.createNativeQuery("select count(*) from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
 			count = ((Number) query1.getSingleResult()).intValue();
 
 			if(count > 0)
 			{
 				Query query2 = session.createNativeQuery("select isLoggedIn from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
-				isLoggedIn = ((Number) query2.getSingleResult()).intValue();
+				isLoggedIn = ((Boolean) query2.getSingleResult()).booleanValue();
 			}
 
 			// Commit the transaction
@@ -133,13 +130,13 @@ public class SimpleServer extends AbstractServer {
 		if (count > 0)
 		{
 			//TODO Uncomment the if (and remove the current one) after adding logout option
-			if (true) //if(isLoggedIn == 0)
+			if (true) //if(!isLoggedIn)
 			{
 				loginResultMessage = "LogIn "+  role + " " + username;
 				try (Session session = getSessionFactory().openSession()) {
 					session.getTransaction().begin();
 
-					Query query3 = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = 1" +" where name = '" + username  + "' and password = '"+ password + "';");
+					Query query3 = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = true" +" where name = '" + username  + "' and password = '"+ password + "';");
 					int rowCount = query3.executeUpdate();
 
 					// Commit the transaction
@@ -223,7 +220,7 @@ public class SimpleServer extends AbstractServer {
 			String[] parts = msgString.split(" ");
 			String code = parts[1];
 			String message = connectToExam(code);
-			if (code.compareTo(App.exam.getCode()) == 0){
+			if (code.compareTo("1234") == 0){
 
 				message = "EnterExam";
 			}

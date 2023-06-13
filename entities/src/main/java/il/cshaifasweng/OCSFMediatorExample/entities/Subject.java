@@ -16,15 +16,38 @@ public class Subject {
     private String name;
     @OneToMany(mappedBy = "subject")
     private List<Question> questions;
+    //    @OneToMany(mappedBy="subject_id")
+//    private List<Exam> exams;
+    @OneToMany(mappedBy="subject_id")
+    private List<Course> courses;
 
     public Subject(String name) {
         this.name = name;
         this.questions = new ArrayList<Question>();
+//        this.exams = new ArrayList<Exam>();
+        this.courses = new ArrayList<Course>();
+    }
+
+//    public List<Exam> getExams() {
+//        return exams;
+//    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void addCourse(Course c)
+    {
+        this.courses.add(c);
     }
 
     public void addQuestion(Question question){
         this.questions.add(question);
     }
+//    public void addExam(Exam exam)
+//    {
+//        this.exams.add(exam);
+//    }
 
     public int getId() {
         return id;
@@ -41,5 +64,10 @@ public class Subject {
     public Subject()
     {
 
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 }

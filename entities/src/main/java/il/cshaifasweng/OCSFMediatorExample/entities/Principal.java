@@ -1,5 +1,4 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
-
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -20,12 +19,11 @@ public class Principal {
     private String password;
 
     @Column (name = "isLoggedIn")
-    private int isLoggedIn;
+    private Boolean isLoggedIn;
 
-    public Principal(int principal_id, String name, String password, int isLoggedIn)
+    public Principal(String name, String password, Boolean isLoggedIn)
     {
-        super();
-        this.principal_id=principal_id;
+//        super()
         this.name = name;
         this.password = password;
         this.isLoggedIn = isLoggedIn;
@@ -43,11 +41,11 @@ public class Principal {
         return password;
     }
 
-    public int getIsLoggedIn() {
+    public Boolean getIsLoggedIn() {
         return isLoggedIn;
     }
 
-    public void setIsLoggedIn(int loggedIn) {
+    public void setIsLoggedIn(Boolean loggedIn) {
         isLoggedIn = loggedIn;
     }
 

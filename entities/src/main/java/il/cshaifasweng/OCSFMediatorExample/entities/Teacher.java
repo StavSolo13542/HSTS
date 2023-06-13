@@ -1,8 +1,9 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
-
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Teachers")
@@ -20,19 +21,27 @@ public class Teacher {
     private String password;
 
     @Column (name = "isLoggedIn")
-    private int isLoggedIn;
+    private Boolean isLoggedIn;
+    @OneToMany(mappedBy = "teacher")
+    private List<Exam> exams;
 
-    public Teacher(int teacher_id, String name, String password, int isLoggedIn)
+    public Teacher(String name, String password, Boolean isLoggedIn)
     {
-        super();
-        this.teacher_id=teacher_id;
+//        super();
         this.name = name;
         this.password = password;
         this.isLoggedIn = isLoggedIn;
+        exams = new ArrayList<Exam>();
     }
 
-    public Teacher(){
+    public Teacher()
+    {
 
+    }
+
+    public void addExam(Exam e)
+    {
+        this.exams.add(e);
     }
 
     public String getName() {
@@ -55,11 +64,11 @@ public class Teacher {
         this.password = password;
     }
 
-    public int getIsLoggedIn() {
+    public Boolean getIsLoggedIn() {
         return isLoggedIn;
     }
 
-    public void setIsLoggedIn(int isLoggedIn) {
+    public void setIsLoggedIn(Boolean isLoggedIn) {
         this.isLoggedIn = isLoggedIn;
     }
 }

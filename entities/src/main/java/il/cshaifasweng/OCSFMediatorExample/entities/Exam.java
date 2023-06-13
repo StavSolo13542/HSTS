@@ -1,72 +1,167 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name="Exams")
 public class Exam {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "grade_generator")
+    @GenericGenerator(name = "grade_generator", strategy = "increment")
     private int id;
-    private String code;
-    private int time;
-    private String teacher_desc;
-    private String student_desc;
-    private String teacher_name;
-    private Boolean isComputed;
+    @Column(name = "exam_name")
+    private String name;
+    @ManyToOne
+    @JoinColumn(name="course_id", nullable=false)
+    private Course course;
+    //    @ManyToOne
+//    @JoinColumn(name="subject_id", nullable=false)
+//    private Subject subject_id;
+    private int duration_in_minutes;
+    private String note_to_students;
+    private String note_to_teacher;
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "exam_question",
+            joinColumns = { @JoinColumn(name = "exam_id") },
+            inverseJoinColumns = { @JoinColumn(name = "question_id") }
+    )
     private List<Question> questions;
-    private List<Integer> scores;
-    public Exam(int id, List<Question> questions, String code, int time, Boolean isComputed, String teacher_desc, String student_desc, String teacher_name, List<Integer> scores) {
-        this.id = id;
-        this.questions = questions;
-        this.code = code;
-        this.time = time;
-        this.isComputed = isComputed;
-        this.teacher_desc = teacher_desc;
-        this.student_desc = student_desc;
-        this.teacher_name = teacher_name;
-        this.scores = scores;
-    }
-    @Override
-    public String toString(){
-        String str = "";
-        str += "id: " + id;
-        str += " code: " + code;
-        str += " teacher_desc: " + teacher_desc;
-        str += " student_desc: " + student_desc;
-        str += " teacher_name" + teacher_name;
-        str += " isComputed:" + String.valueOf(isComputed);
-        str += " questions: ";
-        for (int i = 0; i < questions.size(); i++){
-            str += "Question" + String.valueOf(i + 1) + " " + questions.get(i).toString();
-        }
-        str += " scores: ";
-        for (int i = 0; i < questions.size(); i++){
-            str += " Score" + String.valueOf(i + 1) + " " + String.valueOf(scores.get(i));
-        }
-        return str;
-    }
-    public String getCode() {
-        return code;
+    @ManyToOne
+    @JoinColumn(name="teacher_id", nullable=false)
+    private Teacher teacher;
+    @OneToMany(mappedBy="exam")
+    private List<Grade> grades;
+
+    private String exam_code_number;
+
+    public Exam(String name, Course course, int duration_in_minutes, String note_to_students, String note_to_teacher, Teacher teacher) {
+        this.name = name;
+        this.course = course;
+        course.addExam(this);
+//        this.subject_id = subject_id;
+//        subject_id.addExam(this);
+//        course.getSubject_id().addExam(this);
+        this.duration_in_minutes = duration_in_minutes;
+        this.note_to_students = note_to_students;
+        this.note_to_teacher = note_to_teacher;
+        this.questions = new ArrayList<Question>();
+        this.teacher = teacher;
+        teacher.addExam(this);
+        grades = new ArrayList<Grade>();
+        exam_code_number = "need to update- check appropriate function- updateCode()";
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void updateCode()
+    {
+        String first_part = String.valueOf(this.course.getSubject_id().getId());
+        String second_part = String.valueOf(this.course.getId());
+        String third_part = String.valueOf(this.id);
+        if (this.course.getSubject_id().getId() < 10)
+            first_part = "0" + first_part;
+        if (this.course.getId() < 10)
+            second_part = "0" + second_part;
+        else if (this.id < 10)
+            third_part = "0" + third_part;
+        this.exam_code_number = first_part + second_part + third_part;
     }
-    public String getStudentDesc() {
-        return student_desc;
+
+    public String getExam_code_number() {
+        return exam_code_number;
     }
+
+    public List<Grade> getGrades() {
+        return grades;
+    }
+
+    public void addGrade(Grade g)
+    {
+        this.grades.add(g);
+    }
+
+    public void setGrades(List<Grade> grades) {
+        this.grades = grades;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+
+    public void addQuestion(Question q)
+    {
+        this.questions.add(q);
+        q.addExam(this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+//    public Subject getSubject_id() {
+//        return subject_id;
+//    }
+
+    public int getDuration_in_minutes() {
+        return duration_in_minutes;
+    }
+
+    public String getNote_to_students() {
+        return note_to_students;
+    }
+
+    public String getNote_to_teacher() {
+        return note_to_teacher;
+    }
+
     public List<Question> getQuestions() {
         return questions;
     }
-    public Boolean getComputed() {
-        return isComputed;
+
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setComputed(Boolean computed) {
-        isComputed = computed;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
-    public int getTime() {
-        return time;
+//    public void setSubject_id(Subject subject_id) {
+//        this.subject_id = subject_id;
+//    }
+
+    public void setDuration_in_minutes(int duration_in_minutes) {
+        this.duration_in_minutes = duration_in_minutes;
     }
+
+    public void setNote_to_students(String note_to_students) {
+        this.note_to_students = note_to_students;
+    }
+
+    public void setNote_to_teacher(String note_to_teacher) {
+        this.note_to_teacher = note_to_teacher;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
     public int getId() {
         return id;
+    }
+    public Exam()
+    {
+
     }
 }

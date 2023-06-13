@@ -1,4 +1,4 @@
-package org.example;
+package il.cshaifasweng.OCSFMediatorExample.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
