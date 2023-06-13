@@ -57,7 +57,8 @@ public class SimpleClient extends AbstractClient {
 			currExam = new Exam(0,questions,"123456", 1, true,"If nobody will submit the test in the first hour then ask for time addition",
 					"Choose the correct answer in every question","Sara",scores);
 			if (!currExam.getComputed()) {
-
+				EventBus.getDefault().post(new SwitchScreenEvent("word_exam"));
+				EventBus.getDefault().post(new StartExamEvent("",currExam,name));
 			}
 			EventBus.getDefault().post(new SwitchScreenEvent("exam"));
 
