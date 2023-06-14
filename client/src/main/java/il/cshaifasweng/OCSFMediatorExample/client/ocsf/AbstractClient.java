@@ -133,9 +133,21 @@ public abstract class AbstractClient implements Runnable
     //Create the sockets and the data streams
     try
     {
+      System.out.println("host: " + host + "port: " + port);//added for debugging
+
       clientSocket= new Socket(host, port);
+      System.out.println("clientSocket.getOutputStream(): " + clientSocket.getOutputStream().toString());
+
       output = new ObjectOutputStream(clientSocket.getOutputStream());
-      input = new ObjectInputStream(clientSocket.getInputStream());
+      System.out.println("clientSocket.getInputStream() available: " + clientSocket.getInputStream().available());
+
+     try {
+       input = new ObjectInputStream(clientSocket.getInputStream());
+     }
+     catch (EOFException eofException)
+     {
+        eofException.printStackTrace();
+     }
     }
     catch (IOException ex)
     // All three of the above must be closed when there is a failure
