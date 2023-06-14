@@ -154,11 +154,15 @@ public class SimpleServer extends AbstractServer {
 		}
 		return loginResultMessage;
 	}
+	//Success message: EnterExam <<exam_description>>
+	//Error message: InputError <<error_description>>
 	private String connectToExam(String code){
 
 		return "";
 	}
-	private String StartExam(String id){
+	//Success message: StartExam
+	//Error message: InputError <<error_description>>
+	private String StartExam(String id, String name){
 		return "";
 	}
 	@Override
@@ -234,7 +238,8 @@ public class SimpleServer extends AbstractServer {
 			String[] parts = msgString.split(" ");
 
 			String id = parts[1];
-			String message = StartExam(id);
+			String name = parts[2];
+			String message = StartExam(id,name);
 			message = "StartExam";
 			sendMessage(message,client);
 		}

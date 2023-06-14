@@ -32,6 +32,11 @@ public class Question {
     @ManyToMany(mappedBy = "questions")
     private List<Exam> exams;
 
+    @ManyToMany(mappedBy = "correctly_answered_questions")
+    private List<Grade> correct_grades;
+
+    @OneToMany(mappedBy = "question")
+    private List<Exam_Question_points> points;
 
     public Question(String text, Answer ans1, Answer ans2, Answer ans3, Answer ans4, Subject subject, Course course) {
         this.text = text;
@@ -53,6 +58,18 @@ public class Question {
 
         this.question_code_number = "need to update- check appropriate function- updateCode()";
         this.exams = new ArrayList<Exam>();
+        this.correct_grades = new ArrayList<Grade>();
+        this.points = new ArrayList<Exam_Question_points>();
+    }
+
+    public void addPoints(Exam_Question_points points)
+    {
+        this.points.add(points);
+    }
+
+    public void addGrade(Grade grade)
+    {
+        this.correct_grades.add(grade);
     }
 
     public void addExam(Exam exam)

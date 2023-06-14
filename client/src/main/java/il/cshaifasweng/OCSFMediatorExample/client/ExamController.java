@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import il.cshaifasweng.OCSFMediatorExample.entities.Answer;
 import il.cshaifasweng.OCSFMediatorExample.entities.Exam;
 import il.cshaifasweng.OCSFMediatorExample.entities.Question;
+import il.cshaifasweng.OCSFMediatorExample.entities.ReadyExam;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,8 +19,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ExamController {
+    private final int[] remaining_time = {0,0};
     private String name;
-    private Exam exam;
+    private ReadyExam exam;
     private ArrayList<ComboBox<String>> answers_list;
     @FXML
     private Label examHeaderLabel;
@@ -46,14 +48,14 @@ public class ExamController {
     @FXML
     void SubmitId(ActionEvent event) {
         String id = idTF.getText();
-        String message = "StartExam " + id;
+        String message = "StartExam " + id + " " + SimpleClient.name;
         System.out.println("the message is: " + message);//for debugging
 
         SimpleClient.sendMessage(message);
     }
     @Subscribe
     public void StartExam(StartExamEvent event){
-        name = event.getName();
+        name = event.getMessage();
         exam = event.getExam();
         answersBtn.setVisible(true);
         answers_list = new ArrayList<>();
@@ -63,9 +65,9 @@ public class ExamController {
             idTF.setVisible(false);
             examPane.setVisible(true);
             timerLabel.setVisible(true);
-            examHeaderLabel.setText("Answer the questions and submit the test before your time runs out!");
-            instructionsLabel.setText(instructionsLabel.getText() + "\n" + exam.getNote_to_students());
-            List<Question> questions = exam.getQuestions();
+            examHeaderLabel.setText("Answer the questions and submit the test before your time runs out!\n" + exam.getExam().getName());
+            instructionsLabel.setText(instructionsLabel.getText() + "\n" + exam.getExam().getNote_to_students());
+            List<Question> questions = exam.getExam().getQuestions();
             for (int i = 0; i < questions.size(); i++){
                 Question question = questions.get(i);
                 List<Answer> answers = question.getAnswers();
@@ -74,14 +76,14 @@ public class ExamController {
                 ComboBox<String> answer_select = new ComboBox<>();
                 answer_select.setStyle("-fx-font: 16px \"System\";");
                 for (int j = 0; j < answers.size(); j++){
-                    answer_select.getItems().add("Answer " + i + " " + answers.get(i).getAnswer_text());
+                    answer_select.getItems().add("Answer " + (j + 1) + ": " + answers.get(j).getAnswer_text());
                 }
                 examContentPane.getChildren().add(question_label);
                 examContentPane.getChildren().add(answer_select);
                 answers_list.add(answer_select);
             }
         });
-        final int[] remaining_time = {exam.getDuration_in_minutes(),0};
+        remaining_time[0] = exam.getExam().getDuration_in_minutes();
         Timer myTimer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
@@ -124,7 +126,7 @@ public class ExamController {
         for (int i = 0; i < answers_list.size(); i++){
             answers += (answers_list.get(i).getSelectionModel().getSelectedIndex() + 1) + " ";
         }
-        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + (exam.getDuration_in_minutes() - Integer.parseInt(timerLabel.getText().substring(16,18))) + " " + answers;
+        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]) + " " + answers;
         System.out.println("the message is: " + message);//for debugging
         SimpleClient.sendMessage(message);
         EventBus.getDefault().post(new SuccessEvent("Your test was submitted successfully"));

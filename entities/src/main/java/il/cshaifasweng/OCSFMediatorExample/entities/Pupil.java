@@ -16,6 +16,8 @@ public class Pupil {
     @Column (name = "id")
     private int id;
 
+    private String real_id;
+
     @Column (name = "name")
     private String name;
 
@@ -30,10 +32,11 @@ public class Pupil {
 //    //    private ArrayList<Integer> grades;
     @OneToMany(mappedBy = "pupil")
     private List<Grade> grades;
-    public Pupil(String name, String password, Boolean isLoggedIn)
+    public Pupil(String name, String real_id, String password, Boolean isLoggedIn)
     {
 //        super();
         this.name = name;
+        this.real_id = real_id;
         this.password = password;
         this.isLoggedIn = isLoggedIn;
         this.grades = new ArrayList<Grade>();
@@ -42,6 +45,23 @@ public class Pupil {
     public Pupil() {
 
     }
+
+    public void setReal_id(String real_id) {
+        this.real_id = real_id;
+    }
+
+    public void setLoggedIn(Boolean loggedIn) {
+        isLoggedIn = loggedIn;
+    }
+
+    public String getReal_id() {
+        return real_id;
+    }
+
+    public Boolean getLoggedIn() {
+        return isLoggedIn;
+    }
+
     public List<Grade> getGrades()
     {
         return this.grades;

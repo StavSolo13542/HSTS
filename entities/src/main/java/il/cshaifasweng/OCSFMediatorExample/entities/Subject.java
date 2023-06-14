@@ -20,12 +20,15 @@ public class Subject {
 //    private List<Exam> exams;
     @OneToMany(mappedBy="subject_id")
     private List<Course> courses;
+    @ManyToMany(mappedBy = "subjects")
+    private List<Teacher> teachers;
 
     public Subject(String name) {
         this.name = name;
         this.questions = new ArrayList<Question>();
 //        this.exams = new ArrayList<Exam>();
         this.courses = new ArrayList<Course>();
+        this.teachers = new ArrayList<Teacher>();
     }
 
 //    public List<Exam> getExams() {
@@ -34,6 +37,19 @@ public class Subject {
 
     public List<Course> getCourses() {
         return courses;
+    }
+
+    public void addTeacher(Teacher teacher)
+    {
+        this.teachers.add(teacher);
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public List<Teacher> getTeachers() {
+        return teachers;
     }
 
     public void addCourse(Course c)

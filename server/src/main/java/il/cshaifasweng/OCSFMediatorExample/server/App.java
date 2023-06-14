@@ -20,7 +20,7 @@ public class App
 {
     private static Session session;
     public static Exam exam;
-    static SessionFactory getSessionFactory() throws HibernateException{
+    static SessionFactory getSessionFactory() throws HibernateException {
         Configuration configuration = new Configuration();
         // Add ALL of your entities here. You can also try adding a whole package.
         configuration.addAnnotatedClass(Answer.class);
@@ -32,6 +32,8 @@ public class App
         configuration.addAnnotatedClass(Question.class);
         configuration.addAnnotatedClass(Subject.class);
         configuration.addAnnotatedClass(Teacher.class);
+        configuration.addAnnotatedClass(ReadyExam.class);
+        configuration.addAnnotatedClass(Exam_Question_points.class);
 
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
@@ -289,19 +291,6 @@ public class App
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
-            Subject astro = new Subject("Astrophysics");
-            Course speeds = new Course("Velocity in space", astro);
-
-            Answer ans5 = new Answer("laptop", false);
-            Answer ans6 = new Answer("table", false);
-            Answer ans7 = new Answer("Cruise ship", true);
-            Answer ans8 = new Answer("tent", false);
-            Question q2 = new Question("which number is bigger?", ans5, ans6, ans7, ans8, astro, speeds);
-            Teacher t1 = new Teacher("Malki", "Malki_password", true);
-            Pupil p1 = new Pupil("Alon", "1234", false);
-            ex1 = new Exam("first exam", speeds, 90, "hello students!", "hello teacher!", t1);
-            ex1.updateCode();
-            ex1.addQuestion(q2);
 //            deleteAllPupils();
 //            deleteAllTeachers();
 //            deleteAllPrincipals();

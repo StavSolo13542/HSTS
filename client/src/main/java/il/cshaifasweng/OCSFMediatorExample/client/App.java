@@ -95,9 +95,19 @@ public class App extends Application {
                 break;
             case "exam":
                 Platform.runLater(() -> {
-                    setWindowTitle("Exam");
+                    setWindowTitle("Exam - online");
                     try {
                         setContent("exam");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "word_exam":
+                Platform.runLater(() -> {
+                    setWindowTitle("Exam - with word");
+                    try {
+                        setContent("word_exam");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

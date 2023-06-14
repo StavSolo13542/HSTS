@@ -24,6 +24,13 @@ public class Teacher {
     private Boolean isLoggedIn;
     @OneToMany(mappedBy = "teacher")
     private List<Exam> exams;
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "teacher_subject",
+            joinColumns = { @JoinColumn(name = "teacher_id") },
+            inverseJoinColumns = { @JoinColumn(name = "subject_id") }
+    )
+    private List<Subject> subjects;
 
     public Teacher(String name, String password, Boolean isLoggedIn)
     {
@@ -32,11 +39,30 @@ public class Teacher {
         this.password = password;
         this.isLoggedIn = isLoggedIn;
         exams = new ArrayList<Exam>();
+        this.subjects = new ArrayList<Subject>();
+    }
+
+    public void addSubject(Subject subject)
+    {
+        this.subjects.add(subject);
+        subject.addTeacher(this);
     }
 
     public Teacher()
     {
 
+    }
+
+    public List<Exam> getExams() {
+        return exams;
+    }
+
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public Boolean getLoggedIn() {
+        return isLoggedIn;
     }
 
     public void addExam(Exam e)

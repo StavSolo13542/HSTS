@@ -1,10 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
-import il.cshaifasweng.OCSFMediatorExample.entities.Exam;
-import il.cshaifasweng.OCSFMediatorExample.entities.Message;
-import il.cshaifasweng.OCSFMediatorExample.entities.Question;
-import il.cshaifasweng.OCSFMediatorExample.entities.Subject;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import org.greenrobot.eventbus.EventBus;
@@ -17,8 +14,8 @@ import java.util.List;
 public class SimpleClient extends AbstractClient {
 	
 	private static SimpleClient client = null;
-	private String name = "";
-	private Exam currExam;
+	public static String name = "";
+	private static ReadyExam currExam;
 	private SimpleClient(String host, int port) {
 		super(host, port);
 	}
@@ -46,19 +43,45 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new SwitchScreenEvent(parts[1]+"_primary"));
 		}
 		else if (msg_string.startsWith("EnterExam")){
-			ArrayList<Question> questions = new ArrayList<>();
-			List<Integer> scores = new ArrayList<Integer>();
-			scores.add(30);
-			scores.add(70);
-			if (!(currExam.getExam_code_number().compareTo("a") == 0)) {
+			Subject astro = new Subject("Astrophysics");
+			Course speeds = new Course("Velocity in space", astro);
+			Answer ans1 = new Answer("1 km/h", false);          // new answers
+			Answer ans2 = new Answer("2 km/h", false);
+			Answer ans3 = new Answer("3 km/h", false);
+			Answer ans4 = new Answer("4 km/h", true);
+			Answer ans5 = new Answer("laptop", false);
+			Answer ans6 = new Answer("table", false);
+			Answer ans7 = new Answer("Cruise ship", true);
+			Answer ans8 = new Answer("tent", false);
+			Question q1 = new Question("which is bigger?", ans1, ans2, ans3, ans4, astro, speeds);// new questions
+			Question q2 = new Question("which number is bigger?", ans5, ans6, ans7, ans8, astro, speeds);
+			Teacher t1 = new Teacher("Malki", "Malki_password", true);
+			// new exam
+			Exam ex1 = new Exam("first exam", speeds, 1, "hello students!", "hello teacher!", t1);
+			ex1.updateCode(); // Important!!! after creating + saving + flushing the exam, you have to call this function and then save + flush again
+            /*
+            This part is important and tricky. normally you would think that adding a question to the exam would look like:
+            ex1.addQuestion(q1, 70);
+            (BTW: now adding a question also requires to give that question points- 70 points in this case)
+            BUT YOU SHOULD NOT ADD QUESTIONS LIKE THIS!!!!!!!!!!
+            the points of this question on this exam are loaded into a different entity called Exam_question_points.
+            this entity is created automatically each time you add a question, but in order for it to be saved in the tables
+            I made the addQuestion function return this entity- and then it has to be saved by the session.
+            SO THE OVERALL COMMAND TO ADD A QUESTION TO AN EXAM IS:
+            session.save(ex1.addQuestion(q1, 70));
+             */
+			ex1.addQuestion(q1, 70);
+			ex1.addQuestion(q2, 30);
+
+			currExam = new ReadyExam(ex1, "10a4", false, "14/6/2023 13:30");  // new "Out of the drawer" exam
+			if (!currExam.getOnline()) {
 				EventBus.getDefault().post(new SwitchScreenEvent("word_exam"));
-				EventBus.getDefault().post(new StartExamEvent("",currExam,name));
 			}
-			EventBus.getDefault().post(new SwitchScreenEvent("exam"));
+			else EventBus.getDefault().post(new SwitchScreenEvent("exam"));
 
 		}
 		else if (msg_string.startsWith("StartExam")){
-			EventBus.getDefault().post(new StartExamEvent("",currExam, name));
+			EventBus.getDefault().post(new StartExamEvent(name,currExam));
 
 		}
 		else if (msg_string.equals("UpdateSuc")){
@@ -70,12 +93,17 @@ public class SimpleClient extends AbstractClient {
 	static public void sendMessage(String msg){
 		try {
 			Message message = new Message(msg);
-
 			System.out.println("SimpleClient.getClient host, port: " + SimpleClient.getClient().getHost() + ", " +SimpleClient.getClient().getPort());
 
 			SimpleClient.getClient().sendToServer(message);
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	static public void postMessage(String msg) {
+		if (msg.startsWith("StartExam")){
+			EventBus.getDefault().post(new StartExamEvent(name,currExam));
+
 		}
 	}
 	public static SimpleClient getClient() {
