@@ -129,8 +129,7 @@ public class SimpleServer extends AbstractServer {
 
 		if (count > 0)
 		{
-			//TODO Uncomment the if (and remove the current one) after adding logout option
-			if (true) //if(!isLoggedIn)
+			if(!isLoggedIn)
 			{
 				loginResultMessage = "LogIn "+  role + " " + username;
 				try (Session session = getSessionFactory().openSession()) {
@@ -164,6 +163,16 @@ public class SimpleServer extends AbstractServer {
 	//Error message: InputError <<error_description>>
 	private String StartExam(String id, String name){
 		return "";
+	}
+	private void LogOut(String name, String role){
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+			Query query = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = false" +" where name = '" + name + "';");
+			query.executeUpdate();
+
+			// Commit the transaction
+			session.getTransaction().commit();
+		}
 	}
 	@Override
 	//Treating the message from the clint
@@ -242,6 +251,13 @@ public class SimpleServer extends AbstractServer {
 			String message = StartExam(id,name);
 			message = "StartExam";
 			sendMessage(message,client);
+		}
+		else if (msgString.startsWith("LogOut")) {
+			String[] parts = msgString.split(" ");
+			String name = parts[1];
+			String role = parts[2];
+			LogOut(name,role);
+			sendMessage("LogOut",client);
 		}
 	}
 	//Send received message to the relevant client

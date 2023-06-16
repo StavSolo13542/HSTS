@@ -15,6 +15,7 @@ public class SimpleClient extends AbstractClient {
 	
 	private static SimpleClient client = null;
 	public static String name = "";
+	public static String role = "";
 	private static ReadyExam currExam;
 	private SimpleClient(String host, int port) {
 		super(host, port);
@@ -38,9 +39,10 @@ public class SimpleClient extends AbstractClient {
 		else if (msg_string.startsWith("LogIn")){
 			String[] parts = msg_string.split(" ");
 			name = parts[2];
+			role = parts[1];
 			System.out.println("in login from server message"); // for debugging
 
-			EventBus.getDefault().post(new SwitchScreenEvent(parts[1]+"_primary"));
+			EventBus.getDefault().post(new SwitchScreenEvent(role+"_primary"));
 		}
 		else if (msg_string.startsWith("EnterExam")){
 			Subject astro = new Subject("Astrophysics");
@@ -83,6 +85,11 @@ public class SimpleClient extends AbstractClient {
 		else if (msg_string.startsWith("StartExam")){
 			EventBus.getDefault().post(new StartExamEvent(name,currExam));
 
+		}
+		else if (msg_string.startsWith("LogOut")) {
+			name = "";
+			role = "";
+			EventBus.getDefault().post(new SwitchScreenEvent("log_in"));
 		}
 		else if (msg_string.equals("UpdateSuc")){
 			EventBus.getDefault().post(new UpdateSucEvent(new Message(msg_string)));

@@ -31,6 +31,16 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
         this.stage = stage;
+        setWindowTitle("Log In");
+        stage.setOnCloseRequest(event -> {
+            if (SimpleClient.name != ""){
+                String message = "LogOut " + SimpleClient.name + " " + SimpleClient.role;
+
+                System.out.println("the message is: " + message);//for debugging
+
+                SimpleClient.sendMessage(message);
+            }
+        });
     }
     static public Stage getStage() {return stage;}
     public void setWindowTitle(String title) {

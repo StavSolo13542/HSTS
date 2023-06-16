@@ -6,25 +6,24 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="553.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.StudentPrimaryController">
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="682.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.StudentPrimaryController">
    <children>
-      <Label layoutX="14.0" layoutY="77.0" prefHeight="35.0" prefWidth="188.0" text="Enter exam code:">
+      <Label layoutX="20.0" layoutY="246.0" prefHeight="35.0" prefWidth="188.0" text="Enter exam code:">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <TextField fx:id="codeTF" layoutX="18.0" layoutY="126.0">
+      <TextField fx:id="codeTF" layoutX="22.0" layoutY="306.0">
          <font>
             <Font size="16.0" />
          </font>
       </TextField>
-      <Button fx:id="codeBtn" layoutX="16.0" layoutY="173.0" mnemonicParsing="false" onAction="#EnterExam" text="Enter exam">
+      <Button fx:id="codeBtn" layoutX="20.0" layoutY="375.0" mnemonicParsing="false" onAction="#EnterExam" text="Enter exam">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Label layoutX="41.0" layoutY="14.0" text="Enter your upcoming exam here!">
+      <Label layoutX="41.0" layoutY="168.0" text="Enter your upcoming exam here!">
          <font>
             <Font size="36.0" />
          </font>
