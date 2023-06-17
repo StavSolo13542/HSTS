@@ -11,10 +11,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.event.ActionEvent;
-import org.greenrobot.eventbus.EventBus;
-import il.cshaifasweng.OCSFMediatorExample.entities.Student;
 
-// TODO: get the student details and pass them to child pages
+// TODO: get the student details and pass them to child pages.
 
 public class StudentPrimaryController {
 

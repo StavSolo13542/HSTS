@@ -1,7 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Student;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,13 +33,13 @@ public class StudentExamScores {
     @FXML
     private Button go_back_button;
 
-    private Student student;
 
     @FXML
     void initialize() {
-        String filename = "100-sample-contactslist-excel.csv";
-        String[] columns = {"first_name",
-                "last_name", "phone", "email"};
+        // need to get to data abput student's previous exams
+//        String filename = "100-sample-contactslist-excel.csv";
+//        String[] columns = {"first_name",
+//                "last_name", "phone", "email"};
 //        List<DataRow> data = readCSVFile(filename,
 //                columns);
 //        first_name.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFirst_name()));

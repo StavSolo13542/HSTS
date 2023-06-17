@@ -15,7 +15,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 
-// TODO: get the password, check if correct and go to test page
+// TODO: get the password, check if correct and go to test page.
 
 public class StudentStartTest {
 
