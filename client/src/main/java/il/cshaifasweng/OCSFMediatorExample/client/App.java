@@ -31,6 +31,16 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
         this.stage = stage;
+        setWindowTitle("Log In");
+        stage.setOnCloseRequest(event -> {
+            if (SimpleClient.name != ""){
+                String message = "LogOut " + SimpleClient.name + " " + SimpleClient.role;
+
+                System.out.println("the message is: " + message);//for debugging
+
+                SimpleClient.sendMessage(message);
+            }
+        });
     }
     static public Stage getStage() {return stage;}
     public void setWindowTitle(String title) {
@@ -108,6 +118,26 @@ public class App extends Application {
                     setWindowTitle("Exam - with word");
                     try {
                         setContent("word_exam");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "student_exam_scores":
+                Platform.runLater(() -> {
+                    setWindowTitle("Exam Scores");
+                    try {
+                        setContent("student_exam_scores");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "exam_result":
+                Platform.runLater(() -> {
+                    setWindowTitle("Exam Result");
+                    try {
+                        setContent("exam_result");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

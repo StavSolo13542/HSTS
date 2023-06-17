@@ -38,11 +38,11 @@ public class PrimaryController {
 		SimpleClient.sendMessage("GetNames");
 	}
 
-	@Subscribe
+//	@Subscribe
 	//Display student names after receiving them from the server
-	public void DisplayNames(ShowNameEvent event) {
+//	public void DisplayNames(ShowNameEvent event) {
 		//Process the message which contains the names
-		String msg_string = event.getMessage().toString();
+//		String msg_string = event.getMessage().toString();
 //		ObservableList<Student> students = FXCollections.observableArrayList();
 //		int index = msg_string.indexOf(":") + 2;
 //		while(index != msg_string.length()){
@@ -192,4 +192,3 @@ public class PrimaryController {
 //	}
 //}
 	}
-}
