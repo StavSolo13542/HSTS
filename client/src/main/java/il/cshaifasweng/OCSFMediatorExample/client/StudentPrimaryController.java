@@ -42,16 +42,6 @@ public class StudentPrimaryController {
 
     @FXML
     void viewExamScores(ActionEvent event) {
-        // Go to "student_exam_scores.fxml"
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("student_exam_scores.fxml"));
-            Parent root = loader.load();
-            Scene nextScene = new Scene(root);
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.setScene(nextScene);
-            currentStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        EventBus.getDefault().post(new SwitchScreenEvent("student_exam_scores"));
     }
 }

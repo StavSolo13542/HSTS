@@ -174,49 +174,16 @@ public class SimpleServer extends AbstractServer {
 			session.getTransaction().commit();
 		}
 	}
+	private String GetStudentGrades(String name) {
+		return "StudentGrades";
+	}
 	@Override
 	//Treating the message from the clint
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
 		String msgString = msg.toString();
-		//Getting student names from the database and returning them to the client
-		if (msgString.equals("GetNames")) {
-			//message format: "Student names: <<name1>> <<name2>>... <<nameN>> "
-			String nameColumn = "name";
-			try {
-				sendMessage(getColumnAsString(nameColumn), client);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
-		}
-		//Getting relevant grades from the database and returning them to the client
-		else if (msgString.startsWith("GetGrades")) {
-			//message format: "Grades: <<name>> <<test_id1>> <<grade1>> <<test_id2>> <<grade2>>... <<gradeN>> "
-			int index = msgString.indexOf(" ") + 1;
-			String name = msgString.substring(index);
-			try {
-				sendMessage("Grades: " + name + " " + getGradesAsString(name), client);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
-		}
-		//Update grades and inform the client whether the update succeeded or not
-		else if (msgString.startsWith("UpdateGrade")) {
-			//Validate the grades
-			int index = msgString.indexOf(" ") + 1;
-			String name = msgString.substring(index, msgString.indexOf(" ", index));
-			String[] parts = msgString.split(" ");
-			String test_id_str = parts[2];
-			int test_id =  Integer.parseInt(test_id_str);
-			String grade_str = parts[3];
-			int grade = Integer.parseInt(grade_str);
-			updateGrades(msgString);
-			sendMessage("UpdateSuc",client);
-		}
 		//validates the entered information and either lets the respective user to proceed to the rest of the system
 		//(based on its role) or sends a relevant error message
-		else if (msgString.startsWith("LogIn")) {
+		if (msgString.startsWith("LogIn")) {
 			String[] parts = msgString.split(" ");
 
 			String username = parts[1];
@@ -258,6 +225,12 @@ public class SimpleServer extends AbstractServer {
 			String role = parts[2];
 			LogOut(name,role);
 			sendMessage("LogOut",client);
+		}
+		else if (msgString.startsWith("GetStudentGrades")) {
+			String[] parts = msgString.split(" ");
+			String name = parts[1];
+			String grades = GetStudentGrades(name);
+			sendMessage(grades,client);
 		}
 	}
 	//Send received message to the relevant client

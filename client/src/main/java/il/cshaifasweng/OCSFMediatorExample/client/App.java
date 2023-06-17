@@ -123,6 +123,26 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "student_exam_scores":
+                Platform.runLater(() -> {
+                    setWindowTitle("Exam Scores");
+                    try {
+                        setContent("student_exam_scores");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "exam_result":
+                Platform.runLater(() -> {
+                    setWindowTitle("Exam Result");
+                    try {
+                        setContent("exam_result");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     }
     void setRoot(String fxml) throws IOException {
