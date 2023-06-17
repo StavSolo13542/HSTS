@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
-import il.cshaifasweng.OCSFMediatorExample.entities.*;
+
+import il.cshaifasweng.OCSFMediatorExample.server.entities.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,12 +17,15 @@ import java.util.List;
 
 //TODO: generate, getAll, print, delete methods for: Question class
 
-public class App
+public class App 
 {
     private static Session session;
-    public static Exam exam;
-    static SessionFactory getSessionFactory() throws HibernateException {
+
+    static SessionFactory getSessionFactory() throws HibernateException{
         Configuration configuration = new Configuration();
+        configuration.addAnnotatedClass(Pupil.class);
+        configuration.addAnnotatedClass(Teacher.class);
+        configuration.addAnnotatedClass(Principal.class);
         // Add ALL of your entities here. You can also try adding a whole package.
         configuration.addAnnotatedClass(Answer.class);
         configuration.addAnnotatedClass(Course.class);
@@ -30,6 +34,7 @@ public class App
         configuration.addAnnotatedClass(Principal.class);
         configuration.addAnnotatedClass(Pupil.class);
         configuration.addAnnotatedClass(Question.class);
+        configuration.addAnnotatedClass(Course.class);
         configuration.addAnnotatedClass(Subject.class);
         configuration.addAnnotatedClass(Teacher.class);
         configuration.addAnnotatedClass(ReadyExam.class);

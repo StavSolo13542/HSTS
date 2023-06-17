@@ -166,7 +166,7 @@ public class SimpleServer extends AbstractServer {
 		return "";
 	}
 	@Override
-	//Treating the message from the clint
+	//Treating the message from the client
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
 		String msgString = msg.toString();
 		//Getting student names from the database and returning them to the client
