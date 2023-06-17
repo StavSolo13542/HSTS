@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
-
-import il.cshaifasweng.OCSFMediatorExample.server.entities.*;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,18 +16,25 @@ import java.util.List;
 
 //TODO: generate, getAll, print, delete methods for: Question class
 
-public class App 
+public class App
 {
     private static Session session;
-
-    static SessionFactory getSessionFactory() throws HibernateException{
+    public static Exam exam;
+    static SessionFactory getSessionFactory() throws HibernateException {
         Configuration configuration = new Configuration();
-        configuration.addAnnotatedClass(Pupil.class);
-        configuration.addAnnotatedClass(Teacher.class);
-        configuration.addAnnotatedClass(Principal.class);
-        configuration.addAnnotatedClass(Question.class);
+        // Add ALL of your entities here. You can also try adding a whole package.
+        configuration.addAnnotatedClass(Answer.class);
         configuration.addAnnotatedClass(Course.class);
+        configuration.addAnnotatedClass(Exam.class);
+        configuration.addAnnotatedClass(Grade.class);
+        configuration.addAnnotatedClass(Principal.class);
+        configuration.addAnnotatedClass(Pupil.class);
+        configuration.addAnnotatedClass(Question.class);
         configuration.addAnnotatedClass(Subject.class);
+        configuration.addAnnotatedClass(Teacher.class);
+        configuration.addAnnotatedClass(ReadyExam.class);
+        configuration.addAnnotatedClass(Exam_Question_points.class);
+
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -38,64 +44,14 @@ public class App
     }
 
     public static void generateStudentsWithGrades() throws Exception{
-        Pupil pupil1 = new Pupil(1, "Alon", "100 95 100", "pass_Alon_1", 0);
-        session.save(pupil1);
-        Pupil pupil2 = new Pupil(2, "Tomer", "100 95 80", "pass_Tomer_2", 0);
-        session.save(pupil2);
-        Pupil pupil3 = new Pupil(3, "Stav", "95 95 100", "pass_Stav_3", 0);
-        session.save(pupil3);
-        Pupil pupil4 = new Pupil(4, "Shahar", "100 100 100", "pass_Shahar_4", 0);
-        session.save(pupil4);
-        Pupil pupil5 = new Pupil(5, "Michael", "90 95 100", "pass_Michael_5", 0);
-        session.save(pupil5);
-        Pupil pupil6 = new Pupil(6, "Sassi", "90 90 90", "pass_Sassi_6", 0);
-        session.save(pupil6);
-        Pupil pupil7 = new Pupil(7, "Noam", "80 95 100", "pass_Noam_7", 0);
-        session.save(pupil7);
-        Pupil pupil8 = new Pupil(8, "Avi", "60 70 80", "pass_Avi_8", 0);
-        session.save(pupil8);
-        Pupil pupil9 = new Pupil(9, "Moshe", "100 80 100", "pass_Moshe_9", 0);
-        session.save(pupil9);
-        Pupil pupil0 = new Pupil(10, "Ya'akov", "100 95 100", "pass_Ya'akov_10", 0);
-        session.save(pupil0);
-        Pupil pupil11 = new Pupil(11, "David", "100 100 100", "pass_David_11", 0);
-        session.save(pupil11);
-            /*
-             * The call to session.flush() updates the DB immediately without ending the transaction.
-             * Recommended to do after an arbitrary unit of work.
-             * MANDATORY to do if you are saving a large amount of data - otherwise you may get
-            cache errors.
-             */
-        session.flush();
     }
 
     public static void generateTeachers() throws Exception{
-        Teacher teacher1 = new Teacher(1, "Tova", "pass_Tova_1", 0);
-        session.save(teacher1);
-        Teacher teacher2 = new Teacher(2, "Sara", "pass_Sara_2", 0);
-        session.save(teacher2);
-        Teacher teacher3 = new Teacher(3, "Bina", "pass_Bina_3", 0);
-        session.save(teacher3);
-        Teacher teacher4 = new Teacher(4, "Limor", "pass_Limor_4", 0);
-        session.save(teacher4);
-        Teacher teacher5 = new Teacher(5, "Michal", "pass_Michal_5", 0);
-        session.save(teacher5);
-            /*
-             * The call to session.flush() updates the DB immediately without ending the transaction.
-             * Recommended to do after an arbitrary unit of work.
-             * MANDATORY to do if you are saving a large amount of data - otherwise you may get
-            cache errors.
-             */
-        session.flush();
     }
 
     public static void generatePrincipal() throws Exception{
 //        session.beginTransaction();
 
-        Principal principal = new Principal(1, "Anat", "pass_Anat_1", 0);
-        session.save(principal);
-
-        session.flush();
     }
 
     public static void generateSubject() throws Exception
@@ -108,10 +64,6 @@ public class App
 
     public static void generateCourse() throws Exception
     {
-        Course introToAnimals = new Course("Introduction to Animals");
-        session.save(introToAnimals);
-
-        session.flush();
     }
 
     public static void generateQuestion() throws Exception
@@ -127,11 +79,6 @@ public class App
         Query query = session.createQuery("SELECT s FROM Subject s WHERE s.name = :subjectName");
         query.setParameter("subjectName", subjects_name);
         Subject subject = (Subject) ((org.hibernate.query.Query<?>) query).uniqueResult();
-
-        Question q1 = new Question("Which is the largest animal:", "answer1", 2, subject);
-        session.save(q1);
-
-        session.flush();
     }
     public static List<Pupil> getAllPupils() throws Exception{
         CriteriaBuilder builder = session.getCriteriaBuilder();
@@ -150,6 +97,7 @@ public class App
         }
         for(Pupil pupil: pupils)
         {
+            System.out.println("Id: "+ pupil.getId());
             System.out.println("Name: "+ pupil.getName());
             System.out.println("Password: "+ pupil.getPassword());
             System.out.println("Grades: "+ pupil.getGrades().toString());
@@ -309,17 +257,17 @@ public class App
     }
 
     private static void printAllQuestions() throws Exception{
-            List<Question> questions=getAllQuestions();
-            System.out.println("All questions are: ");
-            if (questions.isEmpty())
-            {
-                System.out.println("There are no questions");
-            }
-            for(Question question: questions)
-            {
-                System.out.println(question);
-            }
-            System.out.println();
+        List<Question> questions=getAllQuestions();
+        System.out.println("All questions are: ");
+        if (questions.isEmpty())
+        {
+            System.out.println("There are no questions");
+        }
+        for(Question question: questions)
+        {
+            System.out.println(question);
+        }
+        System.out.println();
     }
 
     private static void deleteAllQuestions() throws Exception {
@@ -330,7 +278,7 @@ public class App
         System.out.println("Deleted " + rowCount + " questions.");
 
     }
-
+    static Exam ex1;
     private static SimpleServer server;
     public static void main( String[] args ) throws IOException
     {
@@ -342,9 +290,7 @@ public class App
         try {
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
-
             session.beginTransaction();
-
 //            deleteAllPupils();
 //            deleteAllTeachers();
 //            deleteAllPrincipals();
@@ -363,10 +309,9 @@ public class App
 
 //            printAllPrincipals();
 //            printAllTeachers();
-//            printAllPupils();
-
-            printAllSubject();
-            printAllCourses();
+            printAllPupils();
+//            printAllSubject();
+//            printAllCourses();
             printAllQuestions();
 
             session.getTransaction().commit();//Save everything

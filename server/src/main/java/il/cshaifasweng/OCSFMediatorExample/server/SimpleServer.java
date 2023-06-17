@@ -1,22 +1,16 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import il.cshaifasweng.OCSFMediatorExample.server.entities.Pupil;
+import il.cshaifasweng.OCSFMediatorExample.entities.Exam;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Message;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import static il.cshaifasweng.OCSFMediatorExample.server.App.getSessionFactory;
 
 public class SimpleServer extends AbstractServer {
@@ -93,7 +87,7 @@ public class SimpleServer extends AbstractServer {
 		}
 	}
 
-	//success message format: LogIn <<username>> <<role>> (role is one of the following options: "student", "teacher, "principle")
+	//success message format: LogIn <<role>> <<username>> (role is one of the following options: "student", "teacher, "principle")
 	//error message format: InputError <<error description>>
 
 	private static String getTableName(String role)
@@ -106,7 +100,7 @@ public class SimpleServer extends AbstractServer {
 		}
 		else if(role.equals("student"))
 		{
-				return "StudentsWithGrades";
+				return "Pupils";
 		}
 		else
 		{
@@ -117,17 +111,16 @@ public class SimpleServer extends AbstractServer {
 	{
 		String loginResultMessage;
 		int count = 0;
-		int isLoggedIn = 0;
+		Boolean isLoggedIn = true;
 		try (Session session = getSessionFactory().openSession()) {
 			session.getTransaction().begin();
-
 			Query query1 = session.createNativeQuery("select count(*) from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
 			count = ((Number) query1.getSingleResult()).intValue();
 
 			if(count > 0)
 			{
 				Query query2 = session.createNativeQuery("select isLoggedIn from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
-				isLoggedIn = ((Number) query2.getSingleResult()).intValue();
+				isLoggedIn = ((Boolean) query2.getSingleResult()).booleanValue();
 			}
 
 			// Commit the transaction
@@ -136,13 +129,14 @@ public class SimpleServer extends AbstractServer {
 
 		if (count > 0)
 		{
-			if(isLoggedIn == 0)
+			//TODO Uncomment the if (and remove the current one) after adding logout option
+			if (true) //if(!isLoggedIn)
 			{
-				loginResultMessage = "LogIn "+  role;
+				loginResultMessage = "LogIn "+  role + " " + username;
 				try (Session session = getSessionFactory().openSession()) {
 					session.getTransaction().begin();
 
-					Query query3 = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = 1" +" where name = '" + username  + "' and password = '"+ password + "';");
+					Query query3 = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = true" +" where name = '" + username  + "' and password = '"+ password + "';");
 					int rowCount = query3.executeUpdate();
 
 					// Commit the transaction
@@ -151,16 +145,26 @@ public class SimpleServer extends AbstractServer {
 			}
 			else
 			{
-				loginResultMessage = "You are already logged in";
+				loginResultMessage = "InputError You are already logged in";
 			}
 		}
 		else
 		{
-			loginResultMessage = "The identification details are incorrect";
+			loginResultMessage = "InputError The identification details are incorrect";
 		}
 		return loginResultMessage;
 	}
-	HashMap<String, String> grades = new HashMap<>();
+	//Success message: EnterExam <<exam_description>>
+	//Error message: InputError <<error_description>>
+	private String connectToExam(String code){
+
+		return "";
+	}
+	//Success message: StartExam
+	//Error message: InputError <<error_description>>
+	private String StartExam(String id, String name){
+		return "";
+	}
 	@Override
 	//Treating the message from the clint
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
@@ -209,11 +213,34 @@ public class SimpleServer extends AbstractServer {
 			String username = parts[1];
 			String password = parts[2];
 			String role = parts[3];
-
+			System.out.println("Checking login"); // for debugging
 			String message = logIn(role, username, password);
-
+			System.out.println("Finished checking login"); // for debugging
 			//message = "LogIn Alon student";
 
+			sendMessage(message,client);
+		}
+		else if (msgString.startsWith("EnterExam")) {
+			String[] parts = msgString.split(" ");
+			String code = parts[1];
+			String message = connectToExam(code);
+			if (code.compareTo("1234") == 0){
+
+				message = "EnterExam";
+			}
+			else {
+				message = "InputError The code you entered does not exist";
+
+			}
+			sendMessage(message,client);
+		}
+		else if (msgString.startsWith("StartExam")) {
+			String[] parts = msgString.split(" ");
+
+			String id = parts[1];
+			String name = parts[2];
+			String message = StartExam(id,name);
+			message = "StartExam";
 			sendMessage(message,client);
 		}
 	}

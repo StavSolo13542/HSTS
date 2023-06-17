@@ -1,4 +1,4 @@
-package org.example;
+package il.cshaifasweng.OCSFMediatorExample.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -9,14 +9,15 @@ import java.util.List;
 @Table(name="Answers")
 public class Answer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "course_generator")
-    @GenericGenerator(name = "course_generator", strategy = "increment")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "answer_generator")
+    @GenericGenerator(name = "answer_generator", strategy = "increment")
     private int id;
     private String answer_text;
     @ManyToOne
-    @JoinColumn(name = "question_id", nullable = false)
+    @JoinColumn(name = "question_id"/*, nullable = false*/)
     private Question to_question;
 
+    @Column(name = "is_correct")
     private boolean is_correct;
 
     public Answer(String answer_text, Boolean corr) {
@@ -35,6 +36,7 @@ public class Answer {
 
     public void setQuestion(Question to_question) {
         this.to_question = to_question;
+//        to_question.addAnswer(this);      // this is commented because it creates a circle
     }
 
     public String getAnswer_text() {

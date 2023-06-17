@@ -1,4 +1,4 @@
-package il.cshaifasweng.OCSFMediatorExample.server.entities;
+package il.cshaifasweng.OCSFMediatorExample.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,7 +18,6 @@ public class Question {
     @OneToMany(mappedBy = "to_question")
     private List<Answer> answers;
 
-    //private int correct_answer;
     @ManyToOne
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
@@ -28,9 +27,16 @@ public class Question {
             joinColumns = { @JoinColumn(name = "question_id") },
             inverseJoinColumns = { @JoinColumn(name = "course_id") }
     )
-    private List<Course> courses;
+    private List<Course> courses;   // TODO: GUI people: make sure all courses connected to a question have the same subject
     private String question_code_number;
+    @ManyToMany(mappedBy = "questions")
+    private List<Exam> exams;
 
+    @ManyToMany(mappedBy = "correctly_answered_questions")
+    private List<Grade> correct_grades;
+
+    @OneToMany(mappedBy = "question")
+    private List<Exam_Question_points> points;
 
     public Question(String text, Answer ans1, Answer ans2, Answer ans3, Answer ans4, Subject subject, Course course) {
         this.text = text;
@@ -44,16 +50,32 @@ public class Question {
         this.answers.add(ans4);
         ans4.setQuestion(this);
         //this.correct_answer = correct_answer;
-        this.subject = subject;
+        this.subject = subject;   // TODO: Gui people, make sure you don't allow adding a course from a different subject
         subject.addQuestion(this);
         this.courses = new ArrayList<Course>();
         this.courses.add(course);
         course.addQuestion(this);
 
-        this.question_code_number = "need to update- check appropriate function";
+        this.question_code_number = "need to update- check appropriate function- updateCode()";
+        this.exams = new ArrayList<Exam>();
+        this.correct_grades = new ArrayList<Grade>();
+        this.points = new ArrayList<Exam_Question_points>();
     }
 
+    public void addPoints(Exam_Question_points points)
+    {
+        this.points.add(points);
+    }
 
+    public void addGrade(Grade grade)
+    {
+        this.correct_grades.add(grade);
+    }
+
+    public void addExam(Exam exam)
+    {
+        this.exams.add(exam);
+    }
 
     public void addCourse(Course course)
     {
@@ -141,8 +163,8 @@ public class Question {
 
     public void updateCode()
     {
-        String first_part = String.valueOf(this.subject.getId());;
-        String next_part = String.valueOf(this.id);;
+        String first_part = String.valueOf(this.subject.getId());
+        String next_part = String.valueOf(this.id);
         if (this.subject.getId() < 10)
             first_part = "0" + first_part;
         if (this.id < 10)

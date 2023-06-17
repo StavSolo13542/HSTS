@@ -20,7 +20,7 @@ public class App extends Application {
 
     private Scene scene;
     private SimpleClient client;
-    private Stage stage;
+    private static Stage stage;
     private String username;
     @Override
     public void start(Stage stage) throws IOException {
@@ -32,6 +32,7 @@ public class App extends Application {
         stage.show();
         this.stage = stage;
     }
+    static public Stage getStage() {return stage;}
     public void setWindowTitle(String title) {
         stage.setTitle(title);
     }
@@ -87,6 +88,26 @@ public class App extends Application {
                     setWindowTitle("Principle - Main Page");
                     try {
                         setContent("principle_primary");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "exam":
+                Platform.runLater(() -> {
+                    setWindowTitle("Exam - online");
+                    try {
+                        setContent("exam");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "word_exam":
+                Platform.runLater(() -> {
+                    setWindowTitle("Exam - with word");
+                    try {
+                        setContent("word_exam");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
