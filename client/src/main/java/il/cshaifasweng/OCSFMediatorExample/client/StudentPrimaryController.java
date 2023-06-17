@@ -3,11 +3,15 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -20,11 +24,13 @@ public class StudentPrimaryController {
     private TextField codeTF;
     @FXML
     private Button codeBtn;
+
     @FXML
     void initialize() throws IOException {
         Parent userParent = il.cshaifasweng.OCSFMediatorExample.client.App.loadFXML("log_out");
-        pane.getChildren().add(0,userParent);
+        pane.getChildren().add(0, userParent);
     }
+
     @FXML
     void EnterExam(ActionEvent event) {
         String code = codeTF.getText();
@@ -32,5 +38,20 @@ public class StudentPrimaryController {
         System.out.println("the message is: " + message);//for debugging
 
         SimpleClient.sendMessage(message);
+    }
+
+    @FXML
+    void viewExamScores(ActionEvent event) {
+        // Go to "student_exam_scores.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("student_exam_scores.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
