@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Exam;
+import il.cshaifasweng.OCSFMediatorExample.entities.Subject;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
@@ -11,6 +12,9 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Message;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+
 import static il.cshaifasweng.OCSFMediatorExample.server.App.getSessionFactory;
 
 public class SimpleServer extends AbstractServer {
@@ -243,7 +247,31 @@ public class SimpleServer extends AbstractServer {
 			message = "StartExam";
 			sendMessage(message,client);
 		}
+		else if (msgString.startsWith("get all subjects")) {
+			String data = connectToDatabase();
+			sendMessage("Here are all subjects" + data.substring(3), client);
+		}
+		else if (msgString.startsWith("get all courses")) {
+			String data = connectToDatabase();
+			sendMessage("Here are all courses" + data.substring(3), client);
+		}
 	}
+
+	private String connectToDatabase() {
+		try (Session session = getSessionFactory().openSession()) {
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Subject> query = builder.createQuery(Subject.class);
+			query.from(Subject.class);
+			List<Subject> data = session.createQuery(query).getResultList();
+			String strings = "";
+			for (Subject sub : data)
+			{
+				strings += ("___" + sub.getName());
+			}
+			return strings;
+		}
+	}
+
 	//Send received message to the relevant client
 	protected void sendMessage (String msg, ConnectionToClient client){
 		Message message = new Message(msg);

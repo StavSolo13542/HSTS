@@ -87,6 +87,14 @@ public class SimpleClient extends AbstractClient {
 		else if (msg_string.equals("UpdateSuc")){
 			EventBus.getDefault().post(new UpdateSucEvent(new Message(msg_string)));
 		}
+		else if (msg_string.startsWith("Here are all subjects")){
+			msg_string = msg_string.replaceFirst("Here are all subjects", "");
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all courses")){
+			msg_string = msg_string.replaceFirst("Here are all courses", "");
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
 
 	}
 	//Send received message to the server

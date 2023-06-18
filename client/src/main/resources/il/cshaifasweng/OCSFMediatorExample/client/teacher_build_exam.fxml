@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="856.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.StudentPrimaryController">
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="856.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.TeacherBuildExam">
    <children>
       <Label layoutX="167.0" layoutY="25.0" prefHeight="66.0" prefWidth="290.0" text="Teacher Page">
          <font>
@@ -47,52 +47,34 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Button fx:id="another_q_btn" layoutX="247.0" layoutY="779.0" mnemonicParsing="false" onAction="#AnotherQuestionBtn" text="Add Another Question" />
+      <Button fx:id="another_q_btn" layoutX="250.0" layoutY="779.0" mnemonicParsing="false" onAction="#AnotherQuestionBtn" prefHeight="25.0" prefWidth="136.0" text="Bulld Another Exam" />
       <Button fx:id="go_back_button" layoutX="457.0" layoutY="779.0" mnemonicParsing="false" onAction="#viewLastPage" prefHeight="25.0" prefWidth="136.0" text="Go Back" />
-      <Label fx:id="teacher_id11" layoutX="24.0" layoutY="277.0" prefHeight="20.0" prefWidth="122.0" text="Duration (minutes)">
+      <Label fx:id="teacher_id11" layoutX="24.0" layoutY="284.0" prefHeight="20.0" prefWidth="122.0" text="Duration (minutes)">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="question_text_field" layoutX="148.0" layoutY="274.0" onAction="#initializeQuestionTF" prefHeight="20.0" prefWidth="148.0" />
-      <Label fx:id="teacher_id111" layoutX="24.0" layoutY="391.0" prefHeight="20.0" prefWidth="99.0" text="Answer 1">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="answer1_text_field" layoutX="90.0" layoutY="367.0" onAction="#initializeAns1TF" prefHeight="66.0" prefWidth="207.0" />
-      <Label fx:id="teacher_id1111" layoutX="332.0" layoutY="391.0" prefHeight="20.0" prefWidth="99.0" text="Answer 2">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="answer2_text_field" layoutX="400.0" layoutY="367.0" onAction="#initializeAns2TF" prefHeight="66.0" prefWidth="207.0" />
-      <Label fx:id="teacher_id1112" layoutX="24.0" layoutY="472.0" prefHeight="20.0" prefWidth="99.0" text="Answer 3">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="answer3_text_field" layoutX="90.0" layoutY="448.0" onAction="#initializeAns3TF" prefHeight="66.0" prefWidth="207.0" />
-      <Label fx:id="teacher_id11111" layoutX="332.0" layoutY="472.0" prefHeight="20.0" prefWidth="99.0" text="Answer 4">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="answer4_text_field" layoutX="400.0" layoutY="448.0" onAction="#initializeAns4TF" prefHeight="66.0" prefWidth="207.0" />
+      <TextField fx:id="author_text_field" layoutX="400.0" layoutY="275.0" onAction="#initializeQuestionTF" prefHeight="38.0" prefWidth="207.0" text="get Teacher ID" />
       <Button fx:id="save_q_btn" layoutX="40.0" layoutY="779.0" mnemonicParsing="false" onAction="#saveQuestionBtn" prefHeight="25.0" prefWidth="136.0" text="Save Question" />
-      <ListView fx:id="courses_list_view" layoutX="92.0" layoutY="530.0" prefHeight="161.0" prefWidth="207.0" />
-      <Label fx:id="teacher_id11121" layoutX="24.0" layoutY="600.0" prefHeight="20.0" prefWidth="99.0" text="Courses">
+      <ListView fx:id="questions_list_view" layoutX="92.0" layoutY="339.0" prefHeight="352.0" prefWidth="207.0" />
+      <Label fx:id="teacher_id11121" layoutX="23.0" layoutY="482.0" prefHeight="20.0" prefWidth="99.0" text="Questions">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Button fx:id="courses_button" layoutX="317.0" layoutY="598.0" mnemonicParsing="false" onAction="#coursesBtnPushed" text="Select -&gt;" />
-      <TextArea fx:id="selected_courses_text_area" layoutX="400.0" layoutY="530.0" prefHeight="161.0" prefWidth="207.0" />
-      <ChoiceBox fx:id="subjects_choice_box1" layoutX="401.0" layoutY="215.0" prefHeight="38.0" prefWidth="207.0" />
+      <Button fx:id="courses_button" layoutX="316.0" layoutY="480.0" mnemonicParsing="false" onAction="#coursesBtnPushed" text="Select -&gt;" />
+      <TextArea fx:id="selected_questions_text_area" layoutX="400.0" layoutY="339.0" prefHeight="352.0" prefWidth="207.0" />
+      <ChoiceBox fx:id="courses_choice_box" layoutX="401.0" layoutY="215.0" prefHeight="38.0" prefWidth="207.0" />
       <Label fx:id="teacher_id12" layoutX="336.0" layoutY="224.0" prefHeight="20.0" prefWidth="99.0" text="Course">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
+      <Label fx:id="teacher_id112" layoutX="336.0" layoutY="284.0" prefHeight="20.0" prefWidth="56.0" text="Author">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="duration_test_area" layoutX="151.0" layoutY="275.0" prefHeight="38.0" prefWidth="148.0" />
    </children>
 </AnchorPane>
