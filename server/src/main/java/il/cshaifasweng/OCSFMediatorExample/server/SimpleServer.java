@@ -1,7 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Exam;
-import il.cshaifasweng.OCSFMediatorExample.entities.Subject;
+//import il.cshaifasweng.OCSFMediatorExample.entities.Exam;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
@@ -254,7 +254,7 @@ public class SimpleServer extends AbstractServer {
 			sendMessage("Here are all subjects" + data.substring(3), client);
 		}
 		else if (msgString.startsWith("get all courses")) {
-			String data = connectToDatabase();
+			String data = connectToDatabase_Courses();
 			sendMessage("Here are all courses" + data.substring(3), client);
 		}
 	}
@@ -267,6 +267,21 @@ public class SimpleServer extends AbstractServer {
 			List<Subject> data = session.createQuery(query).getResultList();
 			String strings = "";
 			for (Subject sub : data)
+			{
+				strings += ("___" + sub.getName());
+			}
+			return strings;
+		}
+	}
+
+	private String connectToDatabase_Courses() {
+		try (Session session = getSessionFactory().openSession()) {
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Course> query = builder.createQuery(Course.class);
+			query.from(Course.class);
+			List<Course> data = session.createQuery(query).getResultList();
+			String strings = "";
+			for (Course sub : data)
 			{
 				strings += ("___" + sub.getName());
 			}

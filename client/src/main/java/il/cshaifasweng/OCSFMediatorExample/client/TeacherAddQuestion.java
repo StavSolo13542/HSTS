@@ -90,7 +90,7 @@ public class TeacherAddQuestion implements Initializable {
         while (msg == null){
             System.out.print("");
         }
-        System.out.println("after while loop");
+        System.out.println("after first while loop");
         String[] subjects = msg.split("___");
         List<String> subjectList = Arrays.asList(subjects);
 
@@ -101,13 +101,17 @@ public class TeacherAddQuestion implements Initializable {
 
         // initialize courses_list_view
         SimpleClient.sendMessage("get all courses");
-        while (msg == null){}
+        while (msg == null){
+            System.out.print("");
+        }
+        System.out.println("after second while loop");
         String[] courses = msg.split("___");
         List<String> courseList = Arrays.asList(courses);
 
         // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
         ObservableList<String> observableList1 = FXCollections.observableArrayList(courseList);
         courses_list_view.setItems(observableList1);
+        msg = null;
 
     }
 
