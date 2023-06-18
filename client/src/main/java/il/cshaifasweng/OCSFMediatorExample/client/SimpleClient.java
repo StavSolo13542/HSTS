@@ -70,7 +70,7 @@ public class SimpleClient extends AbstractClient {
 			ex1.addQuestion(q1, 70);
 			ex1.addQuestion(q2, 30);
 
-			currExam = new ReadyExam(ex1, "10a4", true, "14/6/2023 13:30");  // new "Out of the drawer" exam
+			currExam = new ReadyExam(ex1, "10a4", false, "14/6/2023 13:30");  // new "Out of the drawer" exam
 			if (!currExam.getOnline()) {
 				EventBus.getDefault().post(new SwitchScreenEvent("word_exam"));
 			}
@@ -124,6 +124,39 @@ public class SimpleClient extends AbstractClient {
 			ArrayList<Grade> grades = new ArrayList<>();
 			grades.add(grade);
 			EventBus.getDefault().post(new StudentGradesEvent(grades));
+		}
+		else if(msg_string.startsWith("number of question"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("number of Exams"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("question in exam"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("Student names are"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("Courses names are"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+
+		else if(msg_string.startsWith("Teachers names are"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("All the distrubutions"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("all the grades are:"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
 		}
 
 	}
