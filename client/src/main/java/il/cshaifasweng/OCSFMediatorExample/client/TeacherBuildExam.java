@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class TeacherBuildExam implements Initializable {
+public class TeacherBuildExam {// implements Initializable {
 
     @FXML
     private Button another_q_btn;
@@ -65,30 +66,30 @@ public class TeacherBuildExam implements Initializable {
         msg = message;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        // initialize subjects_choice_box
-        SimpleClient.sendMessage("get all subjects");
-        while (msg == null){}
-        String[] subjects = msg.split("___");
-        List<String> subjectList = Arrays.asList(subjects);
-        subjects_choice_box.setItems((ObservableList<String>) subjectList);
-        msg = null;
-
-        // initialize courses_choice_box
-        SimpleClient.sendMessage("get all courses");
-        while (msg == null){}
-        String[] courses = msg.split("___");
-        List<String> courseList = Arrays.asList(courses);
-        courses_choice_box.setItems((ObservableList<String>) courseList);
-
-        // initialize questions_list_view
-        SimpleClient.sendMessage("get all questions");
-        while (msg == null){}
-        String[] courses = msg.split("___");
-        List<String> courseList = Arrays.asList(courses);
-        questions_list_view.setItems((ObservableList<String>) courseList);
-    }
+//    @Override
+//    public void initialize(URL location, ResourceBundle resources) {
+//        // initialize subjects_choice_box
+//        SimpleClient.sendMessage("get all subjects");
+//        while (msg == null){}
+//        String[] subjects = msg.split("___");
+//        List<String> subjectList = Arrays.asList(subjects);
+//        subjects_choice_box.setItems(FXCollections.observableArrayList(subjectList));
+//        msg = null;
+//
+//        // initialize courses_choice_box
+//        SimpleClient.sendMessage("get all courses");
+//        while (msg == null){}
+//        String[] courses = msg.split("___");
+//        List<String> courseList = Arrays.asList(courses);
+//        courses_choice_box.setItems((ObservableList<String>) courseList);
+//
+//        // initialize questions_list_view
+//        SimpleClient.sendMessage("get all questions");
+//        while (msg == null){}
+//        String[] courses = msg.split("___");
+//        List<String> courseList = Arrays.asList(courses);
+//        questions_list_view.setItems((ObservableList<String>) courseList);
+//    }
 
     @FXML
     void AnotherQuestionBtn(ActionEvent event) {

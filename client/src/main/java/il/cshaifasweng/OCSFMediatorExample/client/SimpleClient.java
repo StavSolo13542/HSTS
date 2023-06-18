@@ -104,6 +104,7 @@ public class SimpleClient extends AbstractClient {
 			System.out.println("SimpleClient.getClient host, port: " + SimpleClient.getClient().getHost() + ", " +SimpleClient.getClient().getPort());
 
 			SimpleClient.getClient().sendToServer(message);
+			System.out.println("after SimpleClient.getClient().sendToServer(message)");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

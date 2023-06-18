@@ -173,6 +173,7 @@ public class SimpleServer extends AbstractServer {
 	//Treating the message from the client
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
 		String msgString = msg.toString();
+		System.out.println("in handleMessageFromClient");
 		//Getting student names from the database and returning them to the client
 		if (msgString.equals("GetNames")) {
 			//message format: "Student names: <<name1>> <<name2>>... <<nameN>> "
@@ -248,6 +249,7 @@ public class SimpleServer extends AbstractServer {
 			sendMessage(message,client);
 		}
 		else if (msgString.startsWith("get all subjects")) {
+			System.out.println("in handleMessageFromClient -> if (get all subjects)");
 			String data = connectToDatabase();
 			sendMessage("Here are all subjects" + data.substring(3), client);
 		}

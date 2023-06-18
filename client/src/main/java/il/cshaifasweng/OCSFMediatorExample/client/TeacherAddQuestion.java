@@ -10,6 +10,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.Initializable;
+import org.greenrobot.eventbus.EventBus;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -80,12 +84,19 @@ public class TeacherAddQuestion implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //EventBus.getDefault().register(this);
         // initialize subjects_choice_box
         SimpleClient.sendMessage("get all subjects");
-        while (msg == null){}
+        while (msg == null){
+            System.out.print("");
+        }
+        System.out.println("after while loop");
         String[] subjects = msg.split("___");
         List<String> subjectList = Arrays.asList(subjects);
-        subjects_choice_box.setItems((ObservableList<String>) subjectList);
+
+        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+        ObservableList<String> observableList = FXCollections.observableArrayList(subjectList);
+        subjects_choice_box.setItems(observableList);
         msg = null;
 
         // initialize courses_list_view
@@ -93,7 +104,11 @@ public class TeacherAddQuestion implements Initializable {
         while (msg == null){}
         String[] courses = msg.split("___");
         List<String> courseList = Arrays.asList(courses);
-        courses_list_view.setItems((ObservableList<String>) courseList);
+
+        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+        ObservableList<String> observableList1 = FXCollections.observableArrayList(courseList);
+        courses_list_view.setItems(observableList1);
+
     }
 
     @FXML
