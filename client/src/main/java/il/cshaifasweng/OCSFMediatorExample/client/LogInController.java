@@ -46,16 +46,16 @@ public class LogInController {
 
         SimpleClient.sendMessage(message);
 
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
-            Parent root = loader.load();
-            Scene nextScene = new Scene(root);
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.setScene(nextScene);
-            currentStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+//            Parent root = loader.load();
+//            Scene nextScene = new Scene(root);
+//            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//            currentStage.setScene(nextScene);
+//            currentStage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
     }
 }

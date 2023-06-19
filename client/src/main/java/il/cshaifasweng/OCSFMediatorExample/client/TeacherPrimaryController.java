@@ -17,6 +17,8 @@ import java.io.IOException;
 public class TeacherPrimaryController {
     @FXML
     void initialize() {
+        System.out.println("name of the teacher is: " + SimpleClient.name);
+        teacher_name.setText(SimpleClient.name);
     }
 
     @FXML
@@ -34,8 +36,6 @@ public class TeacherPrimaryController {
     @FXML
     private Button start_exam_button;
 
-    @FXML
-    private Label teacher_id;
 
     @FXML
     private Label teacher_name;

@@ -67,8 +67,6 @@ public class TeacherAddQuestion implements Initializable {
     @FXML
     private ChoiceBox<String> subjects_choice_box;
 
-    @FXML
-    private Label teacher_id;
 
     @FXML
     private Label teacher_name;
@@ -90,6 +88,7 @@ public class TeacherAddQuestion implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         //EventBus.getDefault().register(this);
         // initialize subjects_choice_box
+        teacher_name.setText(SimpleClient.name);
         subjects_choice_box.setOnAction(this::addCourse);
         SimpleClient.sendMessage("get all subjects");
         while (msg == null){
