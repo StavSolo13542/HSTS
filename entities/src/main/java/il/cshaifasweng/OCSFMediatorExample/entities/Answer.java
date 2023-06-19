@@ -25,7 +25,6 @@ public class Answer {
         this.to_question = null;
         this.is_correct = corr;
     }
-
     public boolean getIs_correct() {
         return is_correct;
     }
@@ -46,10 +45,22 @@ public class Answer {
     public Question getQuestion() {
         return to_question;
     }
-
+    public Answer(String[] desc, int index) {
+        int i = 1;
+        String s = "";
+        while(!desc[index + i].equals("is_correct")) {
+            s += desc[i + index] + " ";
+            i++;
+        }
+        this.answer_text = s;
+        this.is_correct = Boolean.parseBoolean(desc[index + i + 1]);
+    }
     @Override
     public String toString() {
-        return this.answer_text;
+        String s = "";
+        s += "answer_starts_here " + this.answer_text;
+        s += " is_correct " + this.is_correct + " ";
+        return s;
     }
 
     public Answer() {}

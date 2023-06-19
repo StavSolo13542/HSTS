@@ -311,10 +311,8 @@ public class App
             Teacher t1 = new Teacher("Malki", "Malki_password", false);       // new teacher
             t1.addSubject(astro);
 
-            Pupil p1 = new Pupil("Michael", "213468951", "Michael_password", false); // new pupil
-
+            Pupil p1 = new Pupil("Alon1", "326164462", "123", false); // new pupil
             Principal pr1 = new Principal("Dani", "Dani_Keren_password", false);  // new principle
-
             // new exam
             Exam ex1 = new Exam("first exam", speeds, 90, "hello students!", "hello teacher!", t1);
             ex1.updateCode(); // Important!!! after creating + saving + flushing the exam, you have to call this function and then save + flush again
@@ -350,7 +348,6 @@ public class App
 //            printAllSubject();
 //            printAllCourses();
             printAllQuestions();
-
             session.getTransaction().commit();//Save everything
 
         } catch (Exception e) {

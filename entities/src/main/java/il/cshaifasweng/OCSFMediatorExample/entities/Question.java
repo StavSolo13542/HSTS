@@ -140,25 +140,33 @@ public class Question {
     public void setSubject(Subject subject) {
         this.subject = subject;
     }
-
+    public Question(String[] desc, int index) {
+        this.answers = new ArrayList<>();
+        int i = 1;
+        while(!desc[index + i].equals("Question:")){
+            if (desc[index + i].equals("answer_starts_here")){
+                this.answers.add(new Answer(desc,index+i));
+            }
+            i++;
+        }
+        i++;
+        String s = "";
+        while(!desc[index + i].equals("question_ends_here")) {
+            s += desc[i + index] + " ";
+            i++;
+        }
+        this.text = s;
+    }
     @Override
     public String toString() {
-        String courses = "Courses' Name: ";
-        for (Course course : this.courses)
-        {
-            courses += course + ", ";
-        }
-        String all_answers = "All answers: ";
-        Answer correct_answer = null;
+        String s = "";
+        s += "question_starts_here ";
         for (Answer answer : this.answers)
         {
-            if (answer.getIs_correct())
-                correct_answer = answer;
-            all_answers += answer + ", ";
+            s += answer.toString();
         }
-        return "Subject: " + this.subject + "\nQuestion: " +
-                this.text + "\n" + all_answers + "\nCorrect answer index: " +
-                correct_answer + "\n" + courses +"\n";
+        s += " Question: " + this.text + " question_ends_here ";
+        return s;
     }
 
     public void updateCode()
