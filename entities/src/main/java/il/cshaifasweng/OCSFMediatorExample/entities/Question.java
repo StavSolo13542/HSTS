@@ -178,4 +178,28 @@ public class Question {
     {
 
     }
+
+    public Question(String text, Answer ans1, Answer ans2, Answer ans3, Answer ans4, Subject subject) {
+        this.text = text;
+        this.answers = new ArrayList<Answer>();
+        this.answers.add(ans1);
+        ans1.setQuestion(this);
+        this.answers.add(ans2);
+        ans2.setQuestion(this);
+        this.answers.add(ans3);
+        ans3.setQuestion(this);
+        this.answers.add(ans4);
+        ans4.setQuestion(this);
+        //this.correct_answer = correct_answer;
+        this.subject = subject;   // TODO: Gui people, make sure you don't allow adding a course from a different subject
+        subject.addQuestion(this);
+        this.courses = new ArrayList<Course>();
+        /*this.courses.add(course);
+        course.addQuestion(this);*/
+
+        this.question_code_number = "need to update- check appropriate function- updateCode()";
+        this.exams = new ArrayList<Exam>();
+        this.correct_grades = new ArrayList<Grade>();
+        this.points = new ArrayList<Exam_Question_points>();
+    }
 }

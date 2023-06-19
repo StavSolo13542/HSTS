@@ -8,12 +8,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.Initializable;
 import org.greenrobot.eventbus.EventBus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import javax.persistence.Column;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -53,8 +55,8 @@ public class TeacherAddQuestion implements Initializable {
     @FXML
     private TextField question_text_field;
 
-    @FXML
-    private TextArea question_id_text_area;
+//    @FXML
+//    private TextArea question_id_text_area;
 
     @FXML
     private Button save_q_btn;
@@ -77,6 +79,8 @@ public class TeacherAddQuestion implements Initializable {
     }
     private static String msg;
 
+    private String subject_name;
+
     public static void receiveMessage(String message)
     {
         msg = message;
@@ -86,6 +90,7 @@ public class TeacherAddQuestion implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         //EventBus.getDefault().register(this);
         // initialize subjects_choice_box
+        subjects_choice_box.setOnAction(this::addCourse);
         SimpleClient.sendMessage("get all subjects");
         while (msg == null){
             System.out.print("");
@@ -128,37 +133,49 @@ public class TeacherAddQuestion implements Initializable {
 
     @FXML
     void initializeAns1TF(ActionEvent event) {
-
     }
 
     @FXML
     void initializeAns2TF(ActionEvent event) {
-
     }
 
     @FXML
     void initializeAns3TF(ActionEvent event) {
-
     }
 
     @FXML
     void initializeAns4TF(ActionEvent event) {
-
     }
 
     @FXML
     void initializeQuestionTF(ActionEvent event) {
+    }
+
+    @FXML
+    void updateQuestion(KeyEvent event) {
 
     }
 
     @FXML
     void saveQuestionBtn(ActionEvent event) {
-
+        String question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "true" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
+        SimpleClient.sendMessage("save basic question" + question_without_courses);
+        System.out.println("Pressed button to save basic question!");
+        List<String> selectedCourses = courses_list_view.getSelectionModel().getSelectedItems();
+        for (String course : selectedCourses)
+        {
+            SimpleClient.sendMessage("save course-question" + question_text_field.getText() + "```" + course);
+        }
     }
 
     @FXML
     void viewLastPage(ActionEvent event) {
 
+    }
+
+    public void addCourse(ActionEvent event)
+    {
+        this.subject_name = subjects_choice_box.getValue();
     }
 
 }

@@ -257,6 +257,16 @@ public class SimpleServer extends AbstractServer {
 			String data = connectToDatabase_Courses();
 			sendMessage("Here are all courses" + data.substring(3), client);
 		}
+		else if (msgString.startsWith("save basic question"))
+		{
+			System.out.println("Entered saving a basic question");
+			addQuestion(msgString.substring(19));
+		}
+		else if (msgString.startsWith("save course-question"))
+		{
+			System.out.println("Entered saving a Course to a question");
+			addCourseToQuestion(msgString.substring(20));
+		}
 	}
 
 	private String connectToDatabase() {
@@ -286,6 +296,85 @@ public class SimpleServer extends AbstractServer {
 				strings += ("___" + sub.getName());
 			}
 			return strings;
+		}
+	}
+
+	private void addQuestion(String description_string)
+	{
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+			String[] substrings = description_string.split("---");
+			String text = substrings[0];
+			Answer ans1 = new Answer(substrings[1]);          // new answers
+			Answer ans2 = new Answer(substrings[2]);
+			Answer ans3 = new Answer(substrings[3]);
+			Answer ans4 = new Answer(substrings[4]);
+			session.save(ans1);
+			session.save(ans2);
+			session.save(ans3);
+			session.save(ans4);
+			session.flush();
+			String subject_name = substrings[5];
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Subject> query = builder.createQuery(Subject.class);
+			query.from(Subject.class);
+			List<Subject> data = session.createQuery(query).getResultList();
+			Subject subject = null;
+			for (Subject sub : data)
+			{
+				if (sub.getName().equals(subject_name))
+				{
+					subject = sub;
+					break;
+				}
+			}
+			Question question = new Question(text, ans1, ans2, ans3, ans4, subject);
+			session.save(question);
+			session.flush();
+			question.updateCode();
+			session.save(question);
+			session.flush();
+			session.getTransaction().commit();
+		}
+	}
+
+	private void addCourseToQuestion(String description_string)
+	{
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+			String[] substrings = description_string.split("```");
+			String question_text = substrings[0];
+			String course_text = substrings[1];
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Question> query1 = builder.createQuery(Question.class);
+			query1.from(Question.class);
+			List<Question> data1 = session.createQuery(query1).getResultList();
+			Question question = null;
+			for (Question q : data1)
+			{
+				if (q.getText().equals(question_text))
+				{
+					question = q;
+					break;
+				}
+			}
+
+			CriteriaQuery<Course> query2 = builder.createQuery(Course.class);
+			query2.from(Course.class);
+			List<Course> data2 = session.createQuery(query2).getResultList();
+			Course course = null;
+			for (Course c : data2)
+			{
+				if (c.getName().equals(course_text))
+				{
+					course = c;
+					break;
+				}
+			}
+			question.addCourse(course);
+			session.save(question);
+			session.flush();
+			session.getTransaction().commit();
 		}
 	}
 
