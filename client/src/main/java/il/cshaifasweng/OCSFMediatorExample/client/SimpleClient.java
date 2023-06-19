@@ -90,11 +90,21 @@ public class SimpleClient extends AbstractClient {
 		else if (msg_string.startsWith("Here are all subjects")){
 			msg_string = msg_string.replaceFirst("Here are all subjects", "");
 //			System.out.println("now we are back at the client");
-			EventBus.getDefault().post(new test(new Message(msg_string)));
+			EventBus.getDefault().post(new test(new Message("ToAddQuestion" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all courses1")){
+			System.out.println("after Here are all courses1");
+			msg_string = msg_string.replaceFirst("Here are all courses1", "");
+			EventBus.getDefault().post(new test(new Message("ToBuildExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all questions1")){
+			System.out.println("after Here are all questions1");
+			msg_string = msg_string.replaceFirst("Here are all questions1", "");
+			EventBus.getDefault().post(new test(new Message("ToBuildExam" + msg_string)));
 		}
 		else if (msg_string.startsWith("Here are all courses")){
 			msg_string = msg_string.replaceFirst("Here are all courses", "");
-			EventBus.getDefault().post(new test(new Message(msg_string)));
+			EventBus.getDefault().post(new test(new Message("ToAddQuestion" + msg_string)));
 		}
 
 	}

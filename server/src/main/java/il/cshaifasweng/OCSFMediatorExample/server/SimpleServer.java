@@ -257,6 +257,18 @@ public class SimpleServer extends AbstractServer {
 			String data = connectToDatabase_Courses();
 			sendMessage("Here are all courses" + data.substring(3), client);
 		}
+		else if (msgString.startsWith("Get All Courses For Exam"))
+		{
+			System.out.println("after Get All Courses For Exam");
+			String data = connectToDatabase_Courses();
+			sendMessage("Here are all courses1" + data.substring(3), client);
+		}
+		else if (msgString.startsWith("Get All Questions For Exam"))
+		{
+			System.out.println("after Get All Questions For Exam");
+			String data = connectToDatabase_Questions();
+			sendMessage("Here are all questions1" + data.substring(3), client);
+		}
 		else if (msgString.startsWith("save basic question"))
 		{
 			System.out.println("Entered saving a basic question");
@@ -266,6 +278,16 @@ public class SimpleServer extends AbstractServer {
 		{
 			System.out.println("Entered saving a Course to a question");
 			addCourseToQuestion(msgString.substring(20));
+		}
+		else if (msgString.startsWith("save basic exam"))
+		{
+			System.out.println("Entered saving a basic exam");
+			addExam(msgString.substring(15));
+		}
+		else if (msgString.startsWith("save exam-question"))
+		{
+			System.out.println("Entered saving a question to an exam");
+			addQuestionToExam(msgString.substring(18));
 		}
 	}
 
@@ -294,6 +316,21 @@ public class SimpleServer extends AbstractServer {
 			for (Course sub : data)
 			{
 				strings += ("___" + sub.getName());
+			}
+			return strings;
+		}
+	}
+
+	private String connectToDatabase_Questions() {
+		try (Session session = getSessionFactory().openSession()) {
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Question> query = builder.createQuery(Question.class);
+			query.from(Question.class);
+			List<Question> data = session.createQuery(query).getResultList();
+			String strings = "";
+			for (Question q : data)
+			{
+				strings += ("___" + q.getText());
 			}
 			return strings;
 		}
@@ -338,6 +375,58 @@ public class SimpleServer extends AbstractServer {
 		}
 	}
 
+	private void addExam(String description_string)
+	{
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+			String[] substrings = description_string.split("@@@");
+			String name = substrings[0];
+			String course_name = substrings[1];
+
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Course> query1 = builder.createQuery(Course.class);
+			query1.from(Course.class);
+			List<Course> data = session.createQuery(query1).getResultList();
+			Course course = null;
+			for (Course c : data)
+			{
+				if (c.getName().equals(course_name))
+				{
+					course = c;
+					break;
+				}
+			}
+//        TypedQuery<Course> query1 = getSessionFactory().createEntityManager().createQuery()//.createQuery("from Course where name = " + course_name);
+//        List<Course> courses = query1.getResultList();
+//        Course course = courses.get(0);
+			int duration_in_minutes = Integer.valueOf(substrings[2]);
+			String note_to_students = substrings[3];
+			String note_to_teacher = substrings[4];
+			String teacher_name = substrings[5];
+
+			CriteriaQuery<Teacher> query2 = builder.createQuery(Teacher.class);
+			query2.from(Teacher.class);
+			List<Teacher> data1 = session.createQuery(query2).getResultList();
+			Teacher teacher = null;
+			for (Teacher t : data1)
+			{
+				if (t.getName().equals(teacher_name))
+				{
+					teacher = t;
+					break;
+				}
+			}
+
+			Exam exam = new Exam(name, course, duration_in_minutes, note_to_students, note_to_teacher, teacher);
+			session.save(exam);
+			session.flush();
+			exam.updateCode();
+			session.save(exam);
+			session.flush();
+			session.getTransaction().commit();
+		}
+	}
+
 	private void addCourseToQuestion(String description_string)
 	{
 		try (Session session = getSessionFactory().openSession()) {
@@ -373,6 +462,45 @@ public class SimpleServer extends AbstractServer {
 			}
 			question.addCourse(course);
 			session.save(question);
+			session.flush();
+			session.getTransaction().commit();
+		}
+	}
+
+	private void addQuestionToExam(String description_string)
+	{
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+			String[] substrings = description_string.split("&&&");
+			String exam_name = substrings[0];
+			String question_name = substrings[1];
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<Exam> query1 = builder.createQuery(Exam.class);
+			query1.from(Exam.class);
+			List<Exam> data = session.createQuery(query1).getResultList();
+			Exam exam = null;
+			for (Exam e : data)
+			{
+				if (e.getName().equals(exam_name))
+				{
+					exam = e;
+					break;
+				}
+			}
+			CriteriaQuery<Question> query2 = builder.createQuery(Question.class);
+			query2.from(Question.class);
+			List<Question> data1 = session.createQuery(query2).getResultList();
+			Question question = null;
+			for (Question q : data1)
+			{
+				if (q.getText().equals(question_name))
+				{
+					question = q;
+					break;
+				}
+			}
+			session.save(exam.addQuestion(question, Integer.valueOf(substrings[2])));
+			session.save(exam);
 			session.flush();
 			session.getTransaction().commit();
 		}

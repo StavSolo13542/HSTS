@@ -89,7 +89,7 @@ public class TeacherAddQuestion implements Initializable {
         //EventBus.getDefault().register(this);
         // initialize subjects_choice_box
         teacher_name.setText(SimpleClient.name);
-        subjects_choice_box.setOnAction(this::addCourse);
+        subjects_choice_box.setOnAction(this::addSubject);
         SimpleClient.sendMessage("get all subjects");
         while (msg == null){
             System.out.print("");
@@ -123,7 +123,7 @@ public class TeacherAddQuestion implements Initializable {
     void coursesBtnPushed(ActionEvent event) {
         String textAreaString = "";
         List<String> selectedCourses = courses_list_view.getSelectionModel().getSelectedItems();
-        for (Object item : selectedCourses)
+        for (String item : selectedCourses)
         {
             textAreaString += String.format("%s%n",(String) item);
         }
@@ -172,7 +172,7 @@ public class TeacherAddQuestion implements Initializable {
 
     }
 
-    public void addCourse(ActionEvent event)
+    public void addSubject(ActionEvent event)
     {
         this.subject_name = subjects_choice_box.getValue();
     }

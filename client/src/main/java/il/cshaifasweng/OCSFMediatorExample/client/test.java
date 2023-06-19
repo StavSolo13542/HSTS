@@ -15,7 +15,16 @@ public class test {
 
     public static void sendMessage(String msg) {
         if (mediator != null) {
-            mediator.sendMessageToC(msg);
+            System.out.println("in TEST! " + msg);
+            if (msg.startsWith("ToAddQuestion")) {
+                msg = msg.replaceFirst("ToAddQuestion", "");
+                mediator.sendMessageToTeacherAddQuestion(msg);
+            }
+            else if (msg.startsWith("ToBuildExam"))
+            {
+                msg = msg.replaceFirst("ToBuildExam", "");
+                mediator.sendMessageToTeacherBuildExam(msg);
+            }
         }
     }
 
