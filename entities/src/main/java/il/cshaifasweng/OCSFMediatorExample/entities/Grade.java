@@ -102,4 +102,20 @@ public class Grade {
     public Grade(){
 
     }
+
+    @Override
+    public String toString() {
+        String s = "Grade{" +
+                "id=" + id +
+                ", the_grade=" + the_grade +
+                ", readyExam=" + readyExam.toString() +
+                ", correctly_answered_questions=" + correctly_answered_questions +
+                ", note_from_teacher='" + note_from_teacher;
+        for (Question question:correctly_answered_questions)
+        {
+            s += question.toString();
+        }
+        s += '\'' + '}'+'\n';
+        return s;
+    }
 }

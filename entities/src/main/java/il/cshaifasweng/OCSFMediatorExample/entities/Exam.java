@@ -191,4 +191,16 @@ public class Exam {
     {
 
     }
+
+    @Override
+    public String toString() {
+        String s= "";
+        s += "name: "+name +" duration in minutes: "+duration_in_minutes+ " note_to_students"+ note_to_students+
+        " questions list: " ;
+        for(Question q:questions)
+        {
+            s += q.toString();
+        }
+        return s;
+    }
 }

@@ -41,7 +41,7 @@ public class PrimaryController {
 //	@Subscribe
 	//Display student names after receiving them from the server
 //	public void DisplayNames(ShowNameEvent event) {
-		//Process the message which contains the names
+	//Process the message which contains the names
 //		String msg_string = event.getMessage().toString();
 //		ObservableList<Student> students = FXCollections.observableArrayList();
 //		int index = msg_string.indexOf(":") + 2;
@@ -69,7 +69,7 @@ public class PrimaryController {
 //				}
 //		);
 //	}
-		//Add update buttons to the name table
+	//Add update buttons to the name table
 //	private void addButtonToTable() {
 //		TableColumn<Student, Void> colBtn = new TableColumn("Button Column");
 //
@@ -120,14 +120,14 @@ public class PrimaryController {
 //		String numbersString = msg_string.substring(startIndex).trim();
 //		String[] gradesArray = numbersString.split(" ");
 
-		// Append each name to the list
+	// Append each name to the list
 //		for (int i = 0; i < gradesArray.length; i++) {
 //			String grade = gradesArray[i];
 //			grades.add(new StudentGrade(name, String.valueOf(i), grade));
 //		}
 
 
-		//Add the grades to the table
+	//Add the grades to the table
 //		Platform.runLater(
 //				() -> {
 //					grades_table.setItems(grades);
@@ -159,7 +159,7 @@ public class PrimaryController {
 //		msg += "1 " + "100";
 //		SimpleClient.sendMessage(msg);
 //	}
-		//Change the UI based on the viewed table
+	//Change the UI based on the viewed table
 //	private void SwitchState(Boolean state){
 //		name_table.setVisible(!state);
 //		grades_table.setVisible(state);
@@ -167,7 +167,7 @@ public class PrimaryController {
 //		displayNamesBtn.setVisible(state);
 //	}
 //	@Subscribe
-		//Display input error
+	//Display input error
 //	public void DisplayInputError(InputErrorEvent event) {
 //		Platform.runLater(() -> {
 //			Alert alert = new Alert(Alert.AlertType.ERROR,
@@ -179,7 +179,7 @@ public class PrimaryController {
 //		});
 //	}
 //	@Subscribe
-		//Display success message
+	//Display success message
 //	public void DisplaySuccessMsg(UpdateSucEvent event) {
 //		Platform.runLater(() -> {
 //			Alert alert = new Alert(Alert.AlertType.INFORMATION,
@@ -191,4 +191,4 @@ public class PrimaryController {
 //		});
 //	}
 //}
-	}
+}

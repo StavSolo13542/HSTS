@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleClient extends AbstractClient {
-	
+
 	private static SimpleClient client = null;
 	public static String name = "";
 	public static String role = "";
@@ -183,8 +183,8 @@ public class SimpleClient extends AbstractClient {
 			// from Michael's pc, works for pcs in different places (different LANs)
 //			 client = new SimpleClient("0.tcp.eu.ngrok.io", 13010);
 
-			 // works only for pcs in the same LAN
-			 client = new SimpleClient("localhost", 3100);
+			// works only for pcs in the same LAN
+			client = new SimpleClient("localhost", 3100);
 		}
 		return client;
 	}
