@@ -24,13 +24,23 @@ public class App extends Application {
     private String username;
     @Override
     public void start(Stage stage) throws IOException {
-    	EventBus.getDefault().register(this);
-    	client = SimpleClient.getClient();
-    	client.openConnection();
+        EventBus.getDefault().register(this);
+        client = SimpleClient.getClient();
+        client.openConnection();
         scene = new Scene(loadFXML("log_in"), 740, 511);
         stage.setScene(scene);
         stage.show();
         this.stage = stage;
+        setWindowTitle("Log In");
+        stage.setOnCloseRequest(event -> {
+            if (SimpleClient.name != ""){
+                String message = "LogOut " + SimpleClient.name + " " + SimpleClient.role;
+
+                System.out.println("the message is: " + message);//for debugging
+
+                SimpleClient.sendMessage(message);
+            }
+        });
     }
     static public Stage getStage() {return stage;}
     public void setWindowTitle(String title) {
@@ -113,6 +123,26 @@ public class App extends Application {
                     }
                 });
                 break;
+            case "student_exam_scores":
+                Platform.runLater(() -> {
+                    setWindowTitle("Exam Scores");
+                    try {
+                        setContent("student_exam_scores");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            case "exam_result":
+                Platform.runLater(() -> {
+                    setWindowTitle("Exam Result");
+                    try {
+                        setContent("exam_result");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
         }
     }
     void setRoot(String fxml) throws IOException {
@@ -124,12 +154,12 @@ public class App extends Application {
         return fxmlLoader.load();
     }
     @Override
-	public void stop() throws Exception {
-		// TODO Auto-generated method stub
-    	EventBus.getDefault().unregister(this);
-		super.stop();
-	}
-	public static void main(String[] args) {
+    public void stop() throws Exception {
+        // TODO Auto-generated method stub
+        EventBus.getDefault().unregister(this);
+        super.stop();
+    }
+    public static void main(String[] args) {
         launch();
     }
 

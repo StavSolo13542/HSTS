@@ -97,4 +97,11 @@ public class ReadyExam {
     {
 
     }
+
+    @Override
+    public String toString() {
+        String s = "";
+        s += "id: "+id+" online: "+online+ "exam code: " + exam.toString()+"\n";
+        return s;
+    }
 }

@@ -1,6 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Exam;
+import il.cshaifasweng.OCSFMediatorExample.entities.Grade;
+import il.cshaifasweng.OCSFMediatorExample.entities.ReadyExam;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
@@ -9,6 +11,7 @@ import java.util.*;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Message;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import javax.persistence.Query;
 import static il.cshaifasweng.OCSFMediatorExample.server.App.getSessionFactory;
@@ -49,7 +52,7 @@ public class SimpleServer extends AbstractServer {
 	public static void updateGrades(/* String name, int test_id, String newGrade*/ String msg) throws Exception {
 		try (Session session = getSessionFactory().openSession()) {
 
-			String[] parts_name = msg.split(" ");
+			String[] parts_name = msg.split("   ");
 			String command = parts_name[0];
 			String name = parts_name[1];
 			msg = msg.replace(command +" ", "").replace(name+" ", "");
@@ -87,6 +90,44 @@ public class SimpleServer extends AbstractServer {
 		}
 	}
 
+	public static boolean isReadyExam(String code) throws Exception {
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+
+			Query query = session.createNativeQuery("select count(*) from ReadyExams where four_digit_code ='" + code +"';");
+			int count = ((Number) query.getSingleResult()).intValue();
+			session.getTransaction().commit();
+			if (count == 1)
+			{
+				// Commit the transaction
+				return true;
+			}
+			else
+			{
+				// Commit the transaction
+				return false;
+			}
+		}
+	}
+
+	public static boolean isStudent(String id, String name) throws Exception {
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+
+			Query query = session.createNativeQuery("select count(*) from Pupils where real_id =" + id +" and name = '" + name+"';");
+			int count = ((Number) query.getSingleResult()).intValue();
+			session.getTransaction().commit();
+			if (count == 1)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+
 	//success message format: LogIn <<role>> <<username>> (role is one of the following options: "student", "teacher, "principle")
 	//error message format: InputError <<error description>>
 
@@ -116,29 +157,24 @@ public class SimpleServer extends AbstractServer {
 			session.getTransaction().begin();
 			Query query1 = session.createNativeQuery("select count(*) from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
 			count = ((Number) query1.getSingleResult()).intValue();
-
 			if(count > 0)
 			{
 				Query query2 = session.createNativeQuery("select isLoggedIn from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
 				isLoggedIn = ((Boolean) query2.getSingleResult()).booleanValue();
 			}
-
 			// Commit the transaction
 			session.getTransaction().commit();
 		}
 
 		if (count > 0)
 		{
-			//TODO Uncomment the if (and remove the current one) after adding logout option
-			if (true) //if(!isLoggedIn)
+			if(!isLoggedIn)
 			{
 				loginResultMessage = "LogIn "+  role + " " + username;
 				try (Session session = getSessionFactory().openSession()) {
 					session.getTransaction().begin();
-
 					Query query3 = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = true" +" where name = '" + username  + "' and password = '"+ password + "';");
 					int rowCount = query3.executeUpdate();
-
 					// Commit the transaction
 					session.getTransaction().commit();
 				}
@@ -154,60 +190,112 @@ public class SimpleServer extends AbstractServer {
 		}
 		return loginResultMessage;
 	}
-	//Success message: EnterExam <<exam_description>>
-	//Error message: InputError <<error_description>>
-	private String connectToExam(String code){
 
-		return "";
+	// Success message: EnterExam <<exam_description>>
+	// Error message: InputError <<error_description>>
+	private String connectToExam(String code) throws Exception {
+		String message;
+		try {
+			if (isReadyExam(code)){
+				message = "EnterExam ";
+
+				Session session = getSessionFactory().openSession();
+				Transaction transaction = null;
+				ReadyExam readyExam = null;
+
+				try {
+					transaction = session.beginTransaction();
+
+					// Retrieve a row by id
+					readyExam = session.get(ReadyExam.class, code);
+					message += readyExam.toString();
+					transaction.commit();
+				} catch (Exception e) {
+					if (transaction != null) {
+						transaction.rollback();
+					}
+					e.printStackTrace();
+				} finally {
+					session.close();
+				}
+
+
+			}
+			else {
+				message = "InputError The code you entered does not exist";
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return message;
 	}
+
 	//Success message: StartExam
 	//Error message: InputError <<error_description>>
 	private String StartExam(String id, String name){
-		return "";
+		String message;
+		try {
+			if (isStudent(id, name)){
+				message = "StartExam ";
+			}
+			else {
+				message = "InputError identification details are incorrect";
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return message;
 	}
+
+	private void LogOut(String name, String role){
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+			Query query = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = false" +" where name = '" + name + "';");
+			query.executeUpdate();
+			// Commit the transaction
+			session.getTransaction().commit();
+		}
+	}
+
+	private String GetStudentGrades(String name)
+	{
+		String message = "StudentGrades ";
+		Session session = getSessionFactory().openSession();
+		Transaction transaction = null;
+
+		try {
+			transaction = session.beginTransaction();
+
+			//getting the id
+			String queryForId = "SELECT id FROM pupils WHERE name = '" + name + "';";
+			int id = session.createNativeQuery(queryForId, int.class).getSingleResult();
+
+			// Retrieve a row by id
+			String queryString = "SELECT * FROM Grades WHERE pupil_id = " + id + ";";
+			List<Grade> grades = session.createNativeQuery(queryString, Grade.class).list();
+			for (Grade grade : grades)
+			{
+				message += grade.toString();
+			}
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return message;
+	}
+
 	@Override
 	//Treating the message from the clint
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
 		String msgString = msg.toString();
-		//Getting student names from the database and returning them to the client
-		if (msgString.equals("GetNames")) {
-			//message format: "Student names: <<name1>> <<name2>>... <<nameN>> "
-			String nameColumn = "name";
-			try {
-				sendMessage(getColumnAsString(nameColumn), client);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
-		}
-		//Getting relevant grades from the database and returning them to the client
-		else if (msgString.startsWith("GetGrades")) {
-			//message format: "Grades: <<name>> <<test_id1>> <<grade1>> <<test_id2>> <<grade2>>... <<gradeN>> "
-			int index = msgString.indexOf(" ") + 1;
-			String name = msgString.substring(index);
-			try {
-				sendMessage("Grades: " + name + " " + getGradesAsString(name), client);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
-		}
-		//Update grades and inform the client whether the update succeeded or not
-		else if (msgString.startsWith("UpdateGrade")) {
-			//Validate the grades
-			int index = msgString.indexOf(" ") + 1;
-			String name = msgString.substring(index, msgString.indexOf(" ", index));
-			String[] parts = msgString.split(" ");
-			String test_id_str = parts[2];
-			int test_id =  Integer.parseInt(test_id_str);
-			String grade_str = parts[3];
-			int grade = Integer.parseInt(grade_str);
-			updateGrades(msgString);
-			sendMessage("UpdateSuc",client);
-		}
 		//validates the entered information and either lets the respective user to proceed to the rest of the system
 		//(based on its role) or sends a relevant error message
-		else if (msgString.startsWith("LogIn")) {
+		if (msgString.startsWith("LogIn")) {
 			String[] parts = msgString.split(" ");
 
 			String username = parts[1];
@@ -224,13 +312,11 @@ public class SimpleServer extends AbstractServer {
 			String[] parts = msgString.split(" ");
 			String code = parts[1];
 			String message = connectToExam(code);
-			if (code.compareTo("1234") == 0){
-
+			if (isReadyExam(code)){
 				message = "EnterExam";
 			}
 			else {
 				message = "InputError The code you entered does not exist";
-
 			}
 			sendMessage(message,client);
 		}
@@ -243,6 +329,19 @@ public class SimpleServer extends AbstractServer {
 			message = "StartExam";
 			sendMessage(message,client);
 		}
+		else if (msgString.startsWith("LogOut")) {
+			String[] parts = msgString.split(" ");
+			String name = parts[1];
+			String role = parts[2];
+			LogOut(name,role);
+			sendMessage("LogOut",client);
+		}
+		else if (msgString.startsWith("GetStudentGrades")) {
+			String[] parts = msgString.split(" ");
+			String name = parts[1];
+			String grades = GetStudentGrades(name);
+			sendMessage(grades,client);
+		}
 	}
 	//Send received message to the relevant client
 	protected void sendMessage (String msg, ConnectionToClient client){
@@ -254,22 +353,6 @@ public class SimpleServer extends AbstractServer {
 		}
 	}
 	//Validates grade input
-	private static boolean isGrade (String str) {
-		if (str == null) {
-			return false;
-		}
-		int length = str.length();
-		if (length == 0 || (length > 2 && !str.equals("100"))) {
-			return false;
-		}
-		for (int i = 0; i < length; i++) {
-			char c = str.charAt(i);
-			if (c < '0' || c > '9') {
-				return false;
-			}
-		}
-		return true;
-	}
 }
 
 
