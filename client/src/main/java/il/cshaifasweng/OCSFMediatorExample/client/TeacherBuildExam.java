@@ -73,7 +73,7 @@ public class TeacherBuildExam implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         teacher_name.setText(SimpleClient.name);
         courses_choice_box.setOnAction(this::addCourse);
-        SimpleClient.sendMessage("Get All Courses For Exam");
+        SimpleClient.sendMessage("Get All Courses For Exam" + SimpleClient.name);
         while (msg == null){
             System.out.print("");
         }
@@ -86,19 +86,19 @@ public class TeacherBuildExam implements Initializable {
         courses_choice_box.setItems(observableList);
         msg = null;
 
-        // initialize courses_list_view
-        SimpleClient.sendMessage("Get All Questions For Exam");
-        while (msg == null){
-            System.out.print("");
-        }
-        System.out.println("after second while loop");
-        String[] courses = msg.split("___");
-        List<String> questionList = Arrays.asList(courses);
-
-        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
-        ObservableList<String> observableList1 = FXCollections.observableArrayList(questionList);
-        questions_list_view.setItems(observableList1);
-        msg = null;
+//        // initialize courses_list_view
+//        SimpleClient.sendMessage("Get All Questions For Exam");
+//        while (msg == null){
+//            System.out.print("");
+//        }
+//        System.out.println("after second while loop");
+//        String[] courses = msg.split("___");
+//        List<String> questionList = Arrays.asList(courses);
+//
+//        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+//        ObservableList<String> observableList1 = FXCollections.observableArrayList(questionList);
+//        questions_list_view.setItems(observableList1);
+//        msg = null;
 //        // initialize subjects_choice_box
 //        SimpleClient.sendMessage("get all subjects");
 //        while (msg == null){}
@@ -166,5 +166,18 @@ public class TeacherBuildExam implements Initializable {
     public void addCourse(ActionEvent event)
     {
         this.course_name = courses_choice_box.getValue();
+        // initialize courses_list_view
+        SimpleClient.sendMessage("Get All Questions For Exam" + this.course_name);
+        while (msg == null){
+            System.out.print("");
+        }
+        System.out.println("after second while loop");
+        String[] courses = msg.split("___");
+        List<String> questionList = Arrays.asList(courses);
+
+        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+        ObservableList<String> observableList1 = FXCollections.observableArrayList(questionList);
+        questions_list_view.setItems(observableList1);
+        msg = null;
     }
 }

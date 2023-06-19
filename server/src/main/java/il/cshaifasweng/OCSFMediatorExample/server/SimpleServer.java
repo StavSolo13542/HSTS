@@ -250,23 +250,23 @@ public class SimpleServer extends AbstractServer {
 		}
 		else if (msgString.startsWith("get all subjects")) {
 			System.out.println("in handleMessageFromClient -> if (get all subjects)");
-			String data = connectToDatabase();
+			String data = connectToDatabase(msgString.replaceFirst("get all subjects", ""));
 			sendMessage("Here are all subjects" + data.substring(3), client);
 		}
 		else if (msgString.startsWith("get all courses")) {
-			String data = connectToDatabase_Courses();
+			String data = connectToDatabase_Courses(msgString.replaceFirst("get all courses", ""));
 			sendMessage("Here are all courses" + data.substring(3), client);
 		}
 		else if (msgString.startsWith("Get All Courses For Exam"))
 		{
 			System.out.println("after Get All Courses For Exam");
-			String data = connectToDatabase_Courses();
+			String data = connectToDatabase_Courses_for_building_exam(msgString.replaceFirst("Get All Courses For Exam", ""));
 			sendMessage("Here are all courses1" + data.substring(3), client);
 		}
 		else if (msgString.startsWith("Get All Questions For Exam"))
 		{
 			System.out.println("after Get All Questions For Exam");
-			String data = connectToDatabase_Questions();
+			String data = connectToDatabase_Questions(msgString.replaceFirst("Get All Questions For Exam", ""));
 			sendMessage("Here are all questions1" + data.substring(3), client);
 		}
 		else if (msgString.startsWith("save basic question"))
@@ -291,10 +291,29 @@ public class SimpleServer extends AbstractServer {
 		}
 	}
 
-	private String connectToDatabase() {
+	private String connectToDatabase(String teacher_name) {
 		try (Session session = getSessionFactory().openSession()) {
 			CriteriaBuilder builder = session.getCriteriaBuilder();
-			CriteriaQuery<Subject> query = builder.createQuery(Subject.class);
+			///////////////////////////////////////////////// locate appropriate subjects to current teachers
+			CriteriaQuery<Teacher> new_query = builder.createQuery(Teacher.class);
+			new_query.from(Teacher.class);
+			List<Teacher> new_data = session.createQuery(new_query).getResultList();
+			List<Subject> allowed_subjects;
+			for (Teacher t : new_data)
+			{
+				if (t.getName().equals(teacher_name))
+				{
+					allowed_subjects = t.getSubjects();
+					String strings = "";
+					for (Subject sub : allowed_subjects)
+					{
+						strings += ("___" + sub.getName());
+					}
+					return strings;
+				}
+			}
+			/////////////////////////////////////////////////
+			/*CriteriaQuery<Subject> query = builder.createQuery(Subject.class);
 			query.from(Subject.class);
 			List<Subject> data = session.createQuery(query).getResultList();
 			String strings = "";
@@ -302,14 +321,55 @@ public class SimpleServer extends AbstractServer {
 			{
 				strings += ("___" + sub.getName());
 			}
-			return strings;
+			return strings;*/
+			return null;
 		}
 	}
 
-	private String connectToDatabase_Courses() {
+	private String connectToDatabase_Courses(String subject_name) {
 		try (Session session = getSessionFactory().openSession()) {
 			CriteriaBuilder builder = session.getCriteriaBuilder();
-			CriteriaQuery<Course> query = builder.createQuery(Course.class);
+			/////////////////////////////////////////
+			/*CriteriaQuery<Teacher> new_query = builder.createQuery(Teacher.class);
+			new_query.from(Teacher.class);
+			List<Teacher> new_data = session.createQuery(new_query).getResultList();
+			List<Subject> allowed_subjects;
+			for (Teacher t : new_data)
+			{
+				if (t.getName().equals(teacher_name))
+				{
+					allowed_subjects = t.getSubjects();
+					List<Course> allowed_courses = new ArrayList<Course>();
+					for (Subject sub : allowed_subjects)
+					{
+						allowed_courses.addAll(sub.getCourses());
+					}
+					String strings = "";
+					for (Course c : allowed_courses)
+					{
+						strings += ("___" + c.getName());
+					}
+					return strings;
+				}
+			}*/
+			CriteriaQuery<Subject> new_query = builder.createQuery(Subject.class);
+			new_query.from(Subject.class);
+			List<Subject> new_data = session.createQuery(new_query).getResultList();
+			for (Subject s : new_data)
+			{
+				if (s.getName().equals(subject_name))
+				{
+					String strings = "";
+					List<Course> allowed_courses = s.getCourses();
+					for (Course c : allowed_courses)
+					{
+						strings += ("___" + c.getName());
+					}
+					return strings;
+				}
+			}
+			/////////////////////////////////////////
+			/*CriteriaQuery<Course> query = builder.createQuery(Course.class);
 			query.from(Course.class);
 			List<Course> data = session.createQuery(query).getResultList();
 			String strings = "";
@@ -317,14 +377,90 @@ public class SimpleServer extends AbstractServer {
 			{
 				strings += ("___" + sub.getName());
 			}
-			return strings;
+			return strings;*/
+			return null;
 		}
 	}
 
-	private String connectToDatabase_Questions() {
+	private String connectToDatabase_Courses_for_building_exam(String teacher_name) {
 		try (Session session = getSessionFactory().openSession()) {
 			CriteriaBuilder builder = session.getCriteriaBuilder();
-			CriteriaQuery<Question> query = builder.createQuery(Question.class);
+			/////////////////////////////////////////
+			CriteriaQuery<Teacher> new_query = builder.createQuery(Teacher.class);
+			new_query.from(Teacher.class);
+			List<Teacher> new_data = session.createQuery(new_query).getResultList();
+			List<Subject> allowed_subjects;
+			for (Teacher t : new_data)
+			{
+				if (t.getName().equals(teacher_name))
+				{
+					allowed_subjects = t.getSubjects();
+					List<Course> allowed_courses = new ArrayList<Course>();
+					for (Subject sub : allowed_subjects)
+					{
+						allowed_courses.addAll(sub.getCourses());
+					}
+					String strings = "";
+					for (Course c : allowed_courses)
+					{
+						strings += ("___" + c.getName());
+					}
+					System.out.println("about to return string: " + strings);
+					return strings;
+				}
+			}
+			/*CriteriaQuery<Subject> new_query = builder.createQuery(Subject.class);
+			new_query.from(Subject.class);
+			List<Subject> new_data = session.createQuery(new_query).getResultList();
+			for (Subject s : new_data)
+			{
+				if (s.getName().equals(subject_name))
+				{
+					String strings = "";
+					List<Course> allowed_courses = s.getCourses();
+					for (Course c : allowed_courses)
+					{
+						strings += ("___" + c.getName());
+					}
+					return strings;
+				}
+			}*/
+			/////////////////////////////////////////
+			/*CriteriaQuery<Course> query = builder.createQuery(Course.class);
+			query.from(Course.class);
+			List<Course> data = session.createQuery(query).getResultList();
+			String strings = "";
+			for (Course sub : data)
+			{
+				strings += ("___" + sub.getName());
+			}
+			return strings;*/
+			return null;
+		}
+	}
+
+	private String connectToDatabase_Questions(String course_name) {
+		try (Session session = getSessionFactory().openSession()) {
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			////////////////////////////////////////////
+			CriteriaQuery<Course> new_query = builder.createQuery(Course.class);
+			new_query.from(Course.class);
+			List<Course> new_data = session.createQuery(new_query).getResultList();
+			for (Course c : new_data)
+			{
+				if (c.getName().equals(course_name))
+				{
+					List<Question> questions = c.getQuestions();
+					String strings = "";
+					for (Question q : questions)
+					{
+						strings += ("___" + q.getText());
+					}
+					return strings;
+				}
+			}
+			////////////////////////////////////////////
+			/*CriteriaQuery<Question> query = builder.createQuery(Question.class);
 			query.from(Question.class);
 			List<Question> data = session.createQuery(query).getResultList();
 			String strings = "";
@@ -332,7 +468,8 @@ public class SimpleServer extends AbstractServer {
 			{
 				strings += ("___" + q.getText());
 			}
-			return strings;
+			return strings;*/
+			return null;
 		}
 	}
 

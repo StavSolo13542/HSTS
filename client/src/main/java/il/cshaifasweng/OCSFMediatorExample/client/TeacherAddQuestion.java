@@ -2,12 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.Initializable;
@@ -90,7 +85,7 @@ public class TeacherAddQuestion implements Initializable {
         // initialize subjects_choice_box
         teacher_name.setText(SimpleClient.name);
         subjects_choice_box.setOnAction(this::addSubject);
-        SimpleClient.sendMessage("get all subjects");
+        SimpleClient.sendMessage("get all subjects" + SimpleClient.name);
         while (msg == null){
             System.out.print("");
         }
@@ -103,19 +98,19 @@ public class TeacherAddQuestion implements Initializable {
         subjects_choice_box.setItems(observableList);
         msg = null;
 
-        // initialize courses_list_view
-        SimpleClient.sendMessage("get all courses");
-        while (msg == null){
-            System.out.print("");
-        }
-        System.out.println("after second while loop");
-        String[] courses = msg.split("___");
-        List<String> courseList = Arrays.asList(courses);
-
-        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
-        ObservableList<String> observableList1 = FXCollections.observableArrayList(courseList);
-        courses_list_view.setItems(observableList1);
-        msg = null;
+//        // initialize courses_list_view
+//        SimpleClient.sendMessage("get all courses" + SimpleClient.name);
+//        while (msg == null){
+//            System.out.print("");
+//        }
+//        System.out.println("after second while loop");
+//        String[] courses = msg.split("___");
+//        List<String> courseList = Arrays.asList(courses);
+//
+//        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+//        ObservableList<String> observableList1 = FXCollections.observableArrayList(courseList);
+//        courses_list_view.setItems(observableList1);
+//        msg = null;
 
     }
 
@@ -175,6 +170,19 @@ public class TeacherAddQuestion implements Initializable {
     public void addSubject(ActionEvent event)
     {
         this.subject_name = subjects_choice_box.getValue();
+        // initialize courses_list_view
+        SimpleClient.sendMessage("get all courses" + this.subject_name);
+        while (msg == null){
+            System.out.print("");
+        }
+        System.out.println("after second while loop");
+        String[] courses = msg.split("___");
+        List<String> courseList = Arrays.asList(courses);
+
+        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+        ObservableList<String> observableList1 = FXCollections.observableArrayList(courseList);
+        courses_list_view.setItems(observableList1);
+        msg = null;
     }
 
 }
