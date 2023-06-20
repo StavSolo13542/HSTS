@@ -4,15 +4,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.Initializable;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +37,9 @@ public class TeacherBuildExam implements Initializable {
     private TextArea duration_test_area;
 
     @FXML
+    private ListView<?> grades_list_view;
+
+    @FXML
     private Button go_back_button;
 
     @FXML
@@ -56,9 +60,14 @@ public class TeacherBuildExam implements Initializable {
     @FXML
     private TextArea note_to_teachers;
 
+    @FXML
+    private Button another_exam_btn;
 
     @FXML
     private Label teacher_name;
+
+
+    private ObservableList<String> grades = FXCollections.observableArrayList();
 
     private static String msg;
 
@@ -71,6 +80,7 @@ public class TeacherBuildExam implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        questions_list_view.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         teacher_name.setText(SimpleClient.name);
         courses_choice_box.setOnAction(this::addCourse);
         SimpleClient.sendMessage("Get All Courses For Exam" + SimpleClient.name);
@@ -144,7 +154,7 @@ public class TeacherBuildExam implements Initializable {
     }
 
     @FXML
-    void saveQuestionBtn(ActionEvent event) {
+    void saveExamBtn(ActionEvent event) {
         //String exam_without_questions =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "true" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
         String exam_without_questions =  exam_name.getText() + "@@@" + course_name + "@@@" + duration_test_area.getText() + "@@@" + note_to_students.getText() + "@@@" + note_to_teachers.getText() + "@@@" + SimpleClient.name;
 //        System.out.println(exam_without_questions);
@@ -155,10 +165,31 @@ public class TeacherBuildExam implements Initializable {
         {
             SimpleClient.sendMessage("save exam-question" + exam_name.getText() + "```" + question + "```" + "10");        // TODO: need to change 10 to teacher-chosen points for the question
         }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_build_examn.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     void viewLastPage(ActionEvent event) {
+        // Go to "teacher_primary.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -179,5 +210,22 @@ public class TeacherBuildExam implements Initializable {
         ObservableList<String> observableList1 = FXCollections.observableArrayList(questionList);
         questions_list_view.setItems(observableList1);
         msg = null;
+    }
+
+    @FXML
+    void AnotherExamBtn(ActionEvent event) {
+        // Save the exam first
+        saveExamBtn(event);
+        // Open a new "teacher_build_exam.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_build_examn.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

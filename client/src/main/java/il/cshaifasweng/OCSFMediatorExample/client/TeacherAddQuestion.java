@@ -2,15 +2,26 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.Initializable;
+import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import javax.persistence.Column;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -50,6 +61,9 @@ public class TeacherAddQuestion implements Initializable {
     @FXML
     private TextField question_text_field;
 
+    @FXML
+    private TextField correct_ans_text_field;
+
 //    @FXML
 //    private TextArea question_id_text_area;
 
@@ -66,14 +80,14 @@ public class TeacherAddQuestion implements Initializable {
     @FXML
     private Label teacher_name;
 
-    @FXML
-    void AnotherQuestionBtn(ActionEvent event) {
-
-    }
     private static String msg;
+
+    private int correctAnsNum;
 
     private String subject_name;
 
+
+    // Methods
     public static void receiveMessage(String message)
     {
         msg = message;
@@ -149,10 +163,31 @@ public class TeacherAddQuestion implements Initializable {
     void updateQuestion(KeyEvent event) {
 
     }
+    @FXML
+    void updateCorrectAns(ActionEvent event) {
+        String userInput = correct_ans_text_field.getText();
+        correctAnsNum = Integer.parseInt(userInput);
+    }
 
     @FXML
     void saveQuestionBtn(ActionEvent event) {
-        String question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "true" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
+        String question_without_courses = "";
+        if (correctAnsNum == 1) {
+            question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "true" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
+        }
+        else if (correctAnsNum == 2) {
+            question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "false" + "---" + answer2_text_field.getText() + "///" + "true" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
+        }
+        else if (correctAnsNum == 3) {
+            question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "false" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "true" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
+        }
+        else if (correctAnsNum == 4) {
+            question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "false" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "true" + "---" + subject_name;
+        }
+        else {
+            System.out.println("Error! No correct answer was chosen");
+
+        }
         SimpleClient.sendMessage("save basic question" + question_without_courses);
         System.out.println("Pressed button to save basic question!");
         List<String> selectedCourses = courses_list_view.getSelectionModel().getSelectedItems();
@@ -160,11 +195,49 @@ public class TeacherAddQuestion implements Initializable {
         {
             SimpleClient.sendMessage("save course-question" + question_text_field.getText() + "```" + course);
         }
+        // Open a new "teacher_add_question.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_add_question.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void AnotherQuestionBtn(ActionEvent event) {
+        // Save the question first
+        saveQuestionBtn(event);
+        // Open a new "teacher_add_question.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_add_question.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     void viewLastPage(ActionEvent event) {
-
+        // Go to "teacher_primary.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addSubject(ActionEvent event)

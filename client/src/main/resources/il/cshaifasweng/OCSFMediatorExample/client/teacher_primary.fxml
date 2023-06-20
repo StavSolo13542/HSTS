@@ -47,7 +47,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="260.0" layoutY="482.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="122.0">
+      <Button fx:id="pull_exam_btn" layoutX="260.0" layoutY="482.0" mnemonicParsing="false" onAction="#goToPullExam" prefHeight="53.0" prefWidth="122.0" text="Pull Exam">
          <font>
             <Font size="15.0" />
          </font>
