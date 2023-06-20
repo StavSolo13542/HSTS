@@ -26,6 +26,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -35,6 +37,7 @@ public class WordExamController {
     private ReadyExam exam;
     private final int[] remaining_time = {0,0};
     private String name;
+    private String start_time;
     @FXML
     private Button dirBtn;
 
@@ -63,10 +66,7 @@ public class WordExamController {
         //Check the generated path. If it is not there, create it.
         if (!Paths.get(path + "\\test").toFile().exists()) Files.createDirectories(Paths.get(path + "\\test"));
         //Create Word docs.
-        submitBtn.setVisible(true);
         Platform.runLater(() -> {
-            dirBtn.setVisible(false);
-            timerLabel.setVisible(true);
             examHeaderLabel.setText("Answer the questions in the directory you chose and submit your answers file before your time runs out!");
             //Blank Document
             XWPFDocument document = new XWPFDocument();
@@ -113,12 +113,19 @@ public class WordExamController {
                 //Close document
                 out.close();
                 System.out.println(path + "\\test\\questions" +  ".docx" + " written successfully");
+                submitBtn.setVisible(true);
+                dirBtn.setVisible(false);
+                timerLabel.setVisible(true);
             } catch (FileNotFoundException e) {
+                EventBus.getDefault().post(new InputErrorEvent("There was an error, please submit the directory again"));
                 throw new RuntimeException(e);
             } catch (IOException e) {
+                EventBus.getDefault().post(new InputErrorEvent("There was an error, please submit the directory again"));
                 throw new RuntimeException(e);
             }
-
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            start_time = dtf.format(now);
 
         });
         remaining_time[0] = exam.getExam().getDuration_in_minutes();
@@ -156,7 +163,7 @@ public class WordExamController {
         SubmitAnswers(null);
     }
     void SubmitAnswers(File answers) {
-        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
+        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
         if (answers != null) message += " " + answers.toString();
         System.out.println("the message is: " + message);//for debugging
         SimpleClient.sendMessage(message);

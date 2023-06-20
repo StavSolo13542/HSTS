@@ -102,20 +102,37 @@ public class Grade {
     public Grade(){
 
     }
-
+    public Grade(String[] desc, int index){
+        correctly_answered_questions = new ArrayList<>();
+        this.id = Integer.parseInt(desc[index + 2]);
+        this.the_grade = Integer.parseInt(desc[index + 4]);
+        index += 6;
+        this.readyExam = new ReadyExam(desc,index);
+        while (!desc[index].equals("correctly_answered_questions")) index++;
+        while(!desc[index].equals("note_from_teacher")){
+            if (desc[index].equals("question_starts_here")){
+                correctly_answered_questions.add(new Question(desc,index));
+            }
+            index++;
+        }
+        String s = "";
+        index++;
+        while (!desc[index].equals("end_grade")) s += desc[index++] + " ";
+        this.note_from_teacher = s;
+    }
     @Override
     public String toString() {
-        String s = "Grade{" +
-                "id=" + id +
-                ", the_grade=" + the_grade +
-                ", readyExam=" + readyExam.toString() +
-                ", correctly_answered_questions=" + correctly_answered_questions +
-                ", note_from_teacher='" + note_from_teacher;
+        String s =
+                "grade_starts_here id " + id +
+                " the_grade " + the_grade +
+                " readyExam " + readyExam.toString() +
+                " correctly_answered_questions ";
+
         for (Question question:correctly_answered_questions)
         {
             s += question.toString();
         }
-        s += '\'' + '}'+'\n';
+        s += " note_from_teacher " + note_from_teacher + " end_grade ";
         return s;
     }
 }

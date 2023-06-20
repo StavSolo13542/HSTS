@@ -13,6 +13,8 @@ import javafx.scene.text.Font;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -22,6 +24,7 @@ public class ExamController {
     private final int[] remaining_time = {0,0};
     private String name;
     private ReadyExam exam;
+    private String start_time;
     private ArrayList<ComboBox<String>> answers_list;
     @FXML
     private Label examHeaderLabel;
@@ -55,6 +58,9 @@ public class ExamController {
     }
     @Subscribe
     public void StartExam(StartExamEvent event){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        start_time = dtf.format(now);
         name = event.getMessage();
         exam = event.getExam();
         answersBtn.setVisible(true);
@@ -126,7 +132,7 @@ public class ExamController {
         for (int i = 0; i < answers_list.size(); i++){
             answers += (answers_list.get(i).getSelectionModel().getSelectedIndex() + 1) + " ";
         }
-        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]) + " " + answers;
+        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]) + " " + answers;
         System.out.println("the message is: " + message);//for debugging
         SimpleClient.sendMessage(message);
         EventBus.getDefault().post(new SuccessEvent("Your test was submitted successfully"));

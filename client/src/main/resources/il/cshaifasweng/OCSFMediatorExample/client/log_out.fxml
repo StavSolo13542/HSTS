@@ -7,16 +7,16 @@
 
 
 <AnchorPane prefHeight="134.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.LogOutController">
-    <children>
-        <Label fx:id="welcomeLabel" layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="261.0">
-            <font>
-                <Font size="24.0" />
-            </font>
-        </Label>
-        <Button fx:id="logOutBtn" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#LogOut" text="Log Out">
-            <font>
-                <Font size="16.0" />
-            </font>
-        </Button>
-    </children>
+   <children>
+      <Label fx:id="welcomeLabel" layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="261.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button fx:id="logOutBtn" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#LogOut" text="Log Out">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+   </children>
 </AnchorPane>

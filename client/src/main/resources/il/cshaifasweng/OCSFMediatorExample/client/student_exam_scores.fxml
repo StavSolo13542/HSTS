@@ -8,26 +8,26 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="856.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.StudentExamScoresController">
-    <children>
-        <Label layoutX="190.0" layoutY="157.0" text="Grades Page">
-            <font>
-                <Font name="System Bold" size="45.0" />
-            </font>
-        </Label>
-        <TableView fx:id="gradesTBL" layoutX="128.0" layoutY="279.0" prefHeight="342.0" prefWidth="388.0">
-            <columns>
-                <TableColumn fx:id="examCol" prefWidth="84.0" text="Exam Name" />
-                <TableColumn fx:id="gradeCol" prefWidth="128.0" text="Grade" />
-                <TableColumn fx:id="viewCol" prefWidth="129.0" text="View Exam" />
-            </columns>
-            <columnResizePolicy>
-                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-            </columnResizePolicy>
-        </TableView>
-        <Button fx:id="go_back_button" layoutX="515.0" layoutY="122.0" mnemonicParsing="false" onAction="#viewLastPage" text="Go Back">
-            <font>
-                <Font size="16.0" />
-            </font>
-        </Button>
-    </children>
+   <children>
+      <Label layoutX="190.0" layoutY="157.0" text="Grades Page">
+         <font>
+            <Font name="System Bold" size="45.0" />
+         </font>
+      </Label>
+      <TableView fx:id="gradesTBL" layoutX="128.0" layoutY="279.0" prefHeight="342.0" prefWidth="388.0">
+         <columns>
+            <TableColumn fx:id="examCol" prefWidth="84.0" text="Exam Name" />
+            <TableColumn fx:id="gradeCol" prefWidth="128.0" text="Grade" />
+            <TableColumn fx:id="viewCol" prefWidth="129.0" text="View Exam" />
+         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
+      <Button fx:id="go_back_button" layoutX="515.0" layoutY="122.0" mnemonicParsing="false" onAction="#viewLastPage" text="Go Back">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+   </children>
 </AnchorPane>

@@ -396,7 +396,7 @@ public class PrinciplePrimaryController {
             SimpleClient.sendMessage("Specific exam with code:"+examIdTb.getText());
             while (msg==null)
             {
-                System.out.println("9");
+//                System.out.println("9");
             }
             String[]allGrades=getAllGradesInSpecificExam(msg);
             int[]allNumbers=new int[allGrades.length];
@@ -707,7 +707,7 @@ public class PrinciplePrimaryController {
         if (selectedValue == "teacher") {
             SimpleClient.sendMessage("Get all teachers");
             while (msg == null) {
-                System.out.println("5");
+//                System.out.println("5");
             }
             names = GetAllNames(msg);
             msg = null;
@@ -716,7 +716,7 @@ public class PrinciplePrimaryController {
         } else if (selectedValue == "course") {
             SimpleClient.sendMessage("Get all courses");
             while (msg == null) {
-                System.out.println("5");
+//                System.out.println("5");
             }
             names = GetAllNames(msg);
             msg = null;
@@ -725,7 +725,7 @@ public class PrinciplePrimaryController {
         } else {
             SimpleClient.sendMessage("Get all students");
             while (msg == null) {
-                System.out.println("5");
+ //               System.out.println("5");
             }
             names = GetAllNames(msg);
             msg = null;
