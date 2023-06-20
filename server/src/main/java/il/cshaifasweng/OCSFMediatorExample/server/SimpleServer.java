@@ -558,7 +558,7 @@ public class SimpleServer extends AbstractServer {
 						Query query4 = session.createNativeQuery("SELECT the_grade FROM Grades where readyExam_id=" + Integer.parseInt(numbersArr[j]) + "");
 						List<String> question4 = query4.getResultList();
 						gr=question4.toString();
-						gr=gr.replace("[","").replace("]","").replace(",","(1)");
+						gr=gr.replace("[","").replace("]","");
 					}
 					summerize=summerize+" all the scores are: "+gr;
 
