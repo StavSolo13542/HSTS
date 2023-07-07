@@ -291,7 +291,9 @@ public class SimpleServer extends AbstractServer {
 		}
 		return message;
 	}
+	private void CheckExam(String student_name, String exam_id, String answers){
 
+	}
 	@Override
 	//Treating the message from the clint
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
@@ -324,6 +326,14 @@ public class SimpleServer extends AbstractServer {
 			String name = parts[2];
 			String message = StartExam(id,name);
 			sendMessage(message,client);
+		}
+		else if (msgString.startsWith("SubmitAnswers")) {
+			String[] parts = msgString.split(" ");
+
+			String student_name = parts[1];
+			String exam_id = parts[2];
+			String answers = parts[3];
+			CheckExam(student_name, exam_id, answers);
 		}
 		else if (msgString.startsWith("LogOut")) {
 			String[] parts = msgString.split(" ");
