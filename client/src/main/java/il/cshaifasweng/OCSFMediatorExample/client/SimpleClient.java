@@ -16,6 +16,7 @@ public class SimpleClient extends AbstractClient {
 	private static SimpleClient client = null;
 	public static String name = "";
 	public static String role = "";
+	public static String real_id = "";
 	public static ReadyExam currExam;
 	public static Grade currGrade;
 	private SimpleClient(String host, int port) {
@@ -33,6 +34,10 @@ public class SimpleClient extends AbstractClient {
 		}
 		else if (msg_string.startsWith("LogIn")){
 			String[] parts = msg_string.split(" ");
+
+			//TODO: check if the addition of real_id in other places is needed
+			real_id = parts[3];
+
 			name = parts[2];
 			role = parts[1];
 			System.out.println("in login from server message"); // for debugging
@@ -49,6 +54,7 @@ public class SimpleClient extends AbstractClient {
 
 		}
 		else if (msg_string.startsWith("StartExam")){
+			//TODO: consider replacing 'name' with 'real_id' (the types are the same: String)
 			EventBus.getDefault().post(new StartExamEvent(name,currExam));
 
 		}

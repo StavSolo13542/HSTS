@@ -166,6 +166,7 @@ public class SimpleServer extends AbstractServer {
 			session.getTransaction().commit();
 		}
 
+
 		if (count > 0)
 		{
 			if(!isLoggedIn)
@@ -173,8 +174,20 @@ public class SimpleServer extends AbstractServer {
 				loginResultMessage = "LogIn "+  role + " " + username;
 				try (Session session = getSessionFactory().openSession()) {
 					session.getTransaction().begin();
+
 					Query query3 = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = true" +" where name = '" + username  + "' and password = '"+ password + "';");
 					int rowCount = query3.executeUpdate();
+
+					//getting the real_id of the pupil
+					String query = "SELECT p.real_id FROM Pupil p WHERE p.password = :password AND p.name = :name";
+
+					Query sqlQuery = session.createQuery(query);
+					sqlQuery.setParameter("password", password);
+					sqlQuery.setParameter("name", username);
+
+					Object real_id = ((org.hibernate.query.Query<?>) sqlQuery).uniqueResult();
+					loginResultMessage += " " + real_id;
+
 					// Commit the transaction
 					session.getTransaction().commit();
 				}
@@ -311,6 +324,8 @@ public class SimpleServer extends AbstractServer {
 			System.out.println("Finished checking login"); // for debugging
 			//message = "LogIn Alon student";
 
+			//TODO: in the client, handle the addition of the real_id
+
 			sendMessage(message,client);
 		}
 		else if (msgString.startsWith("EnterExam")) {
@@ -328,6 +343,8 @@ public class SimpleServer extends AbstractServer {
 			sendMessage(message,client);
 		}
 		else if (msgString.startsWith("SubmitAnswers")) {
+			// TODO: add real_id to parts (msgString)
+
 			String[] parts = msgString.split(" ");
 
 			String student_name = parts[1];

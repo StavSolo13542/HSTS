@@ -35,6 +35,9 @@ public class App
         configuration.addAnnotatedClass(ReadyExam.class);
         configuration.addAnnotatedClass(Exam_Question_points.class);
 
+//            String queryString = "UPDATE Pupil SET isLoggedIn = 0 WHERE name = 'Michael'";
+//            Query query = session.createQuery(queryString);
+//            int rowCount = query.executeUpdate();
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
@@ -289,65 +292,70 @@ public class App
             SessionFactory sessionFactory = getSessionFactory();
             session = sessionFactory.openSession();
             session.beginTransaction();
-            Subject astro = new Subject("Astrophysics");                  // new subject
-            Course speeds = new Course("Velocity in space", astro);       // new course
-            Answer ans1 = new Answer("1 km/h", false);          // new answers
-            Answer ans2 = new Answer("2 km/h", false);
-            Answer ans3 = new Answer("3 km/h", false);
-            Answer ans4 = new Answer("4 km/h", true);
+//            Subject astro = new Subject("Astrophysics");                  // new subject
+//            Course speeds = new Course("Velocity in space", astro);       // new course
+//            Answer ans1 = new Answer("1 km/h", false);          // new answers
+//            Answer ans2 = new Answer("2 km/h", false);
+//            Answer ans3 = new Answer("3 km/h", false);
+//            Answer ans4 = new Answer("4 km/h", true);
+//
+//            Answer ans5 = new Answer("laptop", false);          // more new answers
+//            Answer ans6 = new Answer("table", false);
+//            Answer ans7 = new Answer("Cruise ship", true);
+//            Answer ans8 = new Answer("tent", false);
+//            Question q1 = new Question("which is bigger?", ans1, ans2, ans3, ans4, astro, speeds);// new questions
+//            /*session.save(ans1);
+//            session.save(ans2);
+//            session.save(ans3);
+//            session.save(ans4);*/
+//            q1.updateCode();  // Important!!! after creating + saving + flushing the question, you have to call this function and then save + flush again
+//
+//            Question q2 = new Question("which number is bigger?", ans5, ans6, ans7, ans8, astro, speeds); // another question;
+//            Teacher t1 = new Teacher("Malki", "Malki_password", false);       // new teacher
+//            t1.addSubject(astro);
+//
+//            Pupil p1 = new Pupil("Alon1", "326164462", "123", false); // new pupil
+//            Principal pr1 = new Principal("Dani", "Dani_Keren_password", false);  // new principle
+//            // new exam
+//            Exam ex1 = new Exam("first exam", speeds, 90, "hello students!", "hello teacher!", t1);
+//            ex1.updateCode(); // Important!!! after creating + saving + flushing the exam, you have to call this function and then save + flush again
+//            /*
+//            This part is important and tricky. normally you would think that adding a question to the exam would look like:
+//            ex1.addQuestion(q1, 70);
+//            (BTW: now adding a question also requires to give that question points- 70 points in this case)
+//            BUT YOU SHOULD NOT ADD QUESTIONS LIKE THIS!!!!!!!!!!
+//            the points of this question on this exam are loaded into a different entity called Exam_question_points.
+//            this entity is created automatically each time you add a question, but in order for it to be saved in the tables
+//            I made the addQuestion function return this entity- and then it has to be saved by the session.
+//            SO THE OVERALL COMMAND TO ADD A QUESTION TO AN EXAM IS:
+//            session.save(ex1.addQuestion(q1, 70));
+//             */
+//            ex1.addQuestion(q1, 70);
+//            ex1.addQuestion(q2, 30);
+//
+//            ReadyExam r1 = new ReadyExam(ex1, "10a4", true, "14/6/2023 13:30");  // new "Out of the drawer" exam
+//            r1.setActual_solving_time(150); // need to update actual solving time at the end of an exam (if no extra time was given- no need)
+//            List<Question> correct = new ArrayList<Question>();       // Questions answered correctly by pupil p1 during exam ex1
+//            correct.add(q1);                                          // p1 answered only question q1 correctly
+//            Grade gr1 = new Grade(/*98, */r1, p1, correct, "Michael, nice exam!"); // grade- note that given the List "correct" it computes the grade itself
+////            deleteAllPupils();
+////            deleteAllTeachers();
+////            deleteAllPrincipals();
+//
+////            deleteAllSubjects();
+////            deleteAllCourses();
+////            deleteAllQuestions();
+//            printAllPrincipals();
+//            printAllTeachers();
+//            printAllPupils();
+////            printAllSubject();
+////            printAllCourses();
+//            printAllQuestions();
 
-            Answer ans5 = new Answer("laptop", false);          // more new answers
-            Answer ans6 = new Answer("table", false);
-            Answer ans7 = new Answer("Cruise ship", true);
-            Answer ans8 = new Answer("tent", false);
-            Question q1 = new Question("which is bigger?", ans1, ans2, ans3, ans4, astro, speeds);// new questions
-            /*session.save(ans1);
-            session.save(ans2);
-            session.save(ans3);
-            session.save(ans4);*/
-            q1.updateCode();  // Important!!! after creating + saving + flushing the question, you have to call this function and then save + flush again
+            String queryString = "UPDATE Pupil SET isLoggedIn = 0 WHERE name = 'Michael'";
+            Query query = session.createQuery(queryString);
+            int rowCount = query.executeUpdate();
 
-            Question q2 = new Question("which number is bigger?", ans5, ans6, ans7, ans8, astro, speeds); // another question;
-            Teacher t1 = new Teacher("Malki", "Malki_password", false);       // new teacher
-            t1.addSubject(astro);
-
-            Pupil p1 = new Pupil("Alon1", "326164462", "123", false); // new pupil
-            Principal pr1 = new Principal("Dani", "Dani_Keren_password", false);  // new principle
-            // new exam
-            Exam ex1 = new Exam("first exam", speeds, 90, "hello students!", "hello teacher!", t1);
-            ex1.updateCode(); // Important!!! after creating + saving + flushing the exam, you have to call this function and then save + flush again
-            /*
-            This part is important and tricky. normally you would think that adding a question to the exam would look like:
-            ex1.addQuestion(q1, 70);
-            (BTW: now adding a question also requires to give that question points- 70 points in this case)
-            BUT YOU SHOULD NOT ADD QUESTIONS LIKE THIS!!!!!!!!!!
-            the points of this question on this exam are loaded into a different entity called Exam_question_points.
-            this entity is created automatically each time you add a question, but in order for it to be saved in the tables
-            I made the addQuestion function return this entity- and then it has to be saved by the session.
-            SO THE OVERALL COMMAND TO ADD A QUESTION TO AN EXAM IS:
-            session.save(ex1.addQuestion(q1, 70));
-             */
-            ex1.addQuestion(q1, 70);
-            ex1.addQuestion(q2, 30);
-
-            ReadyExam r1 = new ReadyExam(ex1, "10a4", true, "14/6/2023 13:30");  // new "Out of the drawer" exam
-            r1.setActual_solving_time(150); // need to update actual solving time at the end of an exam (if no extra time was given- no need)
-            List<Question> correct = new ArrayList<Question>();       // Questions answered correctly by pupil p1 during exam ex1
-            correct.add(q1);                                          // p1 answered only question q1 correctly
-            Grade gr1 = new Grade(/*98, */r1, p1, correct, "Michael, nice exam!"); // grade- note that given the List "correct" it computes the grade itself
-//            deleteAllPupils();
-//            deleteAllTeachers();
-//            deleteAllPrincipals();
-
-//            deleteAllSubjects();
-//            deleteAllCourses();
-//            deleteAllQuestions();
-            printAllPrincipals();
-            printAllTeachers();
-            printAllPupils();
-//            printAllSubject();
-//            printAllCourses();
-            printAllQuestions();
             session.getTransaction().commit();//Save everything
 
         } catch (Exception e) {
@@ -360,6 +368,9 @@ public class App
         }
         finally {
             if (session != null) {
+
+                System.out.println("Server (i.e. App) was launched successfully");
+
                 session.close();
                 session.getSessionFactory().close();
             }
