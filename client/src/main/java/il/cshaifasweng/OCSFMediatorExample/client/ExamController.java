@@ -130,9 +130,9 @@ public class ExamController {
     void SubmitAnswers() {
         String answers = "";
         for (int i = 0; i < answers_list.size(); i++){
-            answers += (answers_list.get(i).getSelectionModel().getSelectedIndex() + 1) + " ";
+            answers += (answers_list.get(i).getSelectionModel().getSelectedIndex() + 1);
         }
-        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]) + " " + answers;
+        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + answers + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
         System.out.println("the message is: " + message);//for debugging
         SimpleClient.sendMessage(message);
         EventBus.getDefault().post(new SuccessEvent("Your test was submitted successfully"));

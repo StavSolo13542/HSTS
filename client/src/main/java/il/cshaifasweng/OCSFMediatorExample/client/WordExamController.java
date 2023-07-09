@@ -163,7 +163,7 @@ public class WordExamController {
         SubmitAnswers(null);
     }
     void SubmitAnswers(File answers) {
-        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
+        String message = "SubmitAnswersWord " + name + " " + exam.getId() + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
         if (answers != null) message += " " + answers.toString();
         System.out.println("the message is: " + message);//for debugging
         SimpleClient.sendMessage(message);
