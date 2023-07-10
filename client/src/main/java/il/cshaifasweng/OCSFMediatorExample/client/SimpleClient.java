@@ -35,7 +35,6 @@ public class SimpleClient extends AbstractClient {
 		else if (msg_string.startsWith("LogIn")){
 			String[] parts = msg_string.split(" ");
 
-			//TODO: check if the addition of real_id in other places is needed
 			real_id = parts[3];
 
 			name = parts[2];
@@ -53,14 +52,10 @@ public class SimpleClient extends AbstractClient {
 			else EventBus.getDefault().post(new SwitchScreenEvent("exam"));
 
 		}
-		else if (msg_string.startsWith("StartExam")){
-			//TODO: consider replacing 'name' with 'real_id' (the types are the same: String)
-			EventBus.getDefault().post(new StartExamEvent(name,currExam));
-
-		}
 		else if (msg_string.startsWith("LogOut")) {
 			name = "";
 			role = "";
+			real_id = "";
 			EventBus.getDefault().post(new SwitchScreenEvent("log_in"));
 		}
 		else if (msg_string.startsWith("StudentGrades")) {
@@ -122,7 +117,7 @@ public class SimpleClient extends AbstractClient {
 	}
 	static public void postMessage(String msg) {
 		if (msg.startsWith("StartExam")){
-			EventBus.getDefault().post(new StartExamEvent(name,currExam));
+			EventBus.getDefault().post(new StartExamEvent(real_id,currExam));
 
 		}
 	}
@@ -162,5 +157,15 @@ public class SimpleClient extends AbstractClient {
 			alert.setHeaderText("Success:");
 			alert.show();
 		});
+	}
+	public static void Validate(String msg){
+		if (msg.startsWith("StartExam")){
+			String[] parts = msg.split(" ");
+			String id = parts[1];
+			if (id.equals(real_id)) postMessage("StartExam");
+			else EventBus.getDefault().post(new InputErrorEvent("InputError identification details are incorrect"));
+
+
+		}
 	}
 }

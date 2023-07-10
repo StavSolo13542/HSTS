@@ -110,24 +110,6 @@ public class SimpleServer extends AbstractServer {
 		}
 	}
 
-	public static boolean isStudent(String id, String name) throws Exception {
-		try (Session session = getSessionFactory().openSession()) {
-			session.getTransaction().begin();
-
-			Query query = session.createNativeQuery("select count(*) from Pupils where real_id =" + id +" and name = '" + name+"';");
-			int count = ((Number) query.getSingleResult()).intValue();
-			session.getTransaction().commit();
-			if (count == 1)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
-
 	//success message format: LogIn <<role>> <<username>> (role is one of the following options: "student", "teacher, "principle")
 	//error message format: InputError <<error description>>
 
@@ -246,34 +228,17 @@ public class SimpleServer extends AbstractServer {
 		return message;
 	}
 
-	//Success message: StartExam
-	//Error message: InputError <<error_description>>
-	private String StartExam(String id, String name){
-		String message;
-		try {
-			if (isStudent(id, name)){
-				message = "StartExam ";
-			}
-			else {
-				message = "InputError identification details are incorrect";
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		return message;
-	}
-
-	private void LogOut(String name, String role){
+	private void LogOut(String id, String role){
 		try (Session session = getSessionFactory().openSession()) {
 			session.getTransaction().begin();
-			Query query = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = false" +" where name = '" + name + "';");
+			Query query = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = false" +" where real_id = '" + id + "';");
 			query.executeUpdate();
 			// Commit the transaction
 			session.getTransaction().commit();
 		}
 	}
 
-	private String GetStudentGrades(String name)
+	private String GetStudentGrades(String id)
 	{
 		String message = "StudentGrades ";
 		Session session = getSessionFactory().openSession();
@@ -282,9 +247,6 @@ public class SimpleServer extends AbstractServer {
 		try {
 			transaction = session.beginTransaction();
 
-			//getting the id
-			String queryForId = "SELECT id FROM pupils WHERE name = '" + name + "';";
-			int id = (int)session.createNativeQuery(queryForId).getSingleResult();
 
 			// Retrieve a row by id
 			String queryString = "SELECT * FROM Grades WHERE pupil_id = " + id + ";";
@@ -304,7 +266,7 @@ public class SimpleServer extends AbstractServer {
 		}
 		return message;
 	}
-	private void CheckExam(String student_name, String exam_id, String answers){
+	private void CheckExam(String student_id, String exam_id, String answers){
 
 	}
 	@Override
@@ -324,7 +286,6 @@ public class SimpleServer extends AbstractServer {
 			System.out.println("Finished checking login"); // for debugging
 			//message = "LogIn Alon student";
 
-			//TODO: in the client, handle the addition of the real_id
 
 			sendMessage(message,client);
 		}
@@ -334,35 +295,26 @@ public class SimpleServer extends AbstractServer {
 			String message = connectToExam(code);
 			sendMessage(message,client);
 		}
-		else if (msgString.startsWith("StartExam")) {
-			String[] parts = msgString.split(" ");
-
-			String id = parts[1];
-			String name = parts[2];
-			String message = StartExam(id,name);
-			sendMessage(message,client);
-		}
 		else if (msgString.startsWith("SubmitAnswers")) {
-			// TODO: add real_id to parts (msgString)
 
 			String[] parts = msgString.split(" ");
 
-			String student_name = parts[1];
+			String student_id = parts[1];
 			String exam_id = parts[2];
 			String answers = parts[3];
-			CheckExam(student_name, exam_id, answers);
+			CheckExam(student_id, exam_id, answers);
 		}
 		else if (msgString.startsWith("LogOut")) {
 			String[] parts = msgString.split(" ");
-			String name = parts[1];
+			String id = parts[1];
 			String role = parts[2];
-			LogOut(name,role);
+			LogOut(id,role);
 			sendMessage("LogOut",client);
 		}
 		else if (msgString.startsWith("GetStudentGrades")) {
 			String[] parts = msgString.split(" ");
-			String name = parts[1];
-			String grades = GetStudentGrades(name);
+			String id = parts[1];
+			String grades = GetStudentGrades(id);
 			sendMessage(grades,client);
 		}
 		else if (msgString.startsWith("getAllQuestion")) {

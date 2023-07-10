@@ -46,7 +46,7 @@ public class StudentExamScoresController {
 		EventBus.getDefault().register(this);
 		Parent userParent = il.cshaifasweng.OCSFMediatorExample.client.App.loadFXML("log_out");
 		pane.getChildren().add(0, userParent);
-		String message = "GetStudentGrades " + SimpleClient.name;
+		String message = "GetStudentGrades " + SimpleClient.real_id;
 		System.out.println("the message is: " + message);//for debugging
 		SimpleClient.sendMessage(message);
     }

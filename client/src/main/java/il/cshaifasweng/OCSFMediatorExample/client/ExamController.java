@@ -22,8 +22,8 @@ import java.util.TimerTask;
 
 public class ExamController {
     private final int[] remaining_time = {0,0};
-    private String name;
     private ReadyExam exam;
+    private String id;
     private String start_time;
     private ArrayList<ComboBox<String>> answers_list;
     @FXML
@@ -51,17 +51,17 @@ public class ExamController {
     @FXML
     void SubmitId(ActionEvent event) {
         String id = idTF.getText();
-        String message = "StartExam " + id + " " + SimpleClient.name;
+        String message = "StartExam " + id;
         System.out.println("the message is: " + message);//for debugging
 
-        SimpleClient.sendMessage(message);
+        SimpleClient.Validate(message);
     }
     @Subscribe
     public void StartExam(StartExamEvent event){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         start_time = dtf.format(now);
-        name = event.getMessage();
+        id = event.getMessage();
         exam = event.getExam();
         answersBtn.setVisible(true);
         answers_list = new ArrayList<>();
@@ -132,7 +132,7 @@ public class ExamController {
         for (int i = 0; i < answers_list.size(); i++){
             answers += (answers_list.get(i).getSelectionModel().getSelectedIndex() + 1);
         }
-        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + answers + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
+        String message = "SubmitAnswers " + SimpleClient.real_id + " " + exam.getId() + " " + answers + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
         System.out.println("the message is: " + message);//for debugging
         SimpleClient.sendMessage(message);
         EventBus.getDefault().post(new SuccessEvent("Your test was submitted successfully"));

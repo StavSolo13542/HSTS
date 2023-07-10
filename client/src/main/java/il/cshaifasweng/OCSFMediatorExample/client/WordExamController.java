@@ -36,7 +36,7 @@ import java.util.TimerTask;
 public class WordExamController {
     private ReadyExam exam;
     private final int[] remaining_time = {0,0};
-    private String name;
+    private String id;
     private String start_time;
     @FXML
     private Button dirBtn;
@@ -163,7 +163,7 @@ public class WordExamController {
         SubmitAnswers(null);
     }
     void SubmitAnswers(File answers) {
-        String message = "SubmitAnswersWord " + name + " " + exam.getId() + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
+        String message = "SubmitAnswersWord " + id + " " + exam.getId() + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
         if (answers != null) message += " " + answers.toString();
         System.out.println("the message is: " + message);//for debugging
         SimpleClient.sendMessage(message);
@@ -173,7 +173,7 @@ public class WordExamController {
     @Subscribe
     public void LoadExam(StartExamEvent event) {
         exam = event.getExam();
-        name = event.getMessage();
+        id = event.getMessage();
     }
 
     @FXML
