@@ -22,7 +22,7 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button fx:id="go_back_button" layoutX="260.0" layoutY="674.0" mnemonicParsing="false" onAction="#viewLastPage" prefHeight="53.0" prefWidth="122.0" text="Go Back">
+      <Button fx:id="go_back_button" layoutX="261.0" layoutY="761.0" mnemonicParsing="false" onAction="#viewLastPage" prefHeight="53.0" prefWidth="122.0" text="Go Back">
          <font>
             <Font size="15.0" />
          </font>
@@ -37,7 +37,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Button layoutX="260.0" layoutY="579.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="122.0">
+      <Button fx:id="change_question" layoutX="256.0" layoutY="579.0" mnemonicParsing="false" onAction="#goToChangeQuestion" prefHeight="53.0" prefWidth="131.0" text="Change Question">
          <font>
             <Font size="15.0" />
          </font>
@@ -47,7 +47,12 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="260.0" layoutY="482.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="122.0">
+      <Button fx:id="pull_exam_btn" layoutX="260.0" layoutY="482.0" mnemonicParsing="false" onAction="#goToPullExam" prefHeight="53.0" prefWidth="122.0" text="Pull Exam">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="check_exam_button" layoutX="260.0" layoutY="668.0" mnemonicParsing="false" onAction="#check_exam" prefHeight="53.0" prefWidth="122.0" text="Check Exam">
          <font>
             <Font size="15.0" />
          </font>

@@ -92,6 +92,21 @@ public class SimpleClient extends AbstractClient {
 //			System.out.println("now we are back at the client");
 			EventBus.getDefault().post(new test(new Message("ToAddQuestion" + msg_string)));
 		}
+		else if (msg_string.startsWith("Here are all SUbjects")){
+			msg_string = msg_string.replaceFirst("Here are all SUbjects", "");
+			System.out.println("now we are back at the client for SUbjects");
+			EventBus.getDefault().post(new test(new Message("ToUpdateQuestion" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all SUbJects")){
+			msg_string = msg_string.replaceFirst("Here are all SUbJects", "");
+			System.out.println("now we are back at the client for SUbJects");
+			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all QUestioNs")){
+			msg_string = msg_string.replaceFirst("Here are all QUestioNs", "");
+			System.out.println("now we are back at the client for QUestioNs");
+			EventBus.getDefault().post(new test(new Message("ToUpdateQuestion" + msg_string)));
+		}
 		else if (msg_string.startsWith("Here are all courses1")){
 			System.out.println("after Here are all courses1");
 			msg_string = msg_string.replaceFirst("Here are all courses1", "");
@@ -105,6 +120,22 @@ public class SimpleClient extends AbstractClient {
 		else if (msg_string.startsWith("Here are all courses")){
 			msg_string = msg_string.replaceFirst("Here are all courses", "");
 			EventBus.getDefault().post(new test(new Message("ToAddQuestion" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE arE all courses")){
+			msg_string = msg_string.replaceFirst("HerE arE all courses", "");
+			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are All exams1")){
+			msg_string = msg_string.replaceFirst("Here are All exams1", "");
+			EventBus.getDefault().post(new test(new Message("ToPullExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE are All REaDy Exams")){
+			msg_string = msg_string.replaceFirst("HerE are All REaDy Exams", "");
+			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE are all details relevant to ReadyEXAm")){
+			msg_string = msg_string.replaceFirst("HerE are all details relevant to ReadyEXAm", "");
+			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
 		}
 
 	}
