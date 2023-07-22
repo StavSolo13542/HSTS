@@ -3,15 +3,21 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Question;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.Initializable;
+import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import javax.persistence.Column;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -61,12 +67,7 @@ public class TeacherChangeQuestion implements Initializable {
     @FXML
     private Label teacher_name;
 
-    @FXML
-    void AnotherQuestionBtn(ActionEvent event) {
-
-    }
     private static String msg;
-
     private String subject_name;
 
     private String question_name;
@@ -168,11 +169,49 @@ public class TeacherChangeQuestion implements Initializable {
         final_code = this.question_name + "```" + final_code;
         System.out.println("FINAL code after update: " + final_code);
         SimpleClient.sendMessage("save Update Question" + final_code);
+
+        // Open another "teacher_change_question.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_change_question .fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    void viewLastPage(ActionEvent event) {
+    void AnotherQuestionBtn(ActionEvent event) {
+        // Open another "teacher_change_question.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_change_question .fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+
+    @FXML
+    void viewLastPage(ActionEvent event) {
+        // Go to "teacher_primary.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addQuestion(ActionEvent event)

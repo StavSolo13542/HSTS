@@ -6,12 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.Initializable;
@@ -95,8 +90,7 @@ public class TeacherAddQuestion implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //EventBus.getDefault().register(this);
-        // initialize subjects_choice_box
+        courses_list_view.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         teacher_name.setText(SimpleClient.name);
         subjects_choice_box.setOnAction(this::addSubject);
         SimpleClient.sendMessage("get all subjects" + SimpleClient.name);

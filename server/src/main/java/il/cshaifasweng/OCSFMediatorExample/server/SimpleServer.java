@@ -81,7 +81,7 @@ public class SimpleServer extends AbstractServer {
 			String newGrades = String.join(" ", grades_array);
 			Query query2 = session.createNativeQuery("UPDATE StudentsWithGrades SET grades = '" + newGrades+ "' WHERE name = '" + name +"';");
 			int rowsUpdated = query2.executeUpdate();
-			// Begin a transaction
+				// Begin a transaction
 //				session.getTransaction().begin();
 //				Query query2 = session.createNativeQuery("UPDATE StudentsWithGrades SET grades = '" + grades + "' WHERE name = '" + name +"';");
 //				int rowsUpdated = query2.executeUpdate();
@@ -104,7 +104,7 @@ public class SimpleServer extends AbstractServer {
 		}
 		else if(role.equals("student"))
 		{
-			return "Pupils";
+				return "Pupils";
 		}
 		else
 		{
@@ -978,4 +978,5 @@ public class SimpleServer extends AbstractServer {
 		return true;
 	}
 }
+
 

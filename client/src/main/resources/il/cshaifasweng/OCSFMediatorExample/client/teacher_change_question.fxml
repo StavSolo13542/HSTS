@@ -24,7 +24,7 @@
                 <Font size="14.0" />
             </font>
         </Label>
-        <Label layoutX="212.0" layoutY="129.0" prefHeight="66.0" prefWidth="207.0" text="Update Question">
+        <Label layoutX="202.0" layoutY="128.0" prefHeight="66.0" prefWidth="227.0" text="Update Question">
             <font>
                 <Font name="System Bold" size="28.0" />
             </font>

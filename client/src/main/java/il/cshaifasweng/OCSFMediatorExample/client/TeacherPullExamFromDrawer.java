@@ -53,8 +53,7 @@ public class TeacherPullExamFromDrawer {
 
     private String exam_name;
 
-    public static void receiveMessage(String message)
-    {
+    public static void receiveMessage(String message) {
         msg = message;
     }
 
@@ -72,7 +71,7 @@ public class TeacherPullExamFromDrawer {
 
 
         SimpleClient.sendMessage("Get All exAms" + SimpleClient.name);
-        while (msg == null){
+        while (msg == null) {
             System.out.print("");
         }
         System.out.println("after first while loop of adding exam to readyExam");
@@ -86,7 +85,7 @@ public class TeacherPullExamFromDrawer {
 
     @FXML
     void saveExambtn(ActionEvent event) {
-        String exam_final_code =  exam_name + "@@@" + exam_code.getText() + "@@@" + mode.getValue() + "@@@" + time.getText();
+        String exam_final_code = exam_name + "@@@" + exam_code.getText() + "@@@" + mode.getValue() + "@@@" + time.getText();
 //        System.out.println(exam_without_questions);
         SimpleClient.sendMessage("save readyExam" + exam_final_code);
         System.out.println("Pressed button to save readyExam!");
@@ -94,18 +93,29 @@ public class TeacherPullExamFromDrawer {
 
     @FXML
     void pullAnotherExam(ActionEvent event) {
-
+        // Open another "teacher_pull_exam.fxml"
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_pull_exam.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void addExam(ActionEvent event)
-    {
+
+    public void addExam(ActionEvent event) {
         this.exam_name = exam.getValue();
     }
 
     @FXML
     void viewLastPage(ActionEvent event) {
+        // Go to "teacher_primary.fxml"
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("log_in.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -116,20 +126,3 @@ public class TeacherPullExamFromDrawer {
         }
     }
 }
-
-//
-//    @FXML
-//    void viewLastPage(ActionEvent event) {
-//        // Go to "log_in.fxml"
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("log_in.fxml"));
-//            Parent root = loader.load();
-//            Scene nextScene = new Scene(root);
-//            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//            currentStage.setScene(nextScene);
-//            currentStage.show();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//

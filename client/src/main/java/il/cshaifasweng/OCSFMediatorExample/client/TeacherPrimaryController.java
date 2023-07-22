@@ -2,7 +2,6 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -11,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class TeacherPrimaryController {
@@ -129,7 +127,7 @@ public class TeacherPrimaryController {
     }
 
     @FXML
-    void check_exam(ActionEvent event) {
+    void goToCheckExam(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_check_exam.fxml"));
             Parent root = loader.load();
