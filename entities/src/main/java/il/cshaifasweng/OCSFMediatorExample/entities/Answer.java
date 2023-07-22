@@ -39,6 +39,10 @@ public class Answer {
 //        to_question.addAnswer(this);      // this is commented because it creates a circle
     }
 
+    public void setAnswer_text(String answer_text) {
+        this.answer_text = answer_text;
+    }
+
     public String getAnswer_text() {
         return answer_text;
     }

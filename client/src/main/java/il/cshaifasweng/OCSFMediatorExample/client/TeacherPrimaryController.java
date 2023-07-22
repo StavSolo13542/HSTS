@@ -22,6 +22,9 @@ public class TeacherPrimaryController {
     }
 
     @FXML
+    private Button change_question;
+
+    @FXML
     private Button pull_exam_btn;
 
     @FXML
@@ -42,6 +45,9 @@ public class TeacherPrimaryController {
 
     @FXML
     private Label teacher_name;
+
+    @FXML
+    private Button check_exam_button;
 
     @FXML
     void addQuestion(ActionEvent event) {
@@ -107,5 +113,32 @@ public class TeacherPrimaryController {
             e.printStackTrace();
         }
     }
-}
 
+    @FXML
+    void goToChangeQuestion(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_change_question.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void check_exam(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_check_exam.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
