@@ -24,39 +24,11 @@ public class SimpleServer extends AbstractServer {
 		super(port);
 
 	}
-
-	public static String getColumnAsString(String columnName) throws Exception {
-		try (Session session = getSessionFactory().openSession()) {
-			Query query = session.createNativeQuery("SELECT name FROM StudentsWithGrades");
-			List<String> names = query.getResultList();
-			String msg = "Student names: ";
-			return msg+names.toString();
-		}
-	}
-	public static String getGradesAsString(String name) throws Exception {
-		try (Session session = getSessionFactory().openSession()) {
-			Query query = session.createNativeQuery("SELECT grades FROM StudentsWithGrades where name = '" + name +"'");
-
-			List<byte[]> gradesList = query.getResultList();
-
-			// Convert byte arrays to strings
-			List<String> gradesAsString = new ArrayList<>();
-			for (byte[] gradeBytes : gradesList) {
-				String gradeString = new String(gradeBytes);
-				gradesAsString.add(gradeString);
-			}
-
-			String msg = "Grades: " + gradesAsString.toString();
-			return msg;
-		}
-	}
-
-
 	public static boolean isReadyExam(String code) throws Exception {
 		try (Session session = getSessionFactory().openSession()) {
 			session.getTransaction().begin();
 
-			Query query = session.createNativeQuery("select count(*) from ReadyExams where four_digit_code ='" + code +"';");
+			Query query = session.createNativeQuery("select count(*) from readyexams where four_digit_code ='" + code +"';");
 			int count = ((Number) query.getSingleResult()).intValue();
 			session.getTransaction().commit();
 			if (count == 1)
@@ -78,14 +50,31 @@ public class SimpleServer extends AbstractServer {
 	private static String getTableName(String role)
 	{
 		if(role.equals("principle")) {
-			return "Principals";
+			return "principals";
 		}
 		else if(role.equals("teacher")) {
-			return "Teachers";
+			return "teachers";
 		}
 		else if(role.equals("student"))
 		{
-				return "Pupils";
+				return "pupils";
+		}
+		else
+		{
+			return "";
+		}
+	}
+	private static String getIdName(String role)
+	{
+		if(role.equals("principle")) {
+			return "principal_id";
+		}
+		else if(role.equals("teacher")) {
+			return "teacher_id";
+		}
+		else if(role.equals("student"))
+		{
+			return "real_id";
 		}
 		else
 		{
@@ -120,12 +109,19 @@ public class SimpleServer extends AbstractServer {
 				try (Session session = getSessionFactory().openSession()) {
 					session.getTransaction().begin();
 
-					Query query3 = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = true" +" where name = '" + username  + "' and password = '"+ password + "';");
+					Query query3 = session.createNativeQuery("UPDATE " + getTableName(role) + " SET isLoggedIn = true" + " where name = '" + username + "' and password = '" + password + "';");
 					int rowCount = query3.executeUpdate();
-
-					//getting the real_id of the pupil
-					String query = "SELECT p.real_id FROM Pupil p WHERE p.password = :password AND p.name = :name";
-
+					//getting the real_id of the user
+					String query = "";
+					if (role.equals("student")){
+						query = "SELECT p.real_id FROM Pupil p WHERE p.password = :password AND p.name = :name";
+					}
+					else if (role.equals("teacher")){
+						query = "SELECT p.teacher_id FROM Teacher p WHERE p.password = :password AND p.name = :name";
+					}
+					else if (role.equals("principle")){
+						query = "SELECT p.principal_id FROM Principal p WHERE p.password = :password AND p.name = :name";
+					}
 					Query sqlQuery = session.createQuery(query);
 					sqlQuery.setParameter("password", password);
 					sqlQuery.setParameter("name", username);
@@ -166,7 +162,7 @@ public class SimpleServer extends AbstractServer {
 
 					// Retrieve a row by id
 					//getting the id
-					String queryForId = "SELECT exam_id FROM ReadyExams WHERE four_digit_code = '" + code + "';";
+					String queryForId = "SELECT exam_id FROM readyexams WHERE four_digit_code = '" + code + "';";
 					int exam_id = (int) session.createNativeQuery(queryForId).getSingleResult();
 					readyExam = session.get(ReadyExam.class, exam_id);
 					message += readyExam.toString();
@@ -194,7 +190,7 @@ public class SimpleServer extends AbstractServer {
 	private void LogOut(String id, String role){
 		try (Session session = getSessionFactory().openSession()) {
 			session.getTransaction().begin();
-			Query query = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = false" +" where real_id = '" + id + "';");
+			Query query = session.createNativeQuery("UPDATE "+ getTableName(role) + " SET isLoggedIn = false where " + getIdName(role) + " = '" + id + "';");
 			query.executeUpdate();
 			// Commit the transaction
 			session.getTransaction().commit();
@@ -212,7 +208,7 @@ public class SimpleServer extends AbstractServer {
 
 
 			// Retrieve a row by id
-			String queryString = "SELECT * FROM Grades WHERE pupil_id = " + id + ";";
+			String queryString = "SELECT * FROM grades WHERE pupil_id = " + id + ";";
 			List<Grade> grades = session.createNativeQuery(queryString, Grade.class).list();
 			for (Grade grade : grades)
 			{
@@ -454,7 +450,6 @@ public class SimpleServer extends AbstractServer {
 		System.out.println("grades is:"+grades);
 		return  grades;
 	}
-
 	public static String getAllStudents() throws Exception {
 		String msg="Student names are:";
 		String message = "";
@@ -554,11 +549,12 @@ public class SimpleServer extends AbstractServer {
 				List<String> question = query.getResultList();
 				String courseId=question.toString();
 				courseId=courseId.replace("[","").replace("]","");
-				System.out.println("here3");
+				System.out.println("course id is:"+courseId);
 				Query query1 = session.createNativeQuery("SELECT id FROM Exams where course_id='" + courseId + "'");
 				System.out.println("here4");
 				List<String> question1 = query1.getResultList();
 				String listOfExamIds=question1.toString();
+				System.out.println("the idof exams are:"+listOfExamIds);
 				listOfExamIds=listOfExamIds.replace("[","").replace("]","");
 				System.out.println("here2");
 				String[] numbersArray = listOfExamIds.split(",");
@@ -588,10 +584,10 @@ public class SimpleServer extends AbstractServer {
 					String[] numbersArr = listOfReayExams.split(",");
 					for (int j = 0; j < numbersArr.length; j++) {
 						numbersArray[j] = numbersArray[j].trim();
-						System.out.println("exams ids of" + names + "are" + numbersArr[i]);
+						System.out.println("exams ids of" + names + "are" + numbersArr[j]);
 					}
-					for (int j = 0; j < numbersArr.length; j++) {
-						Query query4 = session.createNativeQuery("SELECT the_grade FROM Grades where readyExam_id=" + Integer.parseInt(numbersArr[j]) + "");
+					for (int k = 0; k < numbersArr.length; k++) {
+						Query query4 = session.createNativeQuery("SELECT the_grade FROM Grades where readyExam_id=" + Integer.parseInt(numbersArr[k]) + "");
 						List<String> question4 = query4.getResultList();
 						gr=question4.toString();
 						gr=gr.replace("[","").replace("]","");
@@ -702,34 +698,42 @@ public class SimpleServer extends AbstractServer {
 		      List<String> gradesList2=query2.getResultList();
 			  System.out.println("printt"+gradesList2);*/
 
-			Query query2 = session.createNativeQuery("SELECT question_id  FROM exam_question where exam_id="+id+"");
+			System.out.println("int beggining the id is"+id);
+			Query query1 = session.createNativeQuery("SELECT id  FROM Exams where exam_code_number="+Integer.parseInt(id)+"");
+			//Query query4 = session.createNativeQuery("SELECT subject_name FROM Subjects where subject_id = '" + 0 +"'");
+			List<String> gradesList1=query1.getResultList();
+			String idOfqQuestion1=gradesList1.toString();
+			idOfqQuestion1=idOfqQuestion1.replace("[", "").replace("]", "").replace(",","").replace(" ","");
+			System.out.println("idOfqQuestion1 is"+idOfqQuestion1);
+
+
+
+			Query query2 = session.createNativeQuery("SELECT question_id  FROM exam_question where exam_id="+Integer.parseInt(idOfqQuestion1)+"");
 			//Query query4 = session.createNativeQuery("SELECT subject_name FROM Subjects where subject_id = '" + 0 +"'");
 			List<String> gradesList2=query2.getResultList();
 			String idOfqQuestion=gradesList2.toString();
-			idOfqQuestion=idOfqQuestion.replace("[", "").replace("]", "").replace(",","").replace(" ","");
-			length=idOfqQuestion.length();
-			System.out.println("the length is:"+length);
-			message=message+String.valueOf(length);
-			for(int i=0;i<length;i++)
+			System.out.println("the info is:"+idOfqQuestion);
+			idOfqQuestion=idOfqQuestion.replace("[", "").replace("]", "").replace(" ","");
+			String[] numbersArray = idOfqQuestion.split(",");
+			for (int i = 0; i < numbersArray.length; i++) {
+				numbersArray[i] = numbersArray[i].trim();
+				System.out.println("Array value is:"+numbersArray[i]);
+			}
+			System.out.println("the length is:"+numbersArray.length);
+			message=message+String.valueOf(numbersArray.length);
+			for(int i=0;i<numbersArray.length;i++)
 			{
-				count++;
-				int numOfQuestion=idOfqQuestion.charAt(0)-48;
-				Query query = session.createNativeQuery("SELECT question_text  FROM Questions where id="+numOfQuestion+"");
+				Query query = session.createNativeQuery("SELECT question_text  FROM Questions where id="+Integer.parseInt(numbersArray[i])+"");
 				List<String> question=query.getResultList();
 				System.out.println("question is"+question);
 				message=message+"next question:"+question;
-				Query query3 = session.createNativeQuery("SELECT answer_text  FROM Answers where question_id="+numOfQuestion+"");
+				Query query3 = session.createNativeQuery("SELECT answer_text  FROM Answers where question_id="+Integer.parseInt(numbersArray[i])+"");
 				List<String> answers=query3.getResultList();
 				String _answers=answers.toString();
 				_answers=_answers.replace(",","("+(1)+")");
 				System.out.println("answers"+_answers);
 				message=message+"and the answers:"+_answers;
-				if(count<length) {
-					idOfqQuestion = idOfqQuestion.substring(1);
-				}
 				System.out.println("now the string of question is:"+idOfqQuestion);
-
-
 			}
 		}
 		catch (Exception e) {

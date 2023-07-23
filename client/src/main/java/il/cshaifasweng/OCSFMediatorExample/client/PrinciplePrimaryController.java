@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import com.mysql.cj.util.DnsSrv;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 import java.net.URL;
@@ -8,8 +9,7 @@ import java.util.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import java.io.IOException;
@@ -25,10 +25,6 @@ import org.hibernate.Session;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
 
 
 public class PrinciplePrimaryController {
@@ -48,6 +44,9 @@ public class PrinciplePrimaryController {
 
     private String[] answersInExam;
 
+    private boolean canShow=false;
+
+
 
     public PrinciplePrimaryController(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -57,6 +56,10 @@ public class PrinciplePrimaryController {
 
     @FXML
     private ResourceBundle resources;
+
+
+    @FXML
+    private Label warningLbl;
 
     @FXML
     private URL location;
@@ -85,8 +88,6 @@ public class PrinciplePrimaryController {
     @FXML
     private ComboBox<String> pickPersonCb;
 
-    @FXML
-    private AnchorPane pane;
 
     @FXML
     private TableView<distributionExam> distributionTable;
@@ -228,7 +229,12 @@ public class PrinciplePrimaryController {
 
     @FXML
     void ResetTable(ActionEvent event) {
-
+        examIdTb.setText("");
+        scoreTb.setText("");
+        examCb.setValue(null);
+        examCb.getEditor().setText("avg/distribution/median");
+        spcificDistTable.setVisible(false);
+        warningLbl.setVisible(false);
     }
 
     @FXML
@@ -275,9 +281,24 @@ public class PrinciplePrimaryController {
 
 
 
+        if(Integer.parseInt(i)==1 ||Integer.parseInt(i)==2)
+        {
+            distributaionStudents.setVisible(true);
+            distributionTable.setPrefWidth(315);
+            distributionTable.getColumns().get(0).setPrefWidth(78);
+            distributionTable.getColumns().get(1).setPrefWidth(74);
+            distributionTable.getColumns().get(2).setText("average");
+            distributionTable.getColumns().get(2).setPrefWidth(70);
+            distributionTable.getColumns().get(3).setVisible(true);
+        }
         for (int j=0;j<grades.length;j++) {
             String[] gradesArray = grades[j].split(" ");
             List<Integer> gradesList = new ArrayList<>();
+
+            for (String grade : gradesArray) {
+                System.out.println("String array contains:"+grade);
+            }
+            System.out.println("after");
 
             // Convert grades from string to integers
             for (String grade : gradesArray) {
@@ -374,34 +395,69 @@ public class PrinciplePrimaryController {
         distributaionStudents.setItems(distributions);
 
 
+        if(Integer.parseInt(i)==3)
+        {
+            distributaionStudents.setVisible(false);
+            distributionTable.setPrefWidth(520);
+            distributionTable.getColumns().get(0).setPrefWidth(140);
+            distributionTable.getColumns().get(1).setPrefWidth(240);
+            distributionTable.getColumns().get(2).setText("grade");
+            distributionTable.getColumns().get(2).setPrefWidth(140);
+            distributionTable.getColumns().get(3).setVisible(false);
 
-
-
-
-
-
-        // Print the results
-
-
-
+        }
 
 
     }
     @FXML
     void specificExamDist(ActionEvent event) {
+        System.out.println("the text is:"+examIdTb.getText());
         specificExam.clear();
         double sum=0,avg;
+        boolean can_countinue=false;
+        warningLbl.setVisible(true);
+        if(examIdTb.getText()=="")
+        {
+            System.out.println("heyy");
+            warningLbl.setText("please enter exam code");
+            canShow=false;
+            return;
+        }
+
+        for(int i=0;i<listExams.size();i++)
+        {
+            if (listExams.get(i).getCode().equals(examIdTb.getText()))
+            {
+                can_countinue=true;
+            }
+        }
+        if (can_countinue==false)
+        {
+            warningLbl.setText("incorrect code!");
+            canShow=false;
+            return;
+        }
         if(examIdTb.getText()!=null)
         {
+            warningLbl.setText("");
+            warningLbl.setVisible(false);
             SimpleClient.sendMessage("Specific exam with code:"+examIdTb.getText());
             while (msg==null)
             {
-//                System.out.println("9");
+                System.out.println("9");
             }
             String[]allGrades=getAllGradesInSpecificExam(msg);
+            for(String allgrade:allGrades)
+            {
+                System.out.println("the string array is:"+allgrade);
+            }
             int[]allNumbers=new int[allGrades.length];
             for(int i=0;i<allGrades.length;i++) {
                 allNumbers[i] = Integer.parseInt(allGrades[i]);
+            }
+            for(int allnumer:allNumbers)
+            {
+                System.out.println("the int array is:"+allnumer);
             }
             msg=null;
             if(examCb.getValue()=="average") {
@@ -416,6 +472,11 @@ public class PrinciplePrimaryController {
             else if(examCb.getValue()=="median")
             {
                 spcificDistTable.setVisible(false);
+                if(allNumbers.length==0)
+                {
+                    scoreTb.setText("0.0");
+                    return;
+                }
                 Arrays.sort(allNumbers);
 
                 // Calculating the median
@@ -429,10 +490,12 @@ public class PrinciplePrimaryController {
                     int middleIndex = length / 2;
                     median = allNumbers[middleIndex];
                 }
+                scoreTb.setText(Double.toString(median));
             }
             else
             {
 
+                scoreTb.setText("");
                 spcificDistTable.setVisible(true);
                 zeroTenSpecifc.setCellValueFactory(new PropertyValueFactory<Distribution, String>("zero_ten"));
                 tenTwentySpecific.setCellValueFactory(new PropertyValueFactory<Distribution, String>("ten_twenty"));
@@ -575,85 +638,78 @@ public class PrinciplePrimaryController {
 
     @FXML
     void ShowSpecificExam(ActionEvent event) {
-        String a = examIdTb.getText();
-        String examId = "";
-        System.out.println("A is: " + a);
+        boolean can_countinue=false;
+        String examId = examIdTb.getText();
+        System.out.println("exam id is: " + examId);
+        warningLbl.setVisible(true);
 
-        boolean containsValue = false;
-
-        if (a != null && !a.isEmpty()) {
-            try {
-                //   int b = Integer.parseInt(a);
-
-                for (ExamDetails examDetails : listExams) {
-                    if (examDetails.getCode().equals(String.valueOf(a))) {
-                        System.out.println("The code is: " + examDetails.getCode());
-                        examId = examDetails.getId();
-                        containsValue = true;
-                    }
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input: not a valid number");
-            }
-        } else {
-            System.out.println("Input is null or empty");
+        if(examIdTb.getText()=="")
+        {
+            warningLbl.setText("please enter exam code");
+            return;
         }
 
-        if (containsValue) {
-            System.out.println("Object with matching code found");
-        } else {
-            System.out.println("Object with matching code not found");
+        for(int i=0;i<listExams.size();i++)
+        {
+            System.out.println(listExams.get(i).getCode());
+            if (listExams.get(i).getCode().equals(examIdTb.getText()))
+            {
+                can_countinue=true;
+            }
+        }
+        if (can_countinue==false)
+        {
+            warningLbl.setText("incorrect code!");
+            return;
         }
 
-
-        if (containsValue == true) {
-            try {
-
-                SimpleClient.sendMessage("GetQusetionOfExam:" + examId);
-                System.out.println("and the messag is:");
-                while (msg == null) {
-                    System.out.println("2");
-                }
-                System.out.println("the msg is:" + msg);
-                ExamWindow ex = GetQustionInExam(msg);
-                numberOfQuestion = ex.getNummberOfQuestions();
-                questionInExam = ex.getQuestions();
-                answersInExam = ex.getAnswers();
-                System.out.println("Questionsisss:");
-                for (String question : questionInExam) {
-                    System.out.println(question);
-                }
-                System.out.println("Answersissss:");
-                for (String answer : answersInExam) {
-                    System.out.println(answer);
-                }
-                // System.out.println("what"+numberOfQuestion+"brake "+questionInExam+"brake "+ answersInExam+" brake");
-                msg = null;
-
-
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("Hi.fxml"));
-                test t = new test(numberOfQuestion, questionInExam, answersInExam);
-                Parent hiPageRoot = loader.load();
-
-                HiController hiController = loader.getController();
-                hiController.setPreviousStage((Stage) showExamBtn.getScene().getWindow());
-
-                //  hiController.setUp(numberOfQuestion,questionInExam,answersInExam);
-
-
-                Stage hiStage = new Stage();
-                hiStage.setTitle("Exam");
-                hiStage.setScene(new Scene(hiPageRoot));
-
-                hiStage.show();
-                ((Stage) showExamBtn.getScene().getWindow()).close();
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            warningLbl.setText("");
+            warningLbl.setVisible(false);
+            SimpleClient.sendMessage("GetQusetionOfExam:" + examId);
+            System.out.println("and the messag is:");
+            while (msg == null) {
+                System.out.println("4");
             }
+            ExamWindow ex = GetQustionInExam(msg);
+            numberOfQuestion = ex.getNummberOfQuestions();
+            questionInExam = ex.getQuestions();
+            answersInExam = ex.getAnswers();
+            System.out.println("Questionsisss:");
+            for (String question : questionInExam) {
+                System.out.println(question);
+            }
+            System.out.println("Answersissss:");
+            for (String answer : answersInExam) {
+                System.out.println(answer);
+            }
+            // System.out.println("what"+numberOfQuestion+"brake "+questionInExam+"brake "+ answersInExam+" brake");
+            msg = null;
+
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Hi.fxml"));
+            test t = new test(numberOfQuestion, questionInExam, answersInExam);
+            Parent hiPageRoot = loader.load();
+
+            HiController hiController = loader.getController();
+            hiController.setPreviousStage((Stage) showExamBtn.getScene().getWindow());
+
+            //  hiController.setUp(numberOfQuestion,questionInExam,answersInExam);
+
+
+            Stage hiStage = new Stage();
+            hiStage.setTitle("Exam");
+            hiStage.setScene(new Scene(hiPageRoot));
+
+            hiStage.show();
+            ((Stage) showExamBtn.getScene().getWindow()).close();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 
     @FXML
     void resetDistribution(ActionEvent event) {
@@ -707,7 +763,7 @@ public class PrinciplePrimaryController {
         if (selectedValue == "teacher") {
             SimpleClient.sendMessage("Get all teachers");
             while (msg == null) {
-//                System.out.println("5");
+                System.out.println("5");
             }
             names = GetAllNames(msg);
             msg = null;
@@ -716,7 +772,7 @@ public class PrinciplePrimaryController {
         } else if (selectedValue == "course") {
             SimpleClient.sendMessage("Get all courses");
             while (msg == null) {
-//                System.out.println("5");
+                System.out.println("5");
             }
             names = GetAllNames(msg);
             msg = null;
@@ -725,7 +781,7 @@ public class PrinciplePrimaryController {
         } else {
             SimpleClient.sendMessage("Get all students");
             while (msg == null) {
- //               System.out.println("5");
+                System.out.println("5");
             }
             names = GetAllNames(msg);
             msg = null;
@@ -742,9 +798,7 @@ public class PrinciplePrimaryController {
     }
 
     @FXML
-    void initialize() throws IOException {
-        Parent userParent = il.cshaifasweng.OCSFMediatorExample.client.App.loadFXML("log_out");
-        pane.getChildren().add(0, userParent);
+    void initialize() {
         examCb.getItems().add("average");
         examCb.getItems().add("distribution");
         examCb.getItems().add("median");
@@ -760,7 +814,8 @@ public class PrinciplePrimaryController {
         tableExams.setVisible(false);
         zeroToTenColumn.setText("0-10");
         spcificDistTable.setVisible(false);
-        ;
+        warningLbl.setVisible(false);
+        //checks
 
 
         //System.out.println(message.toString());
@@ -868,11 +923,28 @@ public class PrinciplePrimaryController {
 
             questions[i - 1] = question;
             answers[i - 1] = formattedAnswers;
+
         }
+
 
 // Output the results
 
         String numOfQuestion = Integer.toString(numOfQuestions);
+        System.out.println("now we print:");
+        for (String question:questions)
+        {
+            System.out.println("Question is:");
+            System.out.println(question);
+
+        }
+
+        for (String answer:answers)
+        {
+            System.out.println("Answers is:");
+            System.out.println(answer);
+
+        }
+        System.out.println("number of question is:"+numOfQuestion);
         ExamWindow examWindow = new ExamWindow(numOfQuestion, questions, answers);
         return examWindow;
     }
@@ -969,4 +1041,5 @@ public class PrinciplePrimaryController {
         return numbersArray;
 
     }
+
 }

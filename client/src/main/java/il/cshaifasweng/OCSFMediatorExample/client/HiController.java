@@ -140,21 +140,31 @@ public class HiController {
     }
     @FXML
     void initialize() {
-        textt.setVisible(false);
+        //textt.setVisible(false);
        /* while (questionInExam==null)
         {
             System.out.println("3");
         }*/
-        vbox.setSpacing(20); // Set vertical spacing between question VBoxes
+        vbox.setSpacing(100); // Set vertical spacing between question VBoxes
+        double width=vbox.getWidth()/2;
 
         HBox currentRow = new HBox();
         currentRow.setSpacing(20); // Set horizontal spacing between question VBoxes
         vbox.getChildren().add(currentRow);
+        int number_of_rows;
 
         int maxItemsPerRow = 4;
         int itemCount = 0;
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < Integer.parseInt(numberOfQuestion); i++) {
+            // number_of_rows=questionInExam[i].length()/70;
+            if(i>0 && i%2==0)
+            {
+                currentRow = new HBox();
+                currentRow.setSpacing(20); // Set horizontal spacing for the new row
+                vbox.getChildren().add(currentRow);
+            }
+
             // Create question label
             Label questionLabel = new Label(questionInExam[i]);
 
@@ -174,16 +184,14 @@ public class HiController {
             // Create a VBox to hold the question and answer labels
             VBox questionBox = new VBox();
             questionBox.getChildren().addAll(questionLabel, answerLabel1, answerLabel2, answerLabel3, answerLabel4);
-
             currentRow.getChildren().add(questionBox);
-            itemCount++;
 
-            if (itemCount >= maxItemsPerRow) {
+          /*  if (itemCount >= maxItemsPerRow) {
                 currentRow = new HBox();
                 currentRow.setSpacing(20); // Set horizontal spacing for the new row
                 vbox.getChildren().add(currentRow);
                 itemCount = 0;
-            }
+            }*/
 
         }
     }

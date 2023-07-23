@@ -7,22 +7,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane fx:id="pane" prefHeight="752.0" prefWidth="1078.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ExamResultController">
+<AnchorPane fx:id="pane" prefHeight="1079.0" prefWidth="1722.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ExamResultController">
    <children>
-      <Label alignment="CENTER" layoutY="148.0" prefHeight="53.0" prefWidth="1078.0" text="Your Exam Results">
+      <Label alignment="CENTER" layoutY="148.0" prefHeight="53.0" prefWidth="1722.0" text="Your Exam Results">
          <font>
             <Font name="System Bold" size="36.0" />
          </font>
       </Label>
-      <Button fx:id="go_back_button" layoutX="906.0" layoutY="106.0" mnemonicParsing="false" onAction="#viewLastPage" text="Go Back">
+      <Button fx:id="go_back_button" layoutX="1622.0" layoutY="113.0" mnemonicParsing="false" onAction="#viewLastPage" text="Go Back">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <ScrollPane layoutY="199.0" prefHeight="548.0" prefWidth="1078.0">
+      <ScrollPane layoutY="199.0" prefHeight="880.0" prefWidth="1722.0">
          <content>
-            <VBox fx:id="examPane" prefHeight="536.0" prefWidth="1077.0" />
+            <VBox fx:id="examPane" prefHeight="879.0" prefWidth="1722.0" />
          </content>
       </ScrollPane>
    </children>

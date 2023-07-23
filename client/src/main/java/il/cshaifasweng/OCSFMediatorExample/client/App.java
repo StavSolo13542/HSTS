@@ -33,8 +33,8 @@ public class App extends Application {
         this.stage = stage;
         setWindowTitle("Log In");
         stage.setOnCloseRequest(event -> {
-            if (SimpleClient.name != ""){
-                String message = "LogOut " + SimpleClient.name + " " + SimpleClient.role;
+            if (SimpleClient.real_id != ""){
+                String message = "LogOut " + SimpleClient.real_id + " " + SimpleClient.role;
 
                 System.out.println("the message is: " + message);//for debugging
 

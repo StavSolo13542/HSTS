@@ -9,22 +9,22 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" prefHeight="819.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PrinciplePrimaryController">
+<AnchorPane prefHeight="819.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PrinciplePrimaryController">
    <children>
       <Label layoutX="301.0" layoutY="20.0" text="Welcome principle">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <TextField fx:id="extentionTb" layoutX="59.0" layoutY="129.0" promptText="extention reason" />
-      <Button fx:id="approveBtn" layoutX="282.0" layoutY="129.0" mnemonicParsing="false" onAction="#Approve" text="approve" />
-      <Button fx:id="notApproveBtn" layoutX="407.0" layoutY="129.0" mnemonicParsing="false" onAction="#NotApprove" text="not approve" />
-      <Button fx:id="showExamBtn" layoutX="403.0" layoutY="213.0" mnemonicParsing="false" onAction="#ShowSpecificExam" text="show" />
+      <TextField fx:id="extentionTb" layoutX="59.0" layoutY="94.0" promptText="extention reason" />
+      <Button fx:id="approveBtn" layoutX="282.0" layoutY="94.0" mnemonicParsing="false" onAction="#Approve" text="approve" />
+      <Button fx:id="notApproveBtn" layoutX="407.0" layoutY="94.0" mnemonicParsing="false" onAction="#NotApprove" text="not approve" />
+      <Button fx:id="showExamBtn" layoutX="417.0" layoutY="213.0" mnemonicParsing="false" onAction="#ShowSpecificExam" text="show" />
       <Button fx:id="allExamsBtn" layoutX="47.0" layoutY="213.0" mnemonicParsing="false" onAction="#ShowExamDataBase" text="see all exams" />
       <Button fx:id="resetDistributionBtn" layoutX="649.0" layoutY="541.0" mnemonicParsing="false" onAction="#resetDistribution" text="reset" />
-      <Button fx:id="resetExamBtn" layoutX="491.0" layoutY="213.0" mnemonicParsing="false" onAction="#ResetTable" text="reset" />
+      <Button fx:id="resetExamBtn" layoutX="502.0" layoutY="213.0" mnemonicParsing="false" onAction="#ResetTable" text="reset" />
       <Button fx:id="showQuestionsBtn" layoutX="34.0" layoutY="168.0" mnemonicParsing="false" onAction="#ShowQuestionDataBase" text="show question DB" />
-      <TextField fx:id="examIdTb" layoutX="189.0" layoutY="213.0" promptText="exam id" />
+      <TextField fx:id="examIdTb" layoutX="153.0" layoutY="213.0" promptText="exam code" />
       <TextField fx:id="scoreTb" layoutX="237.0" layoutY="277.0" promptText="score" />
       <ComboBox fx:id="examCb" layoutX="14.0" layoutY="277.0" onAction="#specificExamDist" prefHeight="25.0" prefWidth="201.0" promptText="avg/distribution/median" />
       <ComboBox fx:id="pickPersonCb" layoutX="311.0" layoutY="541.0" onAction="#ChooseInfoOfChosen" prefWidth="150.0" promptText="show info" />
@@ -79,5 +79,10 @@
             <TableColumn fx:id="nintyHundredSpecific" prefWidth="75.0" text="91-100" />
          </columns>
       </TableView>
+      <Label fx:id="warningLbl" layoutX="312.0" layoutY="217.0" text="error">
+         <font>
+            <Font size="9.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
