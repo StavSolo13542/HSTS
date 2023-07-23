@@ -6,7 +6,12 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Message;
 import org.hibernate.Session;
@@ -50,14 +55,14 @@ public class SimpleServer extends AbstractServer {
 	private static String getTableName(String role)
 	{
 		if(role.equals("principle")) {
-			return "principals";
+			return "Principals";
 		}
 		else if(role.equals("teacher")) {
-			return "teachers";
+			return "Teachers";
 		}
 		else if(role.equals("student"))
 		{
-				return "pupils";
+				return "Pupils";
 		}
 		else
 		{
@@ -336,6 +341,11 @@ public class SimpleServer extends AbstractServer {
 			String data = connectToDatabase(msgString.replaceFirst("gET all SUbjects", ""));
 			sendMessage("Here are all SUbJects" + data.substring(3), client);
 		}
+		else if (msgString.startsWith("gET aLl SUbjects")){
+			System.out.println("in handleMessageFromClient -> if (gET aLl SUbjects) v2");
+			String data = connectToDatabase(msgString.replaceFirst("gET aLl SUbjects", ""));
+			sendMessage("HerE Are all SUbJects" + data.substring(3), client);
+		}
 		else if (msgString.startsWith("get all courses")) {
 			String data = connectToDatabase_Courses(msgString.replaceFirst("get all courses", ""));
 			sendMessage("Here are all courses" + data.substring(3), client);
@@ -343,6 +353,11 @@ public class SimpleServer extends AbstractServer {
 		else if (msgString.startsWith("geT all Courses")) {
 			String data = connectToDatabase_Courses(msgString.replaceFirst("geT all Courses", ""));
 			sendMessage("HerE arE all courses" + data.substring(3), client);
+		}
+		else if (msgString.startsWith("geT aLl Courses")) {
+			System.out.println("after geT aLl Courses for ask extension");
+			String data = connectToDatabase_Courses(msgString.replaceFirst("geT aLl Courses", ""));
+			sendMessage("HerE ARE all courses" + data.substring(3), client);
 		}
 		else if (msgString.startsWith("Get All exAms"))
 		{
@@ -355,6 +370,16 @@ public class SimpleServer extends AbstractServer {
 			System.out.println("after get all REaDy Exams");
 			String data = connectToDatabase_ReadyExams(msgString.replaceFirst("get all REaDy Exams", ""));
 			sendMessage("HerE are All REaDy Exams" + data.substring(3), client);
+		}
+		else if (msgString.startsWith("get aLl REaDy Exams"))
+		{
+			System.out.println("after get aLl REaDy Exams for ask extension");
+			String data = connectToDatabase_ReadyExams_another(msgString.replaceFirst("get aLl REaDy Exams", ""));
+			sendMessage("HerE ARe All REaDy Exams" + data.substring(3), client);
+		}
+		else if (msgString.startsWith("RequestMoreTime"))
+		{
+			System.out.println("after time extension request: " + msgString);
 		}
 		else if (msgString.startsWith("get all details relevant to ReadyEXAm"))
 		{
@@ -1178,6 +1203,41 @@ public class SimpleServer extends AbstractServer {
 				if (r.getExam().getCourse().getName().equals(course_name))
 				{
 					final_string += ("~~~" + r.getExam().getName() + "@" + r.getFour_digit_code());
+				}
+			}
+			System.out.println("the final string is" + final_string);
+			return final_string;
+		}
+	}
+
+	private String connectToDatabase_ReadyExams_another(String course_name) {
+		try (Session session = getSessionFactory().openSession()) {
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			////////////////////////////////////////////
+			CriteriaQuery<ReadyExam> query1 = builder.createQuery(ReadyExam.class);
+			query1.from(ReadyExam.class);
+			List<ReadyExam> data = session.createQuery(query1).getResultList();
+			String final_string = "";
+
+			SimpleDateFormat sdf
+					= new SimpleDateFormat(
+					"dd/MM/yyyy HH:mm:ss");
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+			for (ReadyExam r : data)
+			{
+				try {
+					LocalDateTime now = LocalDateTime.now();
+					Date the_time_now = sdf.parse(dtf.format(now));
+					Date start_date = sdf.parse(r.getTime_start() + ":00");
+					Long difference = the_time_now.getTime() - start_date.getTime();
+					System.out.println("the difference is: " + TimeUnit.MILLISECONDS.toMinutes(difference) + ".");
+					if (r.getExam().getCourse().getName().equals(course_name) && TimeUnit.MILLISECONDS.toMinutes(difference) < r.getActual_solving_time() && TimeUnit.MILLISECONDS.toMinutes(difference) >= 0) {
+						final_string += ("~~~" + r.getExam().getName() + "@" + r.getFour_digit_code()) + "@" + r.getId();
+					}
+				}
+				catch (ParseException e) {
+					e.printStackTrace();
 				}
 			}
 			System.out.println("the final string is" + final_string);

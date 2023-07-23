@@ -117,6 +117,11 @@ public class SimpleClient extends AbstractClient {
 			System.out.println("now we are back at the client for SUbJects");
 			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
 		}
+		else if (msg_string.startsWith("HerE Are all SUbJects")){
+			msg_string = msg_string.replaceFirst("HerE Are all SUbJects", "");
+			System.out.println("now we are back at the client for SUbJects extend time");
+			EventBus.getDefault().post(new test(new Message("ToTeacherExtendTime" + msg_string)));
+		}
 		else if (msg_string.startsWith("Here are all QUestioNs")){
 			msg_string = msg_string.replaceFirst("Here are all QUestioNs", "");
 			System.out.println("now we are back at the client for QUestioNs");
@@ -140,6 +145,10 @@ public class SimpleClient extends AbstractClient {
 			msg_string = msg_string.replaceFirst("HerE arE all courses", "");
 			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
 		}
+		else if (msg_string.startsWith("HerE ARE all courses")){
+			msg_string = msg_string.replaceFirst("HerE ARE all courses", "");
+			EventBus.getDefault().post(new test(new Message("ToTeacherExtendTime" + msg_string)));
+		}
 		else if (msg_string.startsWith("Here are All exams1")){
 			msg_string = msg_string.replaceFirst("Here are All exams1", "");
 			EventBus.getDefault().post(new test(new Message("ToPullExam" + msg_string)));
@@ -147,6 +156,10 @@ public class SimpleClient extends AbstractClient {
 		else if (msg_string.startsWith("HerE are All REaDy Exams")){
 			msg_string = msg_string.replaceFirst("HerE are All REaDy Exams", "");
 			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE ARe All REaDy Exams")){
+			msg_string = msg_string.replaceFirst("HerE ARe All REaDy Exams", "");
+			EventBus.getDefault().post(new test(new Message("ToTeacherExtendTime" + msg_string)));
 		}
 		else if (msg_string.startsWith("HerE are all details relevant to ReadyEXAm")){
 			msg_string = msg_string.replaceFirst("HerE are all details relevant to ReadyEXAm", "");

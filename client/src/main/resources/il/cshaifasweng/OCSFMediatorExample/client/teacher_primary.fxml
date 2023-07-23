@@ -36,12 +36,13 @@
       </ImageView>
       <Button fx:id="build_exams_button" layoutX="212.0" layoutY="198.0" mnemonicParsing="false" onAction="#buildExams" prefHeight="53.0" prefWidth="200.0" style="-fx-background-color: #b7d0b7; -fx-text-fill: white; -fx-font-size: 15px;" text="Build Exams" textFill="#b7d0b7" />
       <Button fx:id="add_question_button" layoutX="212.0" layoutY="293.0" mnemonicParsing="false" onAction="#addQuestion" prefHeight="53.0" prefWidth="200.0" style="-fx-background-color: #9dbc9d; -fx-text-fill: white; -fx-font-size: 15px;" text="Add Questions" textFill="#9dbc9d" />
-      <Button fx:id="go_back_button" layoutX="215.0" layoutY="672.0" mnemonicParsing="false" onAction="#viewLastPage" prefHeight="53.0" prefWidth="200.0" style="-fx-background-color: #496b49; -fx-text-fill: white; -fx-font-size: 15px;" text="Go Back" textFill="#496b49" />
+      <Button fx:id="go_back_button" layoutX="216.0" layoutY="730.0" mnemonicParsing="false" onAction="#viewLastPage" prefHeight="53.0" prefWidth="200.0" style="-fx-background-color: #496b49; -fx-text-fill: white; -fx-font-size: 15px;" text="Go Back" textFill="#496b49" />
       <Label layoutX="53.0" layoutY="107.0" style="-fx-font-size: 15px; -fx-text-fill: #336633;" text="Name: " />
       <Label fx:id="teacher_name" layoutX="104.0" layoutY="107.0" prefHeight="20.0" prefWidth="131.0" style="-fx-font-size: 14px; -fx-text-fill: #336633;" text="Teacher Name" />
       <Button fx:id="change_question" layoutX="212.0" layoutY="475.0" mnemonicParsing="false" onAction="#goToChangeQuestion" prefHeight="53.0" prefWidth="200.0" style="-fx-background-color: #6ca16c; -fx-text-fill: white; -fx-font-size: 15px;" text="Change Question" textFill="#6ca16c" />
       <Button fx:id="pull_exam_btn" layoutX="214.0" layoutY="388.0" mnemonicParsing="false" onAction="#goToPullExam" prefHeight="53.0" prefWidth="200.0" style="-fx-background-color: #7FAE7F; -fx-text-fill: white; -fx-font-size: 15px;" text="Pull Exam" />
       <Button fx:id="check_exam_button" layoutX="214.0" layoutY="574.0" mnemonicParsing="false" onAction="#goToCheckExam" prefHeight="53.0" prefWidth="200.0" style="-fx-background-color: #5d8a5d; -fx-text-fill: white; -fx-font-size: 15px;" text="Check Exam" textFill="#5d8a5d" />
+      <Button fx:id="ask_time_extention" layoutX="212.0" layoutY="651.0" mnemonicParsing="false" onAction="#goToAskExtention" prefHeight="53.0" prefWidth="200.0" style="-fx-background-color: #5d8a5d; -fx-text-fill: white; -fx-font-size: 15px;" text="Ask Time Extenstion" textFill="#5d8a5d" />
 
    </children>
 </AnchorPane>

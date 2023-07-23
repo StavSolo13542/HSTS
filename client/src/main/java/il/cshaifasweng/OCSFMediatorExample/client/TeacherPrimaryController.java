@@ -48,6 +48,23 @@ public class TeacherPrimaryController {
     private Button check_exam_button;
 
     @FXML
+    private Button ask_time_extention;
+
+    @FXML
+    void goToAskExtention(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ask_overtime.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     void addQuestion(ActionEvent event) {
         // Go to "teacher_add_question.fxml"
         try {
