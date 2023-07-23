@@ -12,7 +12,34 @@ public class test {
 
     public static void sendMessage(String msg) {
         if (mediator != null) {
-            mediator.sendMessageToC(msg);
+            System.out.println("in TEST! " + msg);
+            if (msg.startsWith("ToAddQuestion")) {
+                msg = msg.replaceFirst("ToAddQuestion", "");
+                mediator.sendMessageToTeacherAddQuestion(msg);
+            }
+            else if (msg.startsWith("ToBuildExam"))
+            {
+                msg = msg.replaceFirst("ToBuildExam", "");
+                mediator.sendMessageToTeacherBuildExam(msg);
+            }
+            else if (msg.startsWith("ToPullExam"))
+            {
+                msg = msg.replaceFirst("ToPullExam", "");
+                mediator.sendMessageToTeacherPullExam(msg);
+            }
+            else if (msg.startsWith("ToUpdateQuestion"))
+            {
+                msg = msg.replaceFirst("ToUpdateQuestion", "");
+                mediator.sendMessageToTeacherUpdateQuestion(msg);
+            }
+            else if (msg.startsWith("ToCheckExam"))
+            {
+                msg = msg.replaceFirst("ToCheckExam", "");
+                mediator.sendMessageToTeacherCheckExam(msg);
+            }
+            else{
+                mediator.sendMessageToC(msg);
+            }
         }
     }
 

@@ -35,7 +35,9 @@ public class Course {
         return exams;
     }
 
-
+    public List<Question> getQuestions() {
+        return questions;
+    }
 
     public String getName() {
         return name;

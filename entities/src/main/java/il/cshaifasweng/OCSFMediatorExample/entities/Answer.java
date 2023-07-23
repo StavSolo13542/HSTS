@@ -38,6 +38,10 @@ public class Answer {
 //        to_question.addAnswer(this);      // this is commented because it creates a circle
     }
 
+    public void setAnswer_text(String answer_text) {
+        this.answer_text = answer_text;
+    }
+
     public String getAnswer_text() {
         return answer_text;
     }
@@ -64,4 +68,12 @@ public class Answer {
     }
 
     public Answer() {}
+
+    public Answer(String description_string)
+    {
+        String[] substrings = description_string.split("///");
+        this.answer_text = substrings[0];
+        this.to_question = null;
+        this.is_correct = Boolean.parseBoolean(substrings[1]);
+    }
 }
