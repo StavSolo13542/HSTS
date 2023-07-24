@@ -211,9 +211,10 @@ public class SimpleServer extends AbstractServer {
 		try {
 			transaction = session.beginTransaction();
 
-
+			String primarey_key_query = "SELECT id FROM pupils WHERE real_id = '" + id + "';";
+			String primarey_key =  session.createNativeQuery(primarey_key_query).getSingleResult().toString();
 			// Retrieve a row by id
-			String queryString = "SELECT * FROM grades WHERE pupil_id = " + id + ";";
+			String queryString = "SELECT * FROM grades WHERE pupil_id = " + primarey_key + ";";
 			List<Grade> grades = session.createNativeQuery(queryString, Grade.class).list();
 			for (Grade grade : grades)
 			{

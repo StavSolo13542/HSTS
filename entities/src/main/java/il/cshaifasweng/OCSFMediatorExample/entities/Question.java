@@ -142,7 +142,8 @@ public class Question {
     }
     public Question(String[] desc, int index) {
         this.answers = new ArrayList<>();
-        int i = 1;
+        this.question_code_number = desc[index + 1];
+        int i = 2;
         while(!desc[index + i].equals("Question:")){
             if (desc[index + i].equals("answer_starts_here")){
                 this.answers.add(new Answer(desc,index+i));
@@ -160,7 +161,7 @@ public class Question {
     @Override
     public String toString() {
         String s = "";
-        s += "question_starts_here ";
+        s += "question_starts_here " + question_code_number + " ";
         for (Answer answer : this.answers)
         {
             s += answer.toString();

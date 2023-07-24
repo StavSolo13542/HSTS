@@ -56,7 +56,7 @@ public class ExamResultController {
                 Boolean flag = false;
                 for (Question q : grade.getCorrectly_answered_questions())
                 {
-                    if (question.getId() == q.getId())
+                    if (question.getQuestion_code_number().equals(q.getQuestion_code_number()))
                     {
                         flag = true;
 
