@@ -37,6 +37,11 @@ public class test {
                 msg = msg.replaceFirst("ToCheckExam", "");
                 mediator.sendMessageToTeacherCheckExam(msg);
             }
+            else if (msg.startsWith("ToTeacherExtendTime"))
+            {
+                msg = msg.replaceFirst("ToTeacherExtendTime", "");
+                mediator.sendMessageToTeacherExtendTime(msg);
+            }
             else{
                 mediator.sendMessageToC(msg);
             }

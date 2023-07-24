@@ -22,6 +22,11 @@ public class mediator {
     {
         TeacherCheckExam.receiveMessage(message);
     }
+
+    public static void sendMessageToTeacherExtendTime(String message)
+    {
+        TeacherAskOvertime.receiveMessage(message);
+    }
     public static void sendMessageToC(String message) {
         PrinciplePrimaryController.receiveMessage(message);
     }
