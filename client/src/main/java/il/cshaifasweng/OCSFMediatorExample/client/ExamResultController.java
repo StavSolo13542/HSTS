@@ -34,10 +34,10 @@ public class ExamResultController {
         ReadyExam exam = grade.getReadyExam();
         Platform.runLater(() -> {
             Label label = new Label("Teacher's notes: " + grade.getNote_from_teacher());
-            label.setStyle("-fx-font: 24px \"System\";");
+            label.setStyle("-fx-font: 12px \"System\";");
             examPane.getChildren().add(label);
             label = new Label("Exam instructions: " + exam.getExam().getNote_to_students());
-            label.setStyle("-fx-font: 24px \"System\";");
+            label.setStyle("-fx-font: 12px \"System\";");
             examPane.getChildren().add(label);
             List<Question> questions = exam.getExam().getQuestions();
             int correct_index = 0;
@@ -45,9 +45,9 @@ public class ExamResultController {
                 Question question = questions.get(i);
                 List<Answer> answers = question.getAnswers();
                 Label question_label = new Label("Question " + (i + 1) + ": " + question.getText());
-                question_label.setStyle("-fx-font: 24px \"System\";");
+                question_label.setStyle("-fx-font: 12px \"System\";");
                 Label answer_label = new Label("");
-                answer_label.setStyle("-fx-font: 24px \"System\";");
+                answer_label.setStyle("-fx-font: 12px \"System\";");
                 for (int j = 0; j < answers.size(); j++){
                     if (answers.get(j).getIs_correct()) correct_index = j + 1;
                     answer_label.setText(answer_label.getText() + "Answer " + (j + 1) + ": " + answers.get(j).getAnswer_text() + "\n");
@@ -63,7 +63,7 @@ public class ExamResultController {
                     }
                 }
                 Label check_label = new Label("");
-                check_label.setStyle("-fx-font: 24px \"System\";");
+                check_label.setStyle("-fx-font: 12px \"System\";");
                 if (flag) check_label.setText("You were correct. ");
                 else check_label.setText("You were wrong. ");
                 check_label.setText(check_label.getText() + "The correct answer is: Answer " + correct_index);
