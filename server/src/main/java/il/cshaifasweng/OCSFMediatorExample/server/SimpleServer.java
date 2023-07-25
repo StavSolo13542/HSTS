@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Message;
+import org.greenrobot.eventbus.EventBus;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -24,7 +25,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import static il.cshaifasweng.OCSFMediatorExample.server.App.getSessionFactory;
 
 public class SimpleServer extends AbstractServer {
-
+	public ConnectionToClient principalClient;
+	public static HashMap<Integer, Vector<ConnectionToClient>> test_connections = new HashMap<>();
 	public SimpleServer(int port) {
 		super(port);
 
@@ -232,7 +234,43 @@ public class SimpleServer extends AbstractServer {
 		return message;
 	}
 	private void CheckExam(String student_id, String exam_id, String answers){
+		ReadyExam readyExam = null;
+		Pupil pupil = null;
+		List<Question> correctly_answered_questions = new ArrayList<Question>();
+		String note_from_teacher = "";
 
+		try {
+			Session session = getSessionFactory().openSession();
+			session.beginTransaction();
+
+			readyExam = session.get(ReadyExam.class, Integer.parseInt(exam_id));
+
+			String q_pupil = "FROM Pupil p where p.real_id = :realId";
+			org.hibernate.Query<Pupil> pupilQuery = session.createQuery(q_pupil, Pupil.class);
+			pupilQuery.setParameter("realId", student_id);
+			pupil = pupilQuery.uniqueResult();
+
+			// getting the correctly answered questions
+
+			Exam exam = readyExam.getExam();
+			List<Question> questionList = exam.getQuestions();
+			for(int i =0; i<questionList.size(); i++) {
+				Question question = questionList.get(i);
+				List<Answer> answerList = question.getAnswers();
+				if (answerList.get(Character.getNumericValue(answers.charAt(i))-1).getIs_correct()) {
+					correctly_answered_questions.add(question);
+				}
+			}
+
+			Grade grade = new Grade(readyExam, pupil, correctly_answered_questions, note_from_teacher);
+
+			session.save(grade);
+
+			session.getTransaction().commit();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	@Override
 	//Treating the message from the clint
@@ -252,6 +290,10 @@ public class SimpleServer extends AbstractServer {
 			//message = "LogIn Alon student";
 
 			sendMessage(message,client);
+		}
+		else if(msgString.startsWith("hello i am principal"))
+		{
+			this.principalClient=client;
 		}
 		else if (msgString.startsWith("EnterExam")) {
 			String[] parts = msgString.split(" ");
@@ -380,7 +422,16 @@ public class SimpleServer extends AbstractServer {
 		}
 		else if (msgString.startsWith("RequestMoreTime"))
 		{
-			System.out.println("after time extension request: " + msgString);
+			System.out.println("after time extension request: "+ msgString);
+			if(msgString.startsWith("RequestMoreTime"))
+			{
+				System.out.println("yey");
+			}
+			else
+			{
+				System.out.println("neyyy and the message is:"+msgString);
+			}
+			sendMessage(msgString,this.principalClient);
 		}
 		else if (msgString.startsWith("get all details relevant to ReadyEXAm"))
 		{
@@ -441,6 +492,47 @@ public class SimpleServer extends AbstractServer {
 		{
 			System.out.println("Entered saving a question to an exam");
 			addQuestionToExam(msgString.substring(18));
+		}
+
+		else if (msgString.startsWith("Indeed approved"))
+		{
+			System.out.println("indeed approved");
+			changeExamTime(msgString);
+		}
+	}
+
+	public static void changeExamTime(String msg)
+	{
+
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+			String[] parts = msg.split("_");
+
+			// Extract the two numbers from the second and third parts of the array
+			int examId = Integer.parseInt(parts[1].trim());
+			System.out.println("exam id is "+examId);
+			int minutes = Integer.parseInt(parts[2].trim());
+			System.out.println("minutes is "+examId);
+
+			CriteriaBuilder builder = session.getCriteriaBuilder();
+			CriteriaQuery<ReadyExam> new_query = builder.createQuery(ReadyExam.class);
+			new_query.from(ReadyExam.class);
+			List<ReadyExam> new_data = session.createQuery(new_query).getResultList();
+			for (ReadyExam r : new_data)
+			{
+				if (r.getId() == examId)
+				{
+					r.setActual_solving_time(r.getActual_solving_time() + minutes);
+					session.flush();
+					session.getTransaction().commit();
+					return;
+				}
+			}
+			session.getTransaction().commit();
+			Vector<ConnectionToClient> students = test_connections.get(examId);
+			for (int i = 0; i < students.size(); i++){
+				sendMessage("TimeExtension " + minutes,students.get(i));
+			}
 		}
 	}
 	public static String getSpecificExam(String code) throws Exception {
@@ -1554,7 +1646,7 @@ public class SimpleServer extends AbstractServer {
 	}
 
 	//Send received message to the relevant client
-	protected void sendMessage (String msg, ConnectionToClient client){
+	protected static void sendMessage(String msg, ConnectionToClient client){
 		Message message = new Message(msg);
 		try {
 			client.sendToClient(message);

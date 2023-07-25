@@ -120,6 +120,11 @@ public class ExamController {
         myTimer.scheduleAtFixedRate(task,0,1000);
 
     }
+    @Subscribe
+    public void UpdateTime(TimeExtensionEvent event) {
+        Integer minutes = Integer.parseInt(event.getMessage());
+        remaining_time[0] += minutes;
+    }
     @FXML
     void SubmitAnswersOnTime(ActionEvent event) {
         SubmitAnswers();

@@ -175,7 +175,11 @@ public class WordExamController {
         exam = event.getExam();
         id = event.getMessage();
     }
-
+    @Subscribe
+    public void UpdateTime(TimeExtensionEvent event) {
+        Integer minutes = Integer.parseInt(event.getMessage());
+        remaining_time[0] += minutes;
+    }
     @FXML
     void SubmitFile(ActionEvent event) {
         FileChooser chooser = new FileChooser();

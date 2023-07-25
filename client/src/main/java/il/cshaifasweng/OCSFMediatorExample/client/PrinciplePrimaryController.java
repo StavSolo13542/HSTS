@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import java.io.IOException;
@@ -20,18 +21,26 @@ import java.util.regex.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.cell.PropertyValueFactory;
-
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.hibernate.Session;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
+import javax.swing.*;
+
 
 public class PrinciplePrimaryController {
 
+    private  int examID;
+
+    private int minutes;
     private Stage primaryStage;
     private Message message;
 
+
+    private static String extension;
     private static String msg;
 
     private String lastMsg;
@@ -45,6 +54,7 @@ public class PrinciplePrimaryController {
     private String[] answersInExam;
 
     private boolean canShow=false;
+
 
 
 
@@ -62,6 +72,18 @@ public class PrinciplePrimaryController {
     private Label warningLbl;
 
     @FXML
+    private TextField anotherTF;
+
+
+    @FXML
+    private TextField otherTf;
+
+
+
+    @FXML
+    private static Label extentionLbl;
+
+    @FXML
     private URL location;
 
     @FXML
@@ -77,7 +99,10 @@ public class PrinciplePrimaryController {
     public TextField examIdTb;
 
     @FXML
-    private TextField extentionTb;
+    private Button ClearExtBtn;
+
+    @FXML
+    private  TextField extentionTb;
 
     @FXML
     public static Button notApproveBtn;
@@ -95,7 +120,8 @@ public class PrinciplePrimaryController {
     private TableColumn<distributionExam, String> avgColumn;
     @FXML
     private TableColumn<distributionExam, String> medianColumn;
-
+    @FXML
+    private AnchorPane pane;
     @FXML
     private TableColumn<distributionExam, String> testIdColumn;
 
@@ -146,6 +172,9 @@ public class PrinciplePrimaryController {
 
     @FXML
     private Button resetExamBtn;
+
+    @FXML
+    private Button ResetExtentionBtn;
 
     @FXML
     private TextField scoreTb;
@@ -218,14 +247,31 @@ public class PrinciplePrimaryController {
 
     @FXML
     void Approve(ActionEvent event) {
+        SimpleClient.sendMessage("Indeed approved___" + examID + "___" + minutes );
+        System.out.println("not wowwww");
+        extentionTb.setText("extension approved!");
+        ResetExtentionBtn.setVisible(true);
 
     }
 
     @FXML
     void NotApprove(ActionEvent event) {
-
-
+        SimpleClient.sendMessage("ExtensionResponse not approved");
+        System.out.println("not wowwww");
+        extentionTb.setText("extension denied!");
+        ResetExtentionBtn.setVisible(true);
     }
+
+    @FXML
+    void ResetExtention(ActionEvent event) {
+        extentionTb.setText("");
+        //SimpleClient.sendMessage("RequestMoreTime");
+    }
+
+
+
+
+
 
     @FXML
     void ResetTable(ActionEvent event) {
@@ -235,6 +281,30 @@ public class PrinciplePrimaryController {
         examCb.getEditor().setText("avg/distribution/median");
         spcificDistTable.setVisible(false);
         warningLbl.setVisible(false);
+    }
+    @Subscribe
+    public void ShowExtension(ExtensionEvent event) {
+        msg=null;
+        System.out.println("IM IN PRIMARY");
+        String[] parts = event.getMessage().split("___");
+
+        // Check if the array has at least 4 elements
+        if (parts.length >= 4) {
+            int firstNumber = Integer.parseInt(parts[1]);
+            int secondNumber = Integer.parseInt(parts[2]);
+            String remainingText = parts[3];
+
+            // Output the extracted information
+            System.out.println("First number: " + firstNumber);
+            System.out.println("Second number: " + secondNumber);
+            System.out.println("Remaining text: " + remainingText);
+            System.out.println("im in test");
+            String realReason = "for exam of id " + firstNumber + " im asking extension of " + secondNumber + " , " + remainingText;
+            examID=firstNumber;
+            minutes=secondNumber;
+            extentionTb.setText(realReason);
+        }
+
     }
 
     @FXML
@@ -798,7 +868,13 @@ public class PrinciplePrimaryController {
     }
 
     @FXML
-    void initialize() {
+    void initialize() throws IOException {
+        //anotherTF.setText("hello");
+        extentionTb.setText("");
+        Parent userParent = il.cshaifasweng.OCSFMediatorExample.client.App.loadFXML("log_out");
+        pane.getChildren().add(0, userParent);
+        EventBus.getDefault().register(this);
+        SimpleClient.sendMessage("hello i am principal");
         examCb.getItems().add("average");
         examCb.getItems().add("distribution");
         examCb.getItems().add("median");
@@ -834,10 +910,17 @@ public class PrinciplePrimaryController {
     }
 
     public static void receiveMessage(String message) {
-        // System.out.println("Message received: " + message);
         msg = message;
     }
 
+    public void receiveExtention(String message)
+    {
+        System.out.println("the msg is:"+message);
+        String new_message=" answer "+message;
+        extentionTb.setText(new_message);
+        otherTf.setText(new_message);
+        ResetExtentionBtn.setVisible(false);
+    }
     public QuestionAndAnswers SpliteToTokens(String msg) {
         String[] splitMessage = msg.split("next question:");
         String[] questions = new String[splitMessage.length - 1];

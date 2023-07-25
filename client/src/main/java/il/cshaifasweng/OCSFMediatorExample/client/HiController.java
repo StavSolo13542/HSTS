@@ -145,11 +145,12 @@ public class HiController {
         {
             System.out.println("3");
         }*/
-        vbox.setSpacing(100); // Set vertical spacing between question VBoxes
+        // vbox.setSpacing(100); // Set vertical spacing between question VBoxes
         double width=vbox.getWidth()/2;
+        vbox.setSpacing(2);
 
         HBox currentRow = new HBox();
-        currentRow.setSpacing(20); // Set horizontal spacing between question VBoxes
+        currentRow.setSpacing(100); // Set horizontal spacing between question VBoxes
         vbox.getChildren().add(currentRow);
         int number_of_rows;
 
@@ -157,13 +158,17 @@ public class HiController {
         int itemCount = 0;
 
         for (int i = 0; i < Integer.parseInt(numberOfQuestion); i++) {
+            currentRow = new HBox();
+            currentRow.setSpacing(40); // Set horizontal spacing for the new row
+            vbox.getChildren().add(currentRow);
+
             // number_of_rows=questionInExam[i].length()/70;
-            if(i>0 && i%2==0)
+           /* if(i>0 && i%2==0)
             {
                 currentRow = new HBox();
                 currentRow.setSpacing(20); // Set horizontal spacing for the new row
                 vbox.getChildren().add(currentRow);
-            }
+            }*/
 
             // Create question label
             Label questionLabel = new Label(questionInExam[i]);

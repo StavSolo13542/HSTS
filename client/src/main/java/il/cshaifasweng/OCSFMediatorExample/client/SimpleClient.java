@@ -89,7 +89,16 @@ public class SimpleClient extends AbstractClient {
 		{
 			EventBus.getDefault().post(new test(new Message(msg_string)));
 		}
-
+		else if(msg_string.startsWith("RequestMoreTime"))
+		{
+			System.out.println("im in request more time"+msg_string);
+			EventBus.getDefault().post(new ExtensionEvent(msg_string));
+		}
+		else if(msg_string.startsWith("TimeExtension"))
+		{
+			String[] parts = msg_string.split(" ");
+			EventBus.getDefault().post(new TimeExtensionEvent(parts[1]));
+		}
 		else if(msg_string.startsWith("Teachers names are"))
 		{
 			EventBus.getDefault().post(new test(new Message(msg_string)));

@@ -3840,7 +3840,7 @@ public class App
             //   deleteAllCourses();
             // deleteAllQuestions();
 
-            //    generatePrincipal();
+            //generatePrincipal();
             // generateTeachers();
 
 //            generateStudentsWithGrades();
