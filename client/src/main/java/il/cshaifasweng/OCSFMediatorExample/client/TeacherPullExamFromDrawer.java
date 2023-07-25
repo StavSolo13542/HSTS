@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +58,95 @@ public class TeacherPullExamFromDrawer {
         msg = message;
     }
 
+    public static Boolean isExamCodeOk(String str)
+    {
+        if (str.length() != 4)
+        {
+            return false;
+        }
+        for (int i=0; i < str.length(); i++)
+        {
+            if (!((str.charAt(i) <= 'z' && str.charAt(i) >= 'a') || (str.charAt(i) <= '9' && str.charAt(i) >= '0')))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static Boolean isDateOk(String str)
+    {
+        if (str.length() != 16)
+        {
+            return false;
+        }
+        if (!((str.charAt(0) <= '9' && str.charAt(0) >= '0')))
+        {
+            return false;
+        }
+        if (!((str.charAt(1) <= '9' && str.charAt(1) >= '0')))
+        {
+            return false;
+        }
+        if (str.charAt(2) != '/')
+        {
+            return false;
+        }
+        if (!((str.charAt(3) <= '9' && str.charAt(3) >= '0')))
+        {
+            return false;
+        }
+        if (!((str.charAt(4) <= '9' && str.charAt(4) >= '0')))
+        {
+            return false;
+        }
+        if (str.charAt(5) != '/')
+        {
+            return false;
+        }
+        if (!((str.charAt(6) <= '9' && str.charAt(6) >= '0')))
+        {
+            return false;
+        }
+        if (!((str.charAt(7) <= '9' && str.charAt(7) >= '0')))
+        {
+            return false;
+        }
+        if (!((str.charAt(8) <= '9' && str.charAt(8) >= '0')))
+        {
+            return false;
+        }
+        if (!((str.charAt(9) <= '9' && str.charAt(9) >= '0')))
+        {
+            return false;
+        }
+        if (str.charAt(10) != ' ')
+        {
+            return false;
+        }
+        if (!((str.charAt(11) <= '9' && str.charAt(11) >= '0')))
+        {
+            return false;
+        }
+        if (!((str.charAt(12) <= '9' && str.charAt(12) >= '0')))
+        {
+            return false;
+        }
+        if (str.charAt(13) != ':')
+        {
+            return false;
+        }
+        if (!((str.charAt(14) <= '9' && str.charAt(14) >= '0')))
+        {
+            return false;
+        }
+        if (!((str.charAt(15) <= '9' && str.charAt(15) >= '0')))
+        {
+            return false;
+        }
+        return true;
+    }
+
     @FXML
     void initialize() {
         this.teacher_name.setText(SimpleClient.name);
@@ -81,14 +171,61 @@ public class TeacherPullExamFromDrawer {
         // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
         ObservableList<String> observableList = FXCollections.observableArrayList(subjectList);
         exam.setItems(observableList);
+        msg = null;
     }
 
     @FXML
     void saveExambtn(ActionEvent event) {
         String exam_final_code = exam_name + "@@@" + exam_code.getText() + "@@@" + mode.getValue() + "@@@" + time.getText();
+        if (!isExamCodeOk(this.exam_code.getText()))
+        {
+            System.out.println(" exam code number is not in a correct format.");
+            EventBus.getDefault().post(new InputErrorEvent(" Exam code number must be 4 digits and lowercase letters."));
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+                Parent root = loader.load();
+                Scene nextScene = new Scene(root);
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.setScene(nextScene);
+                currentStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            msg = null;
+            return;
+        }
+        if (!isDateOk(this.time.getText()))
+        {
+            System.out.println(" Time & Date are not in a correct format.");
+            EventBus.getDefault().post(new InputErrorEvent(" Time & Date are not in a correct format."));
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+                Parent root = loader.load();
+                Scene nextScene = new Scene(root);
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.setScene(nextScene);
+                currentStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            msg = null;
+            return;
+        }
 //        System.out.println(exam_without_questions);
         SimpleClient.sendMessage("save readyExam" + exam_final_code);
         System.out.println("Pressed button to save readyExam!");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        msg = null;
+        return;
     }
 
     @FXML

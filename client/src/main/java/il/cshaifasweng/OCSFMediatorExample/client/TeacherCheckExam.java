@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.net.URL;
@@ -82,6 +83,8 @@ public class TeacherCheckExam implements Initializable {
 
     private Boolean[] used;
 
+    private Boolean grade_ok;
+
     private static String msg;
 
     public static void receiveMessage(String message)
@@ -89,10 +92,16 @@ public class TeacherCheckExam implements Initializable {
         msg = message;
     }
 
+    public static Boolean checkGradeOk(String the_grade)
+    {
+        return the_grade.chars().allMatch(Character::isDigit) && (Integer.valueOf(the_grade) >= 0);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //EventBus.getDefault().register(this);
         // initialize subjects_choice_box
+        this.grade_ok = true;
         teacher_name.setText(SimpleClient.name);
         subjects_choice_box.setOnAction(this::addSubject);
         course_choice_box.setOnAction(this::addCourse);
@@ -143,6 +152,24 @@ public class TeacherCheckExam implements Initializable {
     void saveBtn(ActionEvent event) {
         String[] split_students_name = this.student_choice_box.getValue().split(" ");
         this.out_string[this.pupil_index] = split_students_name[split_students_name.length - 1] + "```" + this.grade.getText() + "```" + this.note_to_student.getText();
+        this.grade_ok = this.grade_ok && checkGradeOk(this.grade.getText());
+        if (!this.grade_ok)
+        {
+            System.out.println(" Grade is not in a correct format.");
+            EventBus.getDefault().post(new InputErrorEvent(" Grade is not in a correct format."));
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+                Parent root = loader.load();
+                Scene nextScene = new Scene(root);
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.setScene(nextScene);
+                currentStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            msg = null;
+            return;
+        }
         String description_string = exam_name.split("@")[1];
         for (String pup: this.out_string)
         {
@@ -152,7 +179,7 @@ public class TeacherCheckExam implements Initializable {
 
         // Open another "teacher_check_exam.fxml"
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_check_exam.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -235,6 +262,23 @@ public class TeacherCheckExam implements Initializable {
         SimpleClient.sendMessage("get all REaDy Exams" + this.course_name);
         while (msg == null){
             System.out.print("");
+        }
+        if (msg.equals(""))
+        {
+            System.out.println("blanc message!");
+            EventBus.getDefault().post(new InputErrorEvent(" No exams to check in this course"));
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+                Parent root = loader.load();
+                Scene nextScene = new Scene(root);
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.setScene(nextScene);
+                currentStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            msg = null;
+            return;
         }
         System.out.println("after second while loop");
         String[] ready_exams = msg.split("~~~");
@@ -330,6 +374,7 @@ public class TeacherCheckExam implements Initializable {
         {
 //            String[] split_students_name = this.student_choice_box.getValue().split(" ");
             this.out_string[this.pupil_index] = this.prev_id + "```" + this.grade.getText() + "```" + this.note_to_student.getText();
+            this.grade_ok = this.grade_ok && checkGradeOk(this.grade.getText());
         }
         this.pupil_index = student_choice_box.getSelectionModel().getSelectedIndex();
 //        System.out.println(this.pupil_index);
@@ -369,22 +414,5 @@ public class TeacherCheckExam implements Initializable {
         ObservableList<String> observableList21 = FXCollections.observableArrayList(wrong_questionsList);
         this.wrong_questions_listview.setItems(observableList21);
         /******************/
-        /*SimpleClient.sendMessage("get all QUestions" + this.subject_name);
-        while (msg == null){
-            System.out.print("");
-        }
-        System.out.println("after second while loop");
-        String[] questions = msg.split("___");
-        this.questionList = Arrays.asList(questions);
-        List<String> real_questions = new ArrayList<String>();
-        for (String q : questionList)
-        {
-            real_questions.add(q.split("---")[0]);
-        }
-
-        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
-        ObservableList<String> observableList = FXCollections.observableArrayList(real_questions);
-        question_choice_box.setItems(observableList);
-        msg = null;*/
     }
 }

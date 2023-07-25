@@ -183,7 +183,7 @@ public class TeacherAssignGrades implements Initializable {
             SimpleClient.sendMessage("save exam-question" + exam_name.getText() + "```" + question + "```" + "10");        // TODO: need to change 10 to teacher-chosen points for the question
         }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_build_exam.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

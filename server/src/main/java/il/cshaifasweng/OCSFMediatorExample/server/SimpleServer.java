@@ -418,6 +418,7 @@ public class SimpleServer extends AbstractServer {
 		{
 			System.out.println("after get aLl REaDy Exams for ask extension");
 			String data = connectToDatabase_ReadyExams_another(msgString.replaceFirst("get aLl REaDy Exams", ""));
+			System.out.println("the final string is" + data.substring(3));
 			sendMessage("HerE ARe All REaDy Exams" + data.substring(3), client);
 		}
 		else if (msgString.startsWith("RequestMoreTime"))
@@ -1298,6 +1299,10 @@ public class SimpleServer extends AbstractServer {
 					final_string += ("~~~" + r.getExam().getName() + "@" + r.getFour_digit_code());
 				}
 			}
+			if (final_string.equals(""))
+			{
+				final_string = "~~~";
+			}
 			System.out.println("the final string is" + final_string);
 			return final_string;
 		}
@@ -1333,7 +1338,10 @@ public class SimpleServer extends AbstractServer {
 					e.printStackTrace();
 				}
 			}
-			System.out.println("the final string is" + final_string);
+			if (final_string.equals(""))
+			{
+				final_string = "___";
+			}
 			return final_string;
 		}
 	}
@@ -1610,7 +1618,7 @@ public class SimpleServer extends AbstractServer {
 	{
 		try (Session session = getSessionFactory().openSession()) {
 			session.getTransaction().begin();
-			String[] substrings = description_string.split("&&&");
+			String[] substrings = description_string.split("```");
 			String exam_name = substrings[0];
 			String question_name = substrings[1];
 			CriteriaBuilder builder = session.getCriteriaBuilder();

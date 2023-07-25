@@ -26,6 +26,7 @@ public class SimpleClient extends AbstractClient {
 	@Override
 	//Use EventBus to activate the relevant method based on the message
 	protected void handleMessageFromServer(Object msg) {
+		System.out.println("received message: " + msg.toString());
 		if(!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
 		String msg_string = msg.toString();
 		msg_string = msg_string.replace("[", "").replace("]", "").replace(",","");

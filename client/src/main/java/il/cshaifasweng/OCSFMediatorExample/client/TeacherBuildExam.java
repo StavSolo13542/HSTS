@@ -203,7 +203,7 @@ public class TeacherBuildExam implements Initializable {
         System.out.println("Pressed button to save basic exam!\n\n");
 
         // Save exam questions
-        List<DoubleString> rows = questions_table.getSelectionModel().getSelectedItems();
+        List<DoubleString> rows = questions_table.getItems();
         for (DoubleString doubleString : rows) {
             String question = doubleString.getQuestion();
             String grade = doubleString.getGrade();
@@ -212,7 +212,7 @@ public class TeacherBuildExam implements Initializable {
         }
         // Open another "teacher_build_exam.fxml" page
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_build_exam.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

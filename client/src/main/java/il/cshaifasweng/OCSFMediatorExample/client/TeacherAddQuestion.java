@@ -191,7 +191,7 @@ public class TeacherAddQuestion implements Initializable {
         }
         // Open a new "teacher_add_question.fxml"
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_add_question.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

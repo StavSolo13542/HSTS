@@ -79,6 +79,11 @@ public class TeacherChangeQuestion implements Initializable {
         msg = message;
     }
 
+    public static Boolean checkAnswerNumberOk(String the_grade)
+    {
+        return the_grade.chars().allMatch(Character::isDigit) && (Integer.valueOf(the_grade) >= 0);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //EventBus.getDefault().register(this);
@@ -161,6 +166,23 @@ public class TeacherChangeQuestion implements Initializable {
         {
             SimpleClient.sendMessage("save course-question" + question_text_field.getText() + "```" + course);
         }*/
+        if (!(checkAnswerNumberOk(this.correct_answer.getText()) && Integer.valueOf(this.correct_answer.getText()) >= 1 && Integer.valueOf(this.correct_answer.getText()) <= 4))
+        {
+            System.out.println(" Correct answer number is not in a correct format.");
+            EventBus.getDefault().post(new InputErrorEvent(" Correct answer number is not in a correct format."));
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+                Parent root = loader.load();
+                Scene nextScene = new Scene(root);
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.setScene(nextScene);
+                currentStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            msg = null;
+            return;
+        }
         String final_code = question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + String.valueOf((correct_answer.getText().equals("1") ? "true" : "false")) +
                 "---" + answer2_text_field.getText() + "///" + String.valueOf((correct_answer.getText().equals("2") ? "true" : "false")) +
                 "---" + answer3_text_field.getText() + "///" + String.valueOf((correct_answer.getText().equals("3") ? "true" : "false")) +
@@ -172,7 +194,7 @@ public class TeacherChangeQuestion implements Initializable {
 
         // Open another "teacher_change_question.fxml"
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_change_question .fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -48,8 +48,8 @@
                 <Font size="14.0" />
             </font>
         </Label>
-        <TextArea fx:id="time" layoutX="465.0" layoutY="182.0" prefHeight="38.0" prefWidth="148.0" />
-        <TextArea fx:id="exam_code" layoutX="124.0" layoutY="182.0" prefHeight="38.0" prefWidth="183.0" />
+        <TextArea fx:id="time" layoutX="465.0" layoutY="182.0" prefHeight="38.0" prefWidth="148.0" promptText="DD/MM/YYYY HH:MM" />
+        <TextArea fx:id="exam_code" layoutX="124.0" layoutY="182.0" prefHeight="38.0" prefWidth="183.0" promptText="eg. 10g6" />
         <Label layoutX="25.0" layoutY="191.0" prefHeight="20.0" prefWidth="99.0" text="Set Exam Code:">
             <font>
                 <Font size="14.0" />

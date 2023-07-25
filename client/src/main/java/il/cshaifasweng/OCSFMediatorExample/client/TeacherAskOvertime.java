@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.net.URL;
@@ -116,6 +117,23 @@ public class TeacherAskOvertime implements Initializable {
         while (msg == null){
             System.out.print("");
         }
+        if (msg.equals(""))
+        {
+            System.out.println("blanc message!");
+            EventBus.getDefault().post(new InputErrorEvent(" No ongoing exams!"));
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+                Parent root = loader.load();
+                Scene nextScene = new Scene(root);
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.setScene(nextScene);
+                currentStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            msg = null;
+            return;
+        }
         System.out.println("after second while loop");
         String[] ready_exams = msg.split("~~~");
         this.exam_ids = new int[ready_exams.length];
@@ -139,11 +157,36 @@ public class TeacherAskOvertime implements Initializable {
 
     @FXML
     void saveBtn(ActionEvent event) {
-        SimpleClient.sendMessage("RequestMoreTime___" + this.exam_ids[this.exam_index] + "___" + this.extension.getText() + "___" + this.note_to_principal.getText());
+        if (this.extension.getText().equals("") || this.note_to_principal.getText().equals(""))
+        {
+            EventBus.getDefault().post(new InputErrorEvent(" No empty fields are allowed"));
+        }
+        else {
+            SimpleClient.sendMessage("RequestMoreTime___" + this.exam_ids[this.exam_index] + "___" + this.extension.getText() + "___" + this.note_to_principal.getText());
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+                Parent root = loader.load();
+                Scene nextScene = new Scene(root);
+                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                currentStage.setScene(nextScene);
+                currentStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
     void viewLastPage(ActionEvent event) {
-
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

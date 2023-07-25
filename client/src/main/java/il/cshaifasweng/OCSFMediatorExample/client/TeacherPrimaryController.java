@@ -103,6 +103,12 @@ public class TeacherPrimaryController {
     void viewLastPage(ActionEvent event) {
         // Go to "log_in.fxml"
         try {
+            String message = "LogOut " + SimpleClient.real_id + " " + SimpleClient.role;
+
+            System.out.println("the message is: " + message);//for debugging
+
+            SimpleClient.sendMessage(message);
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("log_in.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
