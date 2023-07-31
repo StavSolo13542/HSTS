@@ -36,6 +36,7 @@ public class App
         configuration.addAnnotatedClass(Exam.class);
         configuration.addAnnotatedClass(Exam_Question_points.class);
         configuration.addAnnotatedClass(ReadyExam.class);
+        configuration.addAnnotatedClass(WordSubmission.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())

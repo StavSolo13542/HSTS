@@ -13,6 +13,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -20,10 +22,7 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -136,7 +135,11 @@ public class WordExamController {
                 if (remaining_time[1] == 0){
                     if (remaining_time[0] == 0){
                         myTimer.cancel();
-                        SubmitAnswersForced();
+                        try {
+                            SubmitAnswersForced();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     else{
                         remaining_time[1] = 59;
@@ -159,16 +162,26 @@ public class WordExamController {
         myTimer.scheduleAtFixedRate(task,0,1000);
 
     }
-    void SubmitAnswersForced() {
+    void SubmitAnswersForced() throws IOException {
         SubmitAnswers(null);
     }
-    void SubmitAnswers(File answers) {
-        String message = "SubmitAnswersWord " + id + " " + exam.getId() + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
-        if (answers != null) message += " " + answers.toString();
-        System.out.println("the message is: " + message);//for debugging
-        SimpleClient.sendMessage(message);
-        EventBus.getDefault().post(new SuccessEvent("Your test was submitted successfully"));
-        EventBus.getDefault().post(new SwitchScreenEvent("student_primary"));
+    void SubmitAnswers(File answers) throws IOException {
+        try{
+            XWPFDocument docx = new XWPFDocument(new FileInputStream(answers));
+
+            //using XWPFWordExtractor Class
+            XWPFWordExtractor we = new XWPFWordExtractor(docx);
+            String text = we.getText();
+            String message = "SubmitAnswersWord@" + id + "@" + exam.getId() + "@" + start_time + "@" + (exam.getExam().getDuration_in_minutes() - remaining_time[0]) + "@" + text;
+            System.out.println("the message is: " + message);//for debugging
+            SimpleClient.sendMessage(message);
+            EventBus.getDefault().post(new SuccessEvent("Your test was submitted successfully"));
+            EventBus.getDefault().post(new SwitchScreenEvent("student_primary"));
+        }
+        catch (Exception ex){
+            EventBus.getDefault().post(new InputErrorEvent(" You need to submit the test in word format"));
+        }
+
     }
     @Subscribe
     public void LoadExam(StartExamEvent event) {
@@ -181,7 +194,7 @@ public class WordExamController {
         remaining_time[0] += minutes;
     }
     @FXML
-    void SubmitFile(ActionEvent event) {
+    void SubmitFile(ActionEvent event) throws IOException {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Choose answers file");
         File selectedFile = chooser.showOpenDialog(App.getStage());

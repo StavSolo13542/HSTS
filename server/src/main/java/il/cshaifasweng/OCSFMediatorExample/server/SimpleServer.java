@@ -272,6 +272,29 @@ public class SimpleServer extends AbstractServer {
 			e.printStackTrace();
 		}
 	}
+	private void SaveSubmission(String student_id, String exam_id, String content){
+		ReadyExam readyExam = null;
+		Pupil pupil = null;
+		try {
+			Session session = getSessionFactory().openSession();
+			session.beginTransaction();
+
+			readyExam = session.get(ReadyExam.class, Integer.parseInt(exam_id));
+
+			String q_pupil = "FROM Pupil p where p.real_id = :realId";
+			org.hibernate.Query<Pupil> pupilQuery = session.createQuery(q_pupil, Pupil.class);
+			pupilQuery.setParameter("realId", student_id);
+			pupil = pupilQuery.uniqueResult();
+			WordSubmission submission = new WordSubmission(readyExam, pupil,content);
+
+			session.save(submission);
+
+			session.getTransaction().commit();
+		}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
 	@Override
 	//Treating the message from the clint
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
@@ -300,6 +323,14 @@ public class SimpleServer extends AbstractServer {
 			String code = parts[1];
 			String message = connectToExam(code);
 			sendMessage(message,client);
+		}
+		else if (msgString.startsWith("SubmitAnswersWord")) {
+
+			String[] parts = msgString.split("@");
+			String student_id = parts[1];
+			String exam_id = parts[2];
+			String content = parts[5];
+			SaveSubmission(student_id, exam_id, content);
 		}
 		else if (msgString.startsWith("SubmitAnswers")) {
 
