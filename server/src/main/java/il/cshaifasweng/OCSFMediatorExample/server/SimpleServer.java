@@ -154,7 +154,7 @@ public class SimpleServer extends AbstractServer {
 
 	// Success message: EnterExam <<exam_description>>
 	// Error message: InputError <<error_description>>
-	private String connectToExam(String code) throws Exception {
+	private String connectToExam(String code, ConnectionToClient client) throws Exception {
 		String message;
 		try {
 			if (isReadyExam(code)){
@@ -174,6 +174,8 @@ public class SimpleServer extends AbstractServer {
 					readyExam = session.get(ReadyExam.class, exam_id);
 					message += readyExam.toString();
 					transaction.commit();
+					if(test_connections.get(exam_id) == null) test_connections.put(exam_id, new Vector<>());
+					test_connections.get(exam_id).add(client);
 				} catch (Exception e) {
 					if (transaction != null) {
 						transaction.rollback();
@@ -257,7 +259,9 @@ public class SimpleServer extends AbstractServer {
 			for(int i =0; i<questionList.size(); i++) {
 				Question question = questionList.get(i);
 				List<Answer> answerList = question.getAnswers();
-				if (answerList.get(Character.getNumericValue(answers.charAt(i))-1).getIs_correct()) {
+				if (Character.getNumericValue(answers.charAt(i)) >= 1
+				&& Character.getNumericValue(answers.charAt(i)) <= 4
+				&& answerList.get(Character.getNumericValue(answers.charAt(i))-1).getIs_correct()) {
 					correctly_answered_questions.add(question);
 				}
 			}
@@ -321,7 +325,7 @@ public class SimpleServer extends AbstractServer {
 		else if (msgString.startsWith("EnterExam")) {
 			String[] parts = msgString.split(" ");
 			String code = parts[1];
-			String message = connectToExam(code);
+			String message = connectToExam(code, client);
 			sendMessage(message,client);
 		}
 		else if (msgString.startsWith("SubmitAnswersWord")) {
@@ -541,10 +545,10 @@ public class SimpleServer extends AbstractServer {
 			String[] parts = msg.split("_");
 
 			// Extract the two numbers from the second and third parts of the array
-			int examId = Integer.parseInt(parts[1].trim());
+			int examId = Integer.parseInt(parts[1]);
 			System.out.println("exam id is "+examId);
-			int minutes = Integer.parseInt(parts[2].trim());
-			System.out.println("minutes is "+examId);
+			int minutes = Integer.parseInt(parts[2]);
+			System.out.println("minutes is "+minutes);
 
 			CriteriaBuilder builder = session.getCriteriaBuilder();
 			CriteriaQuery<ReadyExam> new_query = builder.createQuery(ReadyExam.class);
@@ -556,8 +560,6 @@ public class SimpleServer extends AbstractServer {
 				{
 					r.setActual_solving_time(r.getActual_solving_time() + minutes);
 					session.flush();
-					session.getTransaction().commit();
-					return;
 				}
 			}
 			session.getTransaction().commit();
@@ -565,6 +567,9 @@ public class SimpleServer extends AbstractServer {
 			for (int i = 0; i < students.size(); i++){
 				sendMessage("TimeExtension " + minutes,students.get(i));
 			}
+		}
+		catch (Exception ex){
+
 		}
 	}
 	public static String getSpecificExam(String code) throws Exception {

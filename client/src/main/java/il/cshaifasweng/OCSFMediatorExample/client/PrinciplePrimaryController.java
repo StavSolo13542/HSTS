@@ -247,7 +247,7 @@ public class PrinciplePrimaryController {
 
     @FXML
     void Approve(ActionEvent event) {
-        SimpleClient.sendMessage("Indeed approved___" + examID + "___" + minutes );
+        SimpleClient.sendMessage("Indeed approved_" + examID + "_" + minutes );
         System.out.println("not wowwww");
         extentionTb.setText("extension approved!");
         ResetExtentionBtn.setVisible(true);
