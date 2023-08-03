@@ -166,20 +166,55 @@ public class TeacherChangeQuestion implements Initializable {
         {
             SimpleClient.sendMessage("save course-question" + question_text_field.getText() + "```" + course);
         }*/
+        if (subjects_choice_box.getSelectionModel().isEmpty())
+        {
+            System.out.println(" Must choose a subject.");
+            EventBus.getDefault().post(new InputErrorEvent(" Must choose a subject."));
+            msg = null;
+            return;
+        }
+        if (question_choice_box.getSelectionModel().isEmpty())
+        {
+            System.out.println(" Must choose a question.");
+            EventBus.getDefault().post(new InputErrorEvent(" Must choose a question."));
+            msg = null;
+            return;
+        }
+        if (question_text_field.getText().equals(""))
+        {
+            System.out.println(" Question cannot be empty.");
+            EventBus.getDefault().post(new InputErrorEvent(" Question cannot be empty."));
+            msg = null;
+            return;
+        }
+        if (answer1_text_field.getText().equals("") || answer2_text_field.getText().equals("") || answer3_text_field.getText().equals("") || answer4_text_field.getText().equals(""))
+        {
+            System.out.println(" Answer cannot be empty.");
+            EventBus.getDefault().post(new InputErrorEvent(" Answer cannot be empty."));
+            msg = null;
+            return;
+        }
+        if (correct_answer.getText().equals(""))
+        {
+            System.out.println(" Correct answer number cannot be empty.");
+            EventBus.getDefault().post(new InputErrorEvent(" Correct answer number cannot be empty."));
+            msg = null;
+            return;
+        }
         if (!(checkAnswerNumberOk(this.correct_answer.getText()) && Integer.valueOf(this.correct_answer.getText()) >= 1 && Integer.valueOf(this.correct_answer.getText()) <= 4))
         {
             System.out.println(" Correct answer number is not in a correct format.");
-            EventBus.getDefault().post(new InputErrorEvent(" Correct answer number is not in a correct format."));
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
-                Parent root = loader.load();
-                Scene nextScene = new Scene(root);
-                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                currentStage.setScene(nextScene);
-                currentStage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            EventBus.getDefault().post(new InputErrorEvent(" Correct answer number is not in a correct format / not in correct range."));
+//            try {
+//                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+//                Parent root = loader.load();
+//                Scene nextScene = new Scene(root);
+//                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//                currentStage.setScene(nextScene);
+//                currentStage.show();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
             msg = null;
             return;
         }
