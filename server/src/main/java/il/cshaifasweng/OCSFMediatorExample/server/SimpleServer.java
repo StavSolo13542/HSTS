@@ -154,7 +154,7 @@ public class SimpleServer extends AbstractServer {
 
 	// Success message: EnterExam <<exam_description>>
 	// Error message: InputError <<error_description>>
-	private String connectToExam(String code, ConnectionToClient client) throws Exception {
+	private String connectToExam(String code, ConnectionToClient client, String pupil_id) throws Exception {
 		String message;
 		try {
 			if (isReadyExam(code)){
@@ -172,10 +172,31 @@ public class SimpleServer extends AbstractServer {
 					String queryForId = "SELECT exam_id FROM readyexams WHERE four_digit_code = '" + code + "';";
 					int exam_id = (int) session.createNativeQuery(queryForId).getSingleResult();
 					readyExam = session.get(ReadyExam.class, exam_id);
-					message += readyExam.toString();
-					transaction.commit();
-					if(test_connections.get(exam_id) == null) test_connections.put(exam_id, new Vector<>());
-					test_connections.get(exam_id).add(client);
+					SimpleDateFormat sdf
+							= new SimpleDateFormat(
+							"dd/MM/yyyy HH:mm:ss");
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+					LocalDateTime now = LocalDateTime.now();
+					Date the_time_now = sdf.parse(dtf.format(now));
+					Date start_date = sdf.parse(readyExam.getTime_start() + ":00");
+					Long difference = the_time_now.getTime() - start_date.getTime();
+					System.out.println("the difference is: " + TimeUnit.MILLISECONDS.toMinutes(difference) + ".");
+					if (TimeUnit.MILLISECONDS.toMinutes(difference) >= readyExam.getActual_solving_time() || TimeUnit.MILLISECONDS.toMinutes(difference) < 0) {
+						message = "InputError The exam isn't available right now";
+					}
+					else{
+						Query query;
+						if (readyExam.getOnline()) query = session.createNativeQuery("select count(*) from grades where readyExam_id ='" + exam_id +"' AND pupil_id ='" + pupil_id +"';");
+						else query = session.createNativeQuery("select count(*) from word_submission where readyExam_id ='" + exam_id +"' AND pupil_id ='" + pupil_id +"';");
+						int count = ((Number) query.getSingleResult()).intValue();
+						if (count > 0) message = "InputError You already did the exam";
+						else{
+							message += readyExam.toString();
+							if(test_connections.get(exam_id) == null) test_connections.put(exam_id, new Vector<>());
+							test_connections.get(exam_id).add(client);
+						}
+						transaction.commit();
+					}
 				} catch (Exception e) {
 					if (transaction != null) {
 						transaction.rollback();
@@ -325,7 +346,8 @@ public class SimpleServer extends AbstractServer {
 		else if (msgString.startsWith("EnterExam")) {
 			String[] parts = msgString.split(" ");
 			String code = parts[1];
-			String message = connectToExam(code, client);
+			String pupil_id = parts[2];
+			String message = connectToExam(code, client, pupil_id);
 			sendMessage(message,client);
 		}
 		else if (msgString.startsWith("SubmitAnswersWord")) {
