@@ -100,6 +100,10 @@ public class SimpleClient extends AbstractClient {
 			String[] parts = msg_string.split(" ");
 			EventBus.getDefault().post(new TimeExtensionEvent(parts[1]));
 		}
+		else if(msg_string.startsWith("RefreshGrades"))
+		{
+			EventBus.getDefault().post(new RefreshGradesEvent());
+		}
 		else if(msg_string.startsWith("Teachers names are"))
 		{
 			EventBus.getDefault().post(new test(new Message(msg_string)));

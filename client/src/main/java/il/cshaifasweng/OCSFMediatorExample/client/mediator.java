@@ -28,7 +28,7 @@ public class mediator {
         TeacherAskOvertime.receiveMessage(message);
     }
     public static void sendMessageToC(String message) {
-        PrinciplePrimaryController.receiveMessage(message);
+        PrincipalPrimaryController.receiveMessage(message);
     }
 
     public static void sendMessageToA(String number,String[] questios,String[]answers) {

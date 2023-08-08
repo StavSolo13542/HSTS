@@ -33,7 +33,7 @@ public class LogInController {
         //EventBus.getDefault().register(this);
         roleCB.getItems().add("student");
         roleCB.getItems().add("teacher");
-        roleCB.getItems().add("principle");
+        roleCB.getItems().add("principal");
     }
     @FXML
     void logInAttempt(ActionEvent event) {

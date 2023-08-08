@@ -46,10 +46,13 @@ public class StudentExamScoresController {
 		EventBus.getDefault().register(this);
 		Parent userParent = il.cshaifasweng.OCSFMediatorExample.client.App.loadFXML("log_out");
 		pane.getChildren().add(0, userParent);
+		RequestGrades();
+    }
+	void RequestGrades(){
 		String message = "GetStudentGrades " + SimpleClient.real_id;
 		System.out.println("the message is: " + message);//for debugging
 		SimpleClient.sendMessage(message);
-    }
+	}
 	@Subscribe
 	public void ShowGrades(StudentGradesEvent event) {
 		ObservableList<Grade> grades = FXCollections.observableArrayList();
@@ -64,6 +67,10 @@ public class StudentExamScoresController {
 					gradesTBL.getColumns().setAll(examCol,gradeCol);
 					addCustomRowsToTable();
 				});
+	}
+	@Subscribe
+	public void RefreshGrades(RefreshGradesEvent event) {
+		RequestGrades();
 	}
     private void addCustomRowsToTable() {
 		Callback<TableColumn<Grade, Void>, TableCell<Grade, Void>> cellBtnFactory = new Callback<TableColumn<Grade, Void>, TableCell<Grade, Void>>() {

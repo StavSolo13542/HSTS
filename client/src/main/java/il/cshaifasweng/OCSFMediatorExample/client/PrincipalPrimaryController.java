@@ -1,6 +1,5 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import com.mysql.cj.util.DnsSrv;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 
 import java.net.URL;
@@ -24,14 +23,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.hibernate.Session;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-import javax.swing.*;
 
-
-public class PrinciplePrimaryController {
+public class PrincipalPrimaryController {
 
     private  int examID;
 
@@ -58,7 +54,7 @@ public class PrinciplePrimaryController {
 
 
 
-    public PrinciplePrimaryController(Stage primaryStage) {
+    public PrincipalPrimaryController(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
@@ -901,11 +897,11 @@ public class PrinciplePrimaryController {
     }
 
 
-    public PrinciplePrimaryController(Message message) {
+    public PrincipalPrimaryController(Message message) {
         this.message = message;
     }
 
-    public PrinciplePrimaryController() {
+    public PrincipalPrimaryController() {
 
     }
 

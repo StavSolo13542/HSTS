@@ -27,6 +27,7 @@ import static il.cshaifasweng.OCSFMediatorExample.server.App.getSessionFactory;
 public class SimpleServer extends AbstractServer {
 	public ConnectionToClient principalClient;
 	public static HashMap<Integer, Vector<ConnectionToClient>> test_connections = new HashMap<>();
+	public static HashMap<String, ConnectionToClient> connected_users = new HashMap<>();
 	public SimpleServer(int port) {
 		super(port);
 
@@ -51,12 +52,12 @@ public class SimpleServer extends AbstractServer {
 		}
 	}
 
-	//success message format: LogIn <<role>> <<username>> (role is one of the following options: "student", "teacher, "principle")
+	//success message format: LogIn <<role>> <<username>> (role is one of the following options: "student", "teacher, "principal")
 	//error message format: InputError <<error description>>
 
 	private static String getTableName(String role)
 	{
-		if(role.equals("principle")) {
+		if(role.equals("principal")) {
 			return "Principals";
 		}
 		else if(role.equals("teacher")) {
@@ -73,7 +74,7 @@ public class SimpleServer extends AbstractServer {
 	}
 	private static String getIdName(String role)
 	{
-		if(role.equals("principle")) {
+		if(role.equals("principal")) {
 			return "principal_id";
 		}
 		else if(role.equals("teacher")) {
@@ -88,7 +89,7 @@ public class SimpleServer extends AbstractServer {
 			return "";
 		}
 	}
-	private String logIn(String role, String username, String password)
+	private String logIn(String role, String username, String password, ConnectionToClient client)
 	{
 		String loginResultMessage;
 		int count = 0;
@@ -126,7 +127,7 @@ public class SimpleServer extends AbstractServer {
 					else if (role.equals("teacher")){
 						query = "SELECT p.teacher_id FROM Teacher p WHERE p.password = :password AND p.name = :name";
 					}
-					else if (role.equals("principle")){
+					else if (role.equals("principal")){
 						query = "SELECT p.principal_id FROM Principal p WHERE p.password = :password AND p.name = :name";
 					}
 					Query sqlQuery = session.createQuery(query);
@@ -135,7 +136,7 @@ public class SimpleServer extends AbstractServer {
 
 					Object real_id = ((org.hibernate.query.Query<?>) sqlQuery).uniqueResult();
 					loginResultMessage += " " + real_id;
-
+					connected_users.put((String) real_id, client);
 					// Commit the transaction
 					session.getTransaction().commit();
 				}
@@ -224,6 +225,7 @@ public class SimpleServer extends AbstractServer {
 			query.executeUpdate();
 			// Commit the transaction
 			session.getTransaction().commit();
+			connected_users.remove(id);
 		}
 	}
 
@@ -292,6 +294,7 @@ public class SimpleServer extends AbstractServer {
 			session.save(grade);
 
 			session.getTransaction().commit();
+			if(connected_users.containsKey(connected_users.get(grade.getPupil()))) sendMessage("RefreshGrades", connected_users.get(grade.getPupil()));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -333,7 +336,7 @@ public class SimpleServer extends AbstractServer {
 			String password = parts[2];
 			String role = parts[3];
 			System.out.println("Checking login"); // for debugging
-			String message = logIn(role, username, password);
+			String message = logIn(role, username, password, client);
 			System.out.println("Finished checking login"); // for debugging
 			//message = "LogIn Alon student";
 
@@ -1208,6 +1211,7 @@ public class SimpleServer extends AbstractServer {
 						grade.setThe_grade(Integer.valueOf(split_description_string[i].split("```")[1]));
 						grade.setNote_from_teacher(split_description_string[i].split("```")[2]);
 						session.flush();
+						if(connected_users.containsKey(connected_users.get(grade.getPupil()))) sendMessage("RefreshGrades", connected_users.get(grade.getPupil()));
 						break;
 					}
 				}
