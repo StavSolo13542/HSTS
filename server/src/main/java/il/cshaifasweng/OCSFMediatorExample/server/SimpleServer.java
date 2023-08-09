@@ -135,7 +135,7 @@ public class SimpleServer extends AbstractServer {
 					sqlQuery.setParameter("name", username);
 					Object real_id = ((org.hibernate.query.Query<?>) sqlQuery).uniqueResult();
 					loginResultMessage += " " + real_id;
-					connected_users.put((String) real_id, client);
+					connected_users.put(String.valueOf(real_id), client);
 					// Commit the transaction
 					session.getTransaction().commit();
 				}
@@ -335,7 +335,7 @@ public class SimpleServer extends AbstractServer {
 					"		CASE " +
 					"        WHEN EXISTS (SELECT * FROM pupils WHERE name = :username AND password = :password) THEN 'student' " +
 					"        WHEN EXISTS (SELECT * FROM teachers WHERE name = :username AND password = :password) THEN 'teacher' " +
-					"        WHEN EXISTS (SELECT * FROM myfirstdatabase.principals WHERE name = :username AND password = :password) THEN 'principal' " +
+					"        WHEN EXISTS (SELECT * FROM principals WHERE name = :username AND password = :password) THEN 'principal' " +
 					"        ELSE NULL " +
 					"    END AS role";
 
