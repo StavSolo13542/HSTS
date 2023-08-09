@@ -89,7 +89,7 @@ public class ExamController {
                 answers_list.add(answer_select);
             }
         });
-        remaining_time[0] += exam.getExam().getDuration_in_minutes();
+        remaining_time[0] += exam.getActual_solving_time();
         Timer myTimer = new Timer();
         TimerTask task = new TimerTask() {
             @Override

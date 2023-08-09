@@ -194,11 +194,9 @@ public class Exam {
         this.questions = new ArrayList<>();
         String s = "";
         int i = 1;
-        while (!desc[index + i].equals("duration_in_minutes:")) s += desc[index + i++] + " ";
+        while (!desc[index + i].equals("questions_list:")) s += desc[index + i++] + " ";
         this.name = s;
         i += 1;
-        this.duration_in_minutes = Integer.parseInt(desc[index + i]);
-        i += 2;
         while(!desc[index + i].equals("note_to_students")){
             if (desc[index + i].equals("question_starts_here")){
                 questions.add(new Question(desc,index+i));
@@ -213,7 +211,7 @@ public class Exam {
     @Override
     public String toString() {
         String s= "";
-        s += "name: "+name +" duration_in_minutes: "+duration_in_minutes+
+        s += "name: "+name +
         " questions_list: " ;
         for(Question q:questions)
         {
