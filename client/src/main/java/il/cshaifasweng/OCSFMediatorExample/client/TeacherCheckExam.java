@@ -94,7 +94,13 @@ public class TeacherCheckExam implements Initializable {
 
     public static Boolean checkGradeOk(String the_grade)
     {
-        return the_grade.chars().allMatch(Character::isDigit) && (Integer.valueOf(the_grade) >= 0);
+        try {
+            int grade = Integer.parseInt(the_grade); // Try parsing the input as an integer
+            boolean isValidNumber = (grade >= 0) && (grade <= 100); // Check if the parsed number is within the range
+            return isValidNumber;
+        } catch (NumberFormatException e) {
+            return false; // Parsing failed, so it's not a valid number
+        }
     }
 
     @Override
@@ -151,25 +157,41 @@ public class TeacherCheckExam implements Initializable {
     @FXML
     void saveBtn(ActionEvent event) {
         String[] split_students_name = this.student_choice_box.getValue().split(" ");
-        this.out_string[this.pupil_index] = split_students_name[split_students_name.length - 1] + "```" + this.grade.getText() + "```" + this.note_to_student.getText();
-        this.grade_ok = this.grade_ok && checkGradeOk(this.grade.getText());
-        if (!this.grade_ok)
-        {
+        String curr_grade = this.grade.getText();
+        String curr_note = this.note_to_student.getText();
+
+        // Check new grade is between 0 - 100 and that exists a note
+        this.out_string[this.pupil_index] = split_students_name[split_students_name.length - 1] + "```" + curr_grade + "```" + curr_note;
+        System.out.println("Grade and note: " + curr_grade + ", " + curr_note);
+        this.grade_ok = checkGradeOk(curr_grade) && this.grade_ok;
+        if (!this.grade_ok) {
             System.out.println(" Grade is not in a correct format.");
             EventBus.getDefault().post(new InputErrorEvent(" Grade is not in a correct format."));
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
-                Parent root = loader.load();
-                Scene nextScene = new Scene(root);
-                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                currentStage.setScene(nextScene);
-                currentStage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             msg = null;
             return;
         }
+
+        if (this.note_to_student.getText().equals("")) {
+            System.out.println(" Note to student is empty.");
+            EventBus.getDefault().post(new InputErrorEvent(" Note to student is empty."));
+            msg = null;
+            return;
+        }
+
+//        else {
+//            try {
+//                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+//                Parent root = loader.load();
+//                Scene nextScene = new Scene(root);
+//                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//                currentStage.setScene(nextScene);
+//                currentStage.show();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            msg = null;
+//            return; }
+
         String description_string = exam_name.split("@")[1];
         for (String pup: this.out_string)
         {
@@ -177,17 +199,17 @@ public class TeacherCheckExam implements Initializable {
         }
         SimpleClient.sendMessage("SaVe UPdAted GRADes" + description_string);
 
-        // Open another "teacher_check_exam.fxml"
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
-            Parent root = loader.load();
-            Scene nextScene = new Scene(root);
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            currentStage.setScene(nextScene);
-            currentStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        // Open another "teacher_check_exam.fxml"
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+//            Parent root = loader.load();
+//            Scene nextScene = new Scene(root);
+//            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//            currentStage.setScene(nextScene);
+//            currentStage.show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @FXML

@@ -1742,7 +1742,7 @@ public class App
 //            q24.updateCode();  // Important!!! after creating + saving + flushing the question, you have to call this function and then save + flush again
 //            session.save(q24);
 //            session.flush();
-//            Question q25 = new Question("Which data structure follows the \"First-In-First-Out\" (FIFO) principle?", ans97, ans98, ans99, ans100, computer_science, Algorithms_Data_Structures);// new questions
+//            Question q25 = new Question("Which data structure follows the \"First-In-First-Out\" (FIFO) principal?", ans97, ans98, ans99, ans100, computer_science, Algorithms_Data_Structures);// new questions
 //            session.save(q25);
 //            session.flush();
 //            q25.updateCode();  // Important!!! after creating + saving + flushing the question, you have to call this function and then save + flush again
@@ -3455,8 +3455,8 @@ public class App
 //            Grade gr172 = new Grade(/*98, */r23, p3, correct_22, "WOW"); // grade- note that given the List "correct" it computes the grade itself
 //            session.save(gr172);
 //            session.flush();
-//
-//
+
+
 //            ReadyExam r24 = new ReadyExam(ex24, "ok88", true, "2/7/2023 12:00");  // new "Out of the drawer" exam
 //            session.save(r24);
 //            r24.setActual_solving_time(120); // need to update actual solving time at the end of an exam (if no extra time was given- no need)

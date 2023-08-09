@@ -93,11 +93,11 @@ public class App extends Application {
                     }
                 });
                 break;
-            case "principle_primary":
+            case "principal_primary":
                 Platform.runLater(() -> {
-                    setWindowTitle("Principle - Main Page");
+                    setWindowTitle("Principal - Main Page");
                     try {
-                        setContent("principle_primary");
+                        setContent("Principal_primary");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

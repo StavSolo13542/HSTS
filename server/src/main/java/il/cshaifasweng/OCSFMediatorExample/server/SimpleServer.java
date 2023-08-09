@@ -51,12 +51,15 @@ public class SimpleServer extends AbstractServer {
 		}
 	}
 
-	//success message format: LogIn <<role>> <<username>> (role is one of the following options: "student", "teacher, "principle")
+	//success message format: LogIn <<role>> <<username>> (role is one of the following options: "student", "teacher, "principal")
 	//error message format: InputError <<error description>>
 
 	private static String getTableName(String role)
 	{
-		if(role.equals("principle")) {
+		if(role.equals("principal")) {
+			return "Principals";
+		}
+		else if (role.equals("principal")) {
 			return "Principals";
 		}
 		else if(role.equals("teacher")) {
@@ -73,7 +76,7 @@ public class SimpleServer extends AbstractServer {
 	}
 	private static String getIdName(String role)
 	{
-		if(role.equals("principle")) {
+		if(role.equals("principal")) {
 			return "principal_id";
 		}
 		else if(role.equals("teacher")) {
@@ -90,16 +93,25 @@ public class SimpleServer extends AbstractServer {
 	}
 	private String logIn(String role, String username, String password)
 	{
+		// Variable to store the login result message
 		String loginResultMessage;
+
+		// Initialize count to track the number of matching records
 		int count = 0;
+		// Initialize isLoggedIn to true by default
 		Boolean isLoggedIn = true;
+
 		try (Session session = getSessionFactory().openSession()) {
+			// Begin a transaction
 			session.getTransaction().begin();
+
+			// Query to check the count of matching records
 			Query query1 = session.createNativeQuery("select count(*) from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
 			count = ((Number) query1.getSingleResult()).intValue();
 
 			if(count > 0)
 			{
+				// Query to check if the user is already logged in
 				Query query2 = session.createNativeQuery("select isLoggedIn from "+ getTableName(role) +" where name = '" + username  + "' and password = '"+ password + "';");
 				isLoggedIn = ((Boolean) query2.getSingleResult()).booleanValue();
 			}
@@ -112,13 +124,17 @@ public class SimpleServer extends AbstractServer {
 		{
 			if(!isLoggedIn)
 			{
+				// Constructing the login result message for a successful login
 				loginResultMessage = "LogIn "+  role + " " + username;
 				try (Session session = getSessionFactory().openSession()) {
+					// Begin a transaction
 					session.getTransaction().begin();
 
+					// Begin a transaction
 					Query query3 = session.createNativeQuery("UPDATE " + getTableName(role) + " SET isLoggedIn = true" + " where name = '" + username + "' and password = '" + password + "';");
 					int rowCount = query3.executeUpdate();
-					//getting the real_id of the user
+
+					// Constructing a query based on the user role to retrieve the real ID
 					String query = "";
 					if (role.equals("student")){
 						query = "SELECT p.real_id FROM Pupil p WHERE p.password = :password AND p.name = :name";
@@ -126,14 +142,17 @@ public class SimpleServer extends AbstractServer {
 					else if (role.equals("teacher")){
 						query = "SELECT p.teacher_id FROM Teacher p WHERE p.password = :password AND p.name = :name";
 					}
-					else if (role.equals("principle")){
+					else if (role.equals("principal")){
 						query = "SELECT p.principal_id FROM Principal p WHERE p.password = :password AND p.name = :name";
 					}
+
+					// Creating and executing the query to retrieve real ID
 					Query sqlQuery = session.createQuery(query);
 					sqlQuery.setParameter("password", password);
 					sqlQuery.setParameter("name", username);
-
 					Object real_id = ((org.hibernate.query.Query<?>) sqlQuery).uniqueResult();
+
+					// Adding the real ID to the login result message
 					loginResultMessage += " " + real_id;
 
 					// Commit the transaction
@@ -142,13 +161,17 @@ public class SimpleServer extends AbstractServer {
 			}
 			else
 			{
+				// User is already logged in
 				loginResultMessage = "InputError You are already logged in";
 			}
 		}
 		else
 		{
+			// Incorrect identification details
 			loginResultMessage = "InputError The identification details are incorrect";
 		}
+
+		// Return the login result message
 		return loginResultMessage;
 	}
 
@@ -295,8 +318,45 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 	}
+
+	// Method to determine the user's role based on their username
+	private String determineUserRole(String username, String password) {
+		String role = null;
+
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+
+			// Query to determine the role based on name and password
+			String query = "SELECT " +
+					"		CASE " +
+					"        WHEN EXISTS (SELECT * FROM pupils WHERE name = :username AND password = :password) THEN 'student' " +
+					"        WHEN EXISTS (SELECT * FROM teachers WHERE name = :username AND password = :password) THEN 'teacher' " +
+					"        WHEN EXISTS (SELECT * FROM myfirstdatabase.principals WHERE name = :username AND password = :password) THEN 'principal' " +
+					"        ELSE NULL " +
+					"    END AS role";
+
+
+
+			Query sqlQuery = session.createNativeQuery(query);
+			//Query sqlQuery = session.createNativeQuery(query2);
+			sqlQuery.setParameter("username", username);
+			sqlQuery.setParameter("password", password);
+
+			// Execute the query
+			List<String> roles = sqlQuery.getResultList();
+
+			if (!roles.isEmpty()) {
+				role = roles.get(0);    // The first role in the list (only one should be present)
+			}
+
+			session.getTransaction().commit();
+		}
+		return role;
+	}
+
+
 	@Override
-	//Treating the message from the clint
+	//Treating the message from the client
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
 		String msgString = msg.toString();
 		//validates the entered information and either lets the respective user to proceed to the rest of the system
@@ -306,13 +366,22 @@ public class SimpleServer extends AbstractServer {
 
 			String username = parts[1];
 			String password = parts[2];
-			String role = parts[3];
-			System.out.println("Checking login"); // for debugging
-			String message = logIn(role, username, password);
-			System.out.println("Finished checking login"); // for debugging
-			//message = "LogIn Alon student";
+//			String role = parts[3];
 
-			sendMessage(message,client);
+			// Search for the role of the user based on the username in the appropriate tables
+			String role = determineUserRole(username, password);;
+
+			if (role != null)
+			{
+				System.out.println("Checking login"); // for debugging
+				String message = logIn(role, username, password);
+				System.out.println("Finished checking login"); // for debugging
+
+				sendMessage(message,client);
+			} else {
+				// User role couldn't be determined, send an error message
+				sendMessage("InputError User role could not be determined", client);
+			}
 		}
 		else if(msgString.startsWith("hello i am principal"))
 		{

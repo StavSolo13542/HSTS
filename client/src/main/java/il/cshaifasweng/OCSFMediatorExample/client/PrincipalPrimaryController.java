@@ -31,7 +31,7 @@ import javafx.scene.control.Button;
 import javax.swing.*;
 
 
-public class PrinciplePrimaryController {
+public class PrincipalPrimaryController {
 
     private  int examID;
 
@@ -58,7 +58,7 @@ public class PrinciplePrimaryController {
 
 
 
-    public PrinciplePrimaryController(Stage primaryStage) {
+    public PrincipalPrimaryController(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
@@ -901,11 +901,11 @@ public class PrinciplePrimaryController {
     }
 
 
-    public PrinciplePrimaryController(Message message) {
+    public PrincipalPrimaryController(Message message) {
         this.message = message;
     }
 
-    public PrinciplePrimaryController() {
+    public PrincipalPrimaryController() {
 
     }
 
