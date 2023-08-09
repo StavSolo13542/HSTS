@@ -133,7 +133,6 @@ public class SimpleServer extends AbstractServer {
 					Query sqlQuery = session.createQuery(query);
 					sqlQuery.setParameter("password", password);
 					sqlQuery.setParameter("name", username);
-
 					Object real_id = ((org.hibernate.query.Query<?>) sqlQuery).uniqueResult();
 					loginResultMessage += " " + real_id;
 					connected_users.put((String) real_id, client);
@@ -323,8 +322,45 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 	}
+
+	// Method to determine the user's role based on their username
+	private String determineUserRole(String username, String password) {
+		String role = null;
+
+		try (Session session = getSessionFactory().openSession()) {
+			session.getTransaction().begin();
+
+			// Query to determine the role based on name and password
+			String query = "SELECT " +
+					"		CASE " +
+					"        WHEN EXISTS (SELECT * FROM pupils WHERE name = :username AND password = :password) THEN 'student' " +
+					"        WHEN EXISTS (SELECT * FROM teachers WHERE name = :username AND password = :password) THEN 'teacher' " +
+					"        WHEN EXISTS (SELECT * FROM myfirstdatabase.principals WHERE name = :username AND password = :password) THEN 'principal' " +
+					"        ELSE NULL " +
+					"    END AS role";
+
+
+
+			Query sqlQuery = session.createNativeQuery(query);
+			//Query sqlQuery = session.createNativeQuery(query2);
+			sqlQuery.setParameter("username", username);
+			sqlQuery.setParameter("password", password);
+
+			// Execute the query
+			List<String> roles = sqlQuery.getResultList();
+
+			if (!roles.isEmpty()) {
+				role = roles.get(0);    // The first role in the list (only one should be present)
+			}
+
+			session.getTransaction().commit();
+		}
+		return role;
+	}
+
+
 	@Override
-	//Treating the message from the clint
+	//Treating the message from the client
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) throws Exception {
 		String msgString = msg.toString();
 		//validates the entered information and either lets the respective user to proceed to the rest of the system
@@ -334,13 +370,22 @@ public class SimpleServer extends AbstractServer {
 
 			String username = parts[1];
 			String password = parts[2];
-			String role = parts[3];
-			System.out.println("Checking login"); // for debugging
-			String message = logIn(role, username, password, client);
-			System.out.println("Finished checking login"); // for debugging
-			//message = "LogIn Alon student";
+//			String role = parts[3];
 
-			sendMessage(message,client);
+			// Search for the role of the user based on the username in the appropriate tables
+			String role = determineUserRole(username, password);;
+
+			if (role != null)
+			{
+				System.out.println("Checking login"); // for debugging
+				String message = logIn(role, username, password,client);
+				System.out.println("Finished checking login"); // for debugging
+
+				sendMessage(message,client);
+			} else {
+				// User role couldn't be determined, send an error message
+				sendMessage("InputError The identification details are incorrect", client);
+			}
 		}
 		else if(msgString.startsWith("hello i am principal"))
 		{

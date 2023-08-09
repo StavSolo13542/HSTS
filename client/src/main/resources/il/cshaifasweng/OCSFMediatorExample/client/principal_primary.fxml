@@ -11,7 +11,7 @@
 
 <AnchorPane fx:id="pane" prefHeight="819.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PrincipalPrimaryController">
    <children>
-      <Label layoutX="301.0" layoutY="20.0" text="Principle Control Page">
+      <Label layoutX="301.0" layoutY="20.0" text="principal Control Page">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
