@@ -94,6 +94,7 @@ public class TeacherCheckExam implements Initializable {
 
     public static Boolean checkGradeOk(String the_grade)
     {
+        System.out.println("in checkGradeOk. the_grade: " + the_grade);
         try {
             int grade = Integer.parseInt(the_grade); // Try parsing the input as an integer
             boolean isValidNumber = (grade >= 0) && (grade <= 100); // Check if the parsed number is within the range
@@ -163,7 +164,7 @@ public class TeacherCheckExam implements Initializable {
         // Check new grade is between 0 - 100 and that exists a note
         this.out_string[this.pupil_index] = split_students_name[split_students_name.length - 1] + "```" + curr_grade + "```" + curr_note;
         System.out.println("Grade and note: " + curr_grade + ", " + curr_note);
-        this.grade_ok = checkGradeOk(curr_grade) && this.grade_ok;
+        this.grade_ok = checkGradeOk(curr_grade);
         if (!this.grade_ok) {
             System.out.println(" Grade is not in a correct format.");
             EventBus.getDefault().post(new InputErrorEvent(" Grade is not in a correct format."));
