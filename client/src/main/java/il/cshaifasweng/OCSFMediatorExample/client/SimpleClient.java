@@ -34,7 +34,7 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new InputErrorEvent(msg_string));
 		}
 		else if (msg_string.startsWith("LogIn")){
-			String[] parts = msg_string.split(" ");
+			String[] parts = msg_string.split("@");
 
 			real_id = parts[3];
 

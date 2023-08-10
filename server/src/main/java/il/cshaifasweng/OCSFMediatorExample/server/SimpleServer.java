@@ -113,7 +113,7 @@ public class SimpleServer extends AbstractServer {
 		{
 			if(!isLoggedIn)
 			{
-				loginResultMessage = "LogIn "+  role + " " + username;
+				loginResultMessage = "LogIn@"+  role + "@" + username;
 				try (Session session = getSessionFactory().openSession()) {
 					session.getTransaction().begin();
 
@@ -134,7 +134,7 @@ public class SimpleServer extends AbstractServer {
 					sqlQuery.setParameter("password", password);
 					sqlQuery.setParameter("name", username);
 					Object real_id = ((org.hibernate.query.Query<?>) sqlQuery).uniqueResult();
-					loginResultMessage += " " + real_id;
+					loginResultMessage += "@" + real_id;
 					connected_users.put(String.valueOf(real_id), client);
 					// Commit the transaction
 					session.getTransaction().commit();
@@ -366,7 +366,7 @@ public class SimpleServer extends AbstractServer {
 		//validates the entered information and either lets the respective user to proceed to the rest of the system
 		//(based on its role) or sends a relevant error message
 		if (msgString.startsWith("LogIn")) {
-			String[] parts = msgString.split(" ");
+			String[] parts = msgString.split("@");
 
 			String username = parts[1];
 			String password = parts[2];
@@ -1256,7 +1256,10 @@ public class SimpleServer extends AbstractServer {
 						grade.setThe_grade(Integer.valueOf(split_description_string[i].split("```")[1]));
 						grade.setNote_from_teacher(split_description_string[i].split("```")[2]);
 						session.flush();
-						if(connected_users.containsKey(connected_users.get(grade.getPupil()))) sendMessage("RefreshGrades", connected_users.get(grade.getPupil()));
+						if(connected_users.containsKey(grade.getPupil().getReal_id())){
+							ConnectionToClient client = connected_users.get(grade.getPupil().getReal_id());
+							sendMessage("RefreshGrades", client);
+						}
 						break;
 					}
 				}
