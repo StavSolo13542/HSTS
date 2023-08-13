@@ -51,10 +51,13 @@ public class ExamController {
     @FXML
     void SubmitId(ActionEvent event) {
         String id = idTF.getText();
-        String message = "StartExam " + id;
-        System.out.println("the message is: " + message);//for debugging
+        if (SimpleClient.EmptyCheck(id)){
+            String message = "StartExam " + id;
+            System.out.println("the message is: " + message);//for debugging
 
-        SimpleClient.Validate(message);
+            SimpleClient.Validate(message);
+        }
+
     }
     @Subscribe
     public void StartExam(StartExamEvent event){

@@ -21,13 +21,13 @@ public class SimpleClient extends AbstractClient {
 	public static Grade currGrade;
 	private SimpleClient(String host, int port) {
 		super(host, port);
-	}
+		EventBus.getDefault().register(this);
 
+	}
 	@Override
 	//Use EventBus to activate the relevant method based on the message
 	protected void handleMessageFromServer(Object msg) {
 		System.out.println("received message: " + msg.toString());
-		if(!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
 		String msg_string = msg.toString();
 		msg_string = msg_string.replace("[", "").replace("]", "").replace(",","");
 		if (msg_string.startsWith("InputError")){
@@ -245,5 +245,12 @@ public class SimpleClient extends AbstractClient {
 
 
 		}
+	}
+	public static boolean EmptyCheck(String val){
+		if (val.isEmpty()){
+			EventBus.getDefault().post(new InputErrorEvent("InputError you need to fill all the fields in the form"));
+			return false;
+		}
+		return  true;
 	}
 }

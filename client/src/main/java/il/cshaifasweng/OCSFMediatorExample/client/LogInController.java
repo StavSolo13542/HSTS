@@ -39,24 +39,13 @@ public class LogInController {
     void logInAttempt(ActionEvent event) {
         String username = usernameTF.getText();
         String password = passwordTF.getText();
-//        String role = roleCB.getSelectionModel().getSelectedItem();
-//        String message = "LogIn " + username + " " + password + " " + role;
-        String message = "LogIn@" + username + "@" + password;
+        if(SimpleClient.EmptyCheck(username) && SimpleClient.EmptyCheck(password)){
+            String message = "LogIn@" + username + "@" + password;
 
-        System.out.println("the message is: " + message);//for debugging
+            System.out.println("the message is: " + message);//for debugging
 
-        SimpleClient.sendMessage(message);
-
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
-//            Parent root = loader.load();
-//            Scene nextScene = new Scene(root);
-//            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//            currentStage.setScene(nextScene);
-//            currentStage.show();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+            SimpleClient.sendMessage(message);
+        }
 
     }
 }
