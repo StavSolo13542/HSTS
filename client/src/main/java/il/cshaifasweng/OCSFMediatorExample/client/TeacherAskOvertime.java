@@ -157,22 +157,50 @@ public class TeacherAskOvertime implements Initializable {
 
     @FXML
     void saveBtn(ActionEvent event) {
+        if (subjects_choice_box.getSelectionModel().isEmpty())
+        {
+            EventBus.getDefault().post(new InputErrorEvent(" Please select a subject"));
+            return;
+        }
+        if (course_choice_box.getSelectionModel().isEmpty())
+        {
+            EventBus.getDefault().post(new InputErrorEvent(" Please select a course"));
+            return;
+        }
+        if (exam_choice_box.getSelectionModel().isEmpty())
+        {
+            EventBus.getDefault().post(new InputErrorEvent(" Please select an exam"));
+            return;
+        }
         if (this.extension.getText().equals("") || this.note_to_principal.getText().equals(""))
         {
             EventBus.getDefault().post(new InputErrorEvent(" No empty fields are allowed"));
+            return;
         }
-        else {
-            SimpleClient.sendMessage("RequestMoreTime___" + this.exam_ids[this.exam_index] + "___" + this.extension.getText() + "___" + this.note_to_principal.getText());
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
-                Parent root = loader.load();
-                Scene nextScene = new Scene(root);
-                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                currentStage.setScene(nextScene);
-                currentStage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
+        try{
+            int time_to_extend = Integer.parseInt(extension.getText());
+            if (time_to_extend <= 0)
+            {
+                System.out.println("Extension must be above 0 minutes!");
+                EventBus.getDefault().post(new InputErrorEvent(" Extension must be above 0 minutes"));
+                return;
             }
+        }
+        catch (NumberFormatException nfe){
+            System.out.println("incorrect format for extension!");
+            EventBus.getDefault().post(new InputErrorEvent(" incorrect format for asking extension"));
+            return;
+        }
+        SimpleClient.sendMessage("RequestMoreTime___" + this.exam_ids[this.exam_index] + "___" + this.extension.getText() + "___" + this.note_to_principal.getText());
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            Parent root = loader.load();
+            Scene nextScene = new Scene(root);
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            currentStage.setScene(nextScene);
+            currentStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

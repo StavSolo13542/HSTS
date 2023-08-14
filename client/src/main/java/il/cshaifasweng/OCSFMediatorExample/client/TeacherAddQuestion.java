@@ -165,6 +165,44 @@ public class TeacherAddQuestion implements Initializable {
 
     @FXML
     void saveQuestionBtn(ActionEvent event) {
+        if (question_text_field.getText().equals(""))
+        {
+            System.out.println("empty question!");
+            EventBus.getDefault().post(new InputErrorEvent(" empty question"));
+            return;
+        }
+        if (answer1_text_field.getText().equals("") || answer2_text_field.getText().equals("") || answer3_text_field.getText().equals("") || answer4_text_field.getText().equals(""))
+        {
+            System.out.println("empty answer!");
+            EventBus.getDefault().post(new InputErrorEvent(" empty answer(s)"));
+            return;
+        }
+        if (correct_ans_text_field.getText().equals(""))
+        {
+            System.out.println("empty answer number!");
+            EventBus.getDefault().post(new InputErrorEvent(" must select correct answer"));
+            return;
+        }
+        try{
+            int real_correct_answer = Integer.parseInt(correct_ans_text_field.getText());
+            if (real_correct_answer <= 0 || real_correct_answer >=5)
+            {
+                System.out.println("correct answer must be in the range 1-4!");
+                EventBus.getDefault().post(new InputErrorEvent(" correct answer out of range"));
+                return;
+            }
+        }
+        catch (NumberFormatException nfe){
+            System.out.println("incorrect format for answer number!");
+            EventBus.getDefault().post(new InputErrorEvent(" incorrect format for answer selection"));
+            return;
+        }
+        if (courses_list_view.getSelectionModel().getSelectedItems().isEmpty())
+        {
+            System.out.println("no course selected!");
+            EventBus.getDefault().post(new InputErrorEvent(" must select at least one course"));
+            return;
+        }
         String question_without_courses = "";
         if (correctAnsNum == 1) {
             question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "true" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;

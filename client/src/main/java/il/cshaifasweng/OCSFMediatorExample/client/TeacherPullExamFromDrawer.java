@@ -7,23 +7,31 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TeacherPullExamFromDrawer {
 
     @FXML
     private Button another_exam_btn;
+
+    @FXML
+    private DatePicker date_picker;
 
     @FXML
     private ChoiceBox<String> mode;
@@ -76,72 +84,105 @@ public class TeacherPullExamFromDrawer {
 
     public static Boolean isDateOk(String str)
     {
-        if (str.length() != 16)
-        {
+//        if (str.length() != 16)
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(0) <= '9' && str.charAt(0) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(1) <= '9' && str.charAt(1) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (str.charAt(2) != '/')
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(3) <= '9' && str.charAt(3) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(4) <= '9' && str.charAt(4) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (str.charAt(5) != '/')
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(6) <= '9' && str.charAt(6) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(7) <= '9' && str.charAt(7) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(8) <= '9' && str.charAt(8) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(9) <= '9' && str.charAt(9) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (str.charAt(10) != ' ')
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(11) <= '9' && str.charAt(11) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(12) <= '9' && str.charAt(12) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (!(Integer.parseInt(str.substring(11, 13)) < 24 && Integer.parseInt(str.substring(11, 13)) >= 0))
+//        {
+//            return false;
+//        }
+//        if (str.charAt(13) != ':')
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(14) <= '9' && str.charAt(14) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (!((str.charAt(15) <= '9' && str.charAt(15) >= '0')))
+//        {
+//            return false;
+//        }
+//        if (!(Integer.parseInt(str.substring(14, 16)) < 60 && Integer.parseInt(str.substring(14, 16)) >= 0))
+//        {
+//            return false;
+//        }
+        String inputTimeString = str.substring(11);
+        try {
+            LocalTime.parse(inputTimeString);
+            System.out.println("Valid time string: " + inputTimeString);
+        } catch (DateTimeParseException | NullPointerException e) {
+            System.out.println("Invalid time string: " + inputTimeString);
             return false;
         }
-        if (!((str.charAt(0) <= '9' && str.charAt(0) >= '0')))
-        {
-            return false;
+        SimpleDateFormat sdf
+                = new SimpleDateFormat(
+                "dd/MM/yyyy HH:mm:ss");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            Date the_time_now = sdf.parse(dtf.format(now));
+            Date start_date = sdf.parse(str + ":00");
+            Long difference = -1 * (the_time_now.getTime() - start_date.getTime());
+            System.out.println("the difference is: " + TimeUnit.MILLISECONDS.toMinutes(difference) + ".");
+            if (TimeUnit.MILLISECONDS.toMinutes(difference) < 1) {
+                return false;
+            }
         }
-        if (!((str.charAt(1) <= '9' && str.charAt(1) >= '0')))
-        {
-            return false;
-        }
-        if (str.charAt(2) != '/')
-        {
-            return false;
-        }
-        if (!((str.charAt(3) <= '9' && str.charAt(3) >= '0')))
-        {
-            return false;
-        }
-        if (!((str.charAt(4) <= '9' && str.charAt(4) >= '0')))
-        {
-            return false;
-        }
-        if (str.charAt(5) != '/')
-        {
-            return false;
-        }
-        if (!((str.charAt(6) <= '9' && str.charAt(6) >= '0')))
-        {
-            return false;
-        }
-        if (!((str.charAt(7) <= '9' && str.charAt(7) >= '0')))
-        {
-            return false;
-        }
-        if (!((str.charAt(8) <= '9' && str.charAt(8) >= '0')))
-        {
-            return false;
-        }
-        if (!((str.charAt(9) <= '9' && str.charAt(9) >= '0')))
-        {
-            return false;
-        }
-        if (str.charAt(10) != ' ')
-        {
-            return false;
-        }
-        if (!((str.charAt(11) <= '9' && str.charAt(11) >= '0')))
-        {
-            return false;
-        }
-        if (!((str.charAt(12) <= '9' && str.charAt(12) >= '0')))
-        {
-            return false;
-        }
-        if (str.charAt(13) != ':')
-        {
-            return false;
-        }
-        if (!((str.charAt(14) <= '9' && str.charAt(14) >= '0')))
-        {
-            return false;
-        }
-        if (!((str.charAt(15) <= '9' && str.charAt(15) >= '0')))
-        {
+        catch (ParseException e) {
             return false;
         }
         return true;
@@ -176,11 +217,29 @@ public class TeacherPullExamFromDrawer {
 
     @FXML
     void saveExambtn(ActionEvent event) {
-        String exam_final_code = exam_name + "@@@" + exam_code.getText() + "@@@" + mode.getValue() + "@@@" + time.getText();
+        System.out.println(date_picker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " " + time.getText());
+        String exam_final_code = exam_name + "@@@" + exam_code.getText() + "@@@" + mode.getValue() + "@@@" + date_picker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " " + time.getText();
         if (!isExamCodeOk(this.exam_code.getText()))
         {
             System.out.println(" exam code number is not in a correct format.");
             EventBus.getDefault().post(new InputErrorEvent(" Exam code number must be 4 digits and lowercase letters."));
+//            try {
+//                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+//                Parent root = loader.load();
+//                Scene nextScene = new Scene(root);
+//                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+//                currentStage.setScene(nextScene);
+//                currentStage.show();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+            msg = null;
+            return;
+        }
+        if (!isDateOk(date_picker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " " + time.getText()))
+        {
+            System.out.println(" Time & Date are not in a correct format / exam set ro begin in less than a minute.");
+            EventBus.getDefault().post(new InputErrorEvent(" Time & Date are not in a correct format / exam set ro begin in less than a minute."));
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
                 Parent root = loader.load();
@@ -194,20 +253,17 @@ public class TeacherPullExamFromDrawer {
             msg = null;
             return;
         }
-        if (!isDateOk(this.time.getText()))
+        if (exam.getSelectionModel().isEmpty())
         {
-            System.out.println(" Time & Date are not in a correct format.");
-            EventBus.getDefault().post(new InputErrorEvent(" Time & Date are not in a correct format."));
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
-                Parent root = loader.load();
-                Scene nextScene = new Scene(root);
-                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                currentStage.setScene(nextScene);
-                currentStage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.out.println(" must select an exam.");
+            EventBus.getDefault().post(new InputErrorEvent(" must select an exam."));
+            msg = null;
+            return;
+        }
+        if (mode.getSelectionModel().isEmpty())
+        {
+            System.out.println(" must select a mode.");
+            EventBus.getDefault().post(new InputErrorEvent(" must select a mode."));
             msg = null;
             return;
         }

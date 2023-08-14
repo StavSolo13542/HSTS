@@ -15,6 +15,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.converter.DefaultStringConverter;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.net.URL;
@@ -196,14 +197,73 @@ public class TeacherBuildExam implements Initializable {
 
     @FXML
     void saveExamBtn(ActionEvent event) {
+        if (exam_name.getText().equals(""))
+        {
+            System.out.println("blanc exam name!");
+            EventBus.getDefault().post(new InputErrorEvent(" exam name cannot be empty"));
+            return;
+        }
+        if (duration_test_area.getText().equals(""))
+        {
+            System.out.println("blanc time duration!");
+            EventBus.getDefault().post(new InputErrorEvent(" exam duration cannot be empty"));
+            return;
+        }
+        try{
+            int test_int_format = Integer.parseInt(duration_test_area.getText());
+            if (test_int_format <= 0)
+            {
+                System.out.println("duration must be at least 1 minute!");
+                EventBus.getDefault().post(new InputErrorEvent(" duration must be at least 1 minute"));
+                return;
+            }
+        }
+        catch (NumberFormatException nfe){
+            System.out.println("incorrect format for duration!");
+            EventBus.getDefault().post(new InputErrorEvent(" incorrect format for duration"));
+            return;
+        }
+        if (note_to_teachers.getText().equals(""))
+        {
+            note_to_teachers.setText("None");
+        }
+        if (note_to_students.getText().equals(""))
+        {
+            note_to_students.setText("None");
+        }
         //String exam_without_questions =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "true" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
         String exam_without_questions =  exam_name.getText() + "@@@" + course_name + "@@@" + duration_test_area.getText() + "@@@" + note_to_students.getText() + "@@@" + note_to_teachers.getText() + "@@@" + SimpleClient.name;
 //        System.out.println(exam_without_questions);
-        SimpleClient.sendMessage("save basic exam" + exam_without_questions);
-        System.out.println("Pressed button to save basic exam!\n\n");
 
         // Save exam questions
         List<DoubleString> rows = questions_table.getItems();
+        int total_grade = 0;
+        for (DoubleString doubleString : rows) {
+            String grade = doubleString.getGrade();
+            try{
+                int real_grade = Integer.parseInt(grade);
+                total_grade += real_grade;
+                if (real_grade <= 0)
+                {
+                    System.out.println("points must be above 0!");
+                    EventBus.getDefault().post(new InputErrorEvent(" points must be above 0"));
+                    return;
+                }
+            }
+            catch (NumberFormatException nfe){
+                System.out.println("incorrect format for points!");
+                EventBus.getDefault().post(new InputErrorEvent(" incorrect format for points"));
+                return;
+            }
+        }
+        if (total_grade != 100)
+        {
+            System.out.println("total grade does not add up to 100!");
+            EventBus.getDefault().post(new InputErrorEvent(" total grade does not add up to 100"));
+            return;
+        }
+        SimpleClient.sendMessage("save basic exam" + exam_without_questions);
+        System.out.println("Pressed button to save basic exam!\n\n");
         for (DoubleString doubleString : rows) {
             String question = doubleString.getQuestion();
             String grade = doubleString.getGrade();
@@ -265,7 +325,7 @@ public class TeacherBuildExam implements Initializable {
 
         // Open a new "teacher_build_exam.fxml"
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_build_examn.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_build_exam.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
