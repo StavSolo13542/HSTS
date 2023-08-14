@@ -169,7 +169,7 @@ public class SimpleServer extends AbstractServer {
 
 					// Retrieve a row by id
 					//getting the id
-					String queryForId = "SELECT exam_id FROM readyexams WHERE four_digit_code = '" + code + "';";
+					String queryForId = "SELECT id FROM readyexams WHERE four_digit_code = '" + code + "';";
 					int exam_id = (int) session.createNativeQuery(queryForId).getSingleResult();
 					readyExam = session.get(ReadyExam.class, exam_id);
 					SimpleDateFormat sdf
@@ -604,6 +604,12 @@ public class SimpleServer extends AbstractServer {
 		{
 			System.out.println("indeed approved");
 			changeExamTime(msgString);
+		}
+		else if (msgString.startsWith("new question added"))
+		{
+			for (ConnectionToClient i : connected_users.values()) {
+				sendMessage("new question", i);
+			}
 		}
 	}
 

@@ -204,16 +204,16 @@ public class TeacherAddQuestion implements Initializable {
             return;
         }
         String question_without_courses = "";
-        if (correctAnsNum == 1) {
+        if (Integer.parseInt(correct_ans_text_field.getText()) == 1) {
             question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "true" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
         }
-        else if (correctAnsNum == 2) {
+        else if (Integer.parseInt(correct_ans_text_field.getText()) == 2) {
             question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "false" + "---" + answer2_text_field.getText() + "///" + "true" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
         }
-        else if (correctAnsNum == 3) {
+        else if (Integer.parseInt(correct_ans_text_field.getText()) == 3) {
             question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "false" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "true" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
         }
-        else if (correctAnsNum == 4) {
+        else if (Integer.parseInt(correct_ans_text_field.getText()) == 4) {
             question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "false" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "true" + "---" + subject_name;
         }
         else {
@@ -227,6 +227,7 @@ public class TeacherAddQuestion implements Initializable {
         {
             SimpleClient.sendMessage("save course-question" + question_text_field.getText() + "```" + course);
         }
+        SimpleClient.sendMessage("new question added");
         // Open a new "teacher_add_question.fxml"
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));

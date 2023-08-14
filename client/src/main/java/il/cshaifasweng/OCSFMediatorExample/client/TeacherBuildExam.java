@@ -16,6 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.converter.DefaultStringConverter;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
@@ -96,6 +97,7 @@ public class TeacherBuildExam implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        EventBus.getDefault().register(this);
         questions_list_view.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         // Associate the columns with data properties
@@ -189,7 +191,22 @@ public class TeacherBuildExam implements Initializable {
         questions_table.setItems(selectedQ);
         System.out.println(selectedQ);
     }
+    @Subscribe
+    public void updateQuestions(RefreshQuestionsEvent event) {
+        SimpleClient.sendMessage("Get All Questions For Exam" + this.course_name);
+        while (msg == null){
+            System.out.print("");
+        }
+        System.out.println("after second while loop");
+        String[] courses = msg.split("___");
+        List<String> questionList = Arrays.asList(courses);
 
+        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+        ObservableList<String> observableList1 = FXCollections.observableArrayList(questionList);
+        questions_list_view.setItems(observableList1);
+        msg = null;
+        System.out.println("after message = null");
+    }
     @FXML
     void initializeQuestionTF(ActionEvent event) {
 

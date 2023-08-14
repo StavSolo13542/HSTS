@@ -179,6 +179,9 @@ public class SimpleClient extends AbstractClient {
 			msg_string = msg_string.replaceFirst("HerE are all details relevant to ReadyEXAm", "");
 			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
 		}
+		else if (msg_string.startsWith("new question")){
+			EventBus.getDefault().post(new RefreshQuestionsEvent());
+		}
 
 	}
 	//Send received message to the server

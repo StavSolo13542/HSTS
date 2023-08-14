@@ -503,8 +503,8 @@ public class App
 
             session.beginTransaction();
 
-//            Subject sports=new Subject("Sports");
-//            session.save(sports);
+//            Subject sub=new Subject("Rocket Engineering");
+//            session.save(sub);
 //            session.flush();
 //            Subject physics=new Subject("Physics");
 //            session.save(physics);
