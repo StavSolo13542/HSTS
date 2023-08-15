@@ -492,7 +492,8 @@ public class App
     private static SimpleServer server;
     public static void main( String[] args ) throws IOException
     {
-        server = new SimpleServer(3100); // for local use (in LAN)
+        //server = new SimpleServer(3100); // for local use (in LAN)
+        server = new SimpleServer(3200); // for local use (in LAN)
 
 //        server = new SimpleServer(13010);
         server.listen();

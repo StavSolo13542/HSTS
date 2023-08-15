@@ -59,9 +59,6 @@ public class SimpleServer extends AbstractServer {
 		if(role.equals("principal")) {
 			return "Principals";
 		}
-		else if (role.equals("principal")) {
-			return "Principals";
-		}
 		else if(role.equals("teacher")) {
 			return "Teachers";
 		}
