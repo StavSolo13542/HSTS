@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -216,10 +217,22 @@ public class TeacherPullExamFromDrawer {
     }
 
     @FXML
-    void saveExambtn(ActionEvent event) {
-        System.out.println(date_picker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " " + time.getText());
-        String exam_final_code = exam_name + "@@@" + exam_code.getText() + "@@@" + mode.getValue() + "@@@" + date_picker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " " + time.getText();
-        if (!isExamCodeOk(this.exam_code.getText()))
+    int saveExamBtn(ActionEvent event) {
+        //System.out.println(date_picker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " " + time.getText());
+        String curr_code = exam_code.getText();
+        String curr_mode = mode.getValue();
+        LocalDate selectedDate = date_picker.getValue();
+
+        if (selectedDate == null) {
+            // Display error message for missing date
+            EventBus.getDefault().post(new InputErrorEvent(" Must select a date."));
+            return 0;
+        }
+        String curr_date = date_picker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        String curr_time = time.getText();
+
+        String exam_final_code = exam_name + "@@@" + curr_code + "@@@" + curr_mode + "@@@" + curr_date + " " + curr_time;
+        if (!isExamCodeOk(curr_code))
         {
             System.out.println(" exam code number is not in a correct format.");
             EventBus.getDefault().post(new InputErrorEvent(" Exam code number must be 4 digits and lowercase letters."));
@@ -234,9 +247,9 @@ public class TeacherPullExamFromDrawer {
 //                e.printStackTrace();
 //            }
             msg = null;
-            return;
+            return 0;
         }
-        if (!isDateOk(date_picker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " " + time.getText()))
+        if (!isDateOk(curr_date + " " + curr_time))
         {
             System.out.println(" Time & Date are not in a correct format / exam set ro begin in less than a minute.");
             EventBus.getDefault().post(new InputErrorEvent(" Time & Date are not in a correct format / exam set ro begin in less than a minute."));
@@ -251,27 +264,27 @@ public class TeacherPullExamFromDrawer {
                 e.printStackTrace();
             }
             msg = null;
-            return;
+            return 0;
         }
         if (exam.getSelectionModel().isEmpty())
         {
             System.out.println(" must select an exam.");
-            EventBus.getDefault().post(new InputErrorEvent(" must select an exam."));
+            EventBus.getDefault().post(new InputErrorEvent(" Must select an exam."));
             msg = null;
-            return;
+            return 0;
         }
         if (mode.getSelectionModel().isEmpty())
         {
             System.out.println(" must select a mode.");
-            EventBus.getDefault().post(new InputErrorEvent(" must select a mode."));
+            EventBus.getDefault().post(new InputErrorEvent(" Must select a mode."));
             msg = null;
-            return;
+            return 0;
         }
 //        System.out.println(exam_without_questions);
         SimpleClient.sendMessage("save readyExam" + exam_final_code);
         System.out.println("Pressed button to save readyExam!");
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_pull_exam.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -281,11 +294,24 @@ public class TeacherPullExamFromDrawer {
             e.printStackTrace();
         }
         msg = null;
-        return;
+
+        // Display a success message using a dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText("Exam saved successfully!");
+
+        alert.showAndWait();
+        return 1;
     }
 
     @FXML
     void pullAnotherExam(ActionEvent event) {
+        // Save the exam first, if failed don't leave page
+        if (saveExamBtn(event) == 0) {
+            return;
+        }
+
         // Open another "teacher_pull_exam.fxml"
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_pull_exam.fxml"));

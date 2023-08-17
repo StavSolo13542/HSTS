@@ -7,29 +7,53 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" prefHeight="819.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PrincipalPrimaryController">
+<AnchorPane fx:id="pane" prefHeight="880.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.PrincipalPrimaryController">
    <children>
-      <Label layoutX="301.0" layoutY="20.0" text="principal Control Page">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Label>
-      <TextField fx:id="extentionTb" layoutX="15.0" layoutY="119.0" prefHeight="25.0" prefWidth="374.0" promptText="extention reason" />
-      <Button fx:id="approveBtn" layoutX="421.0" layoutY="119.0" mnemonicParsing="false" onAction="#Approve" prefHeight="25.0" prefWidth="81.0" text="approve" />
-      <Button fx:id="notApproveBtn" layoutX="562.0" layoutY="119.0" mnemonicParsing="false" onAction="#NotApprove" text="not approve" />
-      <Button fx:id="showExamBtn" layoutX="417.0" layoutY="213.0" mnemonicParsing="false" onAction="#ShowSpecificExam" text="show" />
-      <Button fx:id="allExamsBtn" layoutX="47.0" layoutY="213.0" mnemonicParsing="false" onAction="#ShowExamDataBase" text="see all exams" />
-      <Button fx:id="resetDistributionBtn" layoutX="649.0" layoutY="541.0" mnemonicParsing="false" onAction="#resetDistribution" text="reset" />
-      <Button fx:id="resetExamBtn" layoutX="502.0" layoutY="213.0" mnemonicParsing="false" onAction="#ResetTable" text="reset" />
-      <Button fx:id="showQuestionsBtn" layoutX="34.0" layoutY="168.0" mnemonicParsing="false" onAction="#ShowQuestionDataBase" text="show question DB" />
-      <TextField fx:id="examIdTb" layoutX="153.0" layoutY="213.0" promptText="exam code" />
-      <TextField fx:id="scoreTb" layoutX="237.0" layoutY="277.0" promptText="score" />
-      <ComboBox fx:id="examCb" layoutX="14.0" layoutY="277.0" onAction="#specificExamDist" prefHeight="25.0" prefWidth="201.0" promptText="avg/distribution/median" />
-      <ComboBox fx:id="pickPersonCb" layoutX="311.0" layoutY="541.0" onAction="#ChooseInfoOfChosen" prefWidth="150.0" promptText="show info" />
-      <ComboBox fx:id="pickAreaCb" layoutX="63.0" layoutY="541.0" onAction="#ChooseTeacherCourseStudent" prefHeight="25.0" prefWidth="165.0" promptText="teacher/course/student" />
-      <TableView fx:id="distributionTable" layoutX="44.0" layoutY="583.0" prefHeight="200.0" prefWidth="315.0">
+      <BorderPane layoutX="195.0" layoutY="14.0" prefHeight="89.0" prefWidth="419.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <top>
+            <Pane prefHeight="79.0" prefWidth="429.0" style="-fx-background-color: #ecfcec;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="15.0" layoutY="7.0" prefHeight="66.0" prefWidth="380.0" text="Principal Control Page" textFill="#336633">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </top>
+      </BorderPane>
+      <BorderPane layoutX="18.0" layoutY="112.0" prefHeight="753.0" prefWidth="781.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <center>
+            <Pane prefHeight="770.0" prefWidth="762.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="showQuestionsBtn" layoutX="32.0" layoutY="80.0" mnemonicParsing="false" onAction="#ShowQuestionDataBase" text="show question DB" />
+                  <Label layoutX="32.0" layoutY="14.0" prefHeight="20.0" prefWidth="136.0" text="Extension Handling:">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="extentionTb" layoutX="31.0" layoutY="34.0" prefHeight="25.0" prefWidth="337.0" promptText="extention reason" />
+                  <Button fx:id="approveBtn" layoutX="403.0" layoutY="34.0" mnemonicParsing="false" onAction="#Approve" prefHeight="25.0" prefWidth="81.0" text="Approve" />
+                  <Button fx:id="notApproveBtn" layoutX="531.0" layoutY="34.0" mnemonicParsing="false" onAction="#NotApprove" prefHeight="25.0" prefWidth="80.0" text="Reject" />
+                  <Button fx:id="ResetExtentionBtn" layoutX="656.0" layoutY="34.0" mnemonicParsing="false" onAction="#ResetExtention" prefHeight="25.0" prefWidth="81.0" text="Reset" />
+               </children>
+            </Pane>
+         </center>
+      </BorderPane>
+      <Button fx:id="showExamBtn" layoutX="341.0" layoutY="244.0" mnemonicParsing="false" onAction="#ShowSpecificExam" text="show" />
+      <Button fx:id="allExamsBtn" layoutX="55.0" layoutY="244.0" mnemonicParsing="false" onAction="#ShowExamDataBase" text="see all exams" />
+      <Button fx:id="resetDistributionBtn" layoutX="647.0" layoutY="602.0" mnemonicParsing="false" onAction="#resetDistribution" text="reset" />
+      <Button fx:id="resetExamBtn" layoutX="418.0" layoutY="244.0" mnemonicParsing="false" onAction="#ResetTable" text="reset" />
+      <TextField fx:id="examIdTb" layoutX="161.0" layoutY="244.0" promptText="exam code" />
+      <TextField fx:id="scoreTb" layoutX="191.0" layoutY="316.0" promptText="score" />
+      <ComboBox fx:id="examCb" layoutX="34.0" layoutY="316.0" onAction="#specificExamDist" prefHeight="25.0" prefWidth="137.0" promptText="Choose Statistics" />
+      <ComboBox fx:id="pickPersonCb" layoutX="309.0" layoutY="602.0" onAction="#ChooseInfoOfChosen" prefWidth="150.0" promptText="show info" />
+      <ComboBox fx:id="pickAreaCb" layoutX="61.0" layoutY="602.0" onAction="#ChooseTeacherCourseStudent" prefHeight="25.0" prefWidth="177.0" promptText="teacher/course/student" />
+      <TableView fx:id="distributionTable" layoutX="34.0" layoutY="637.0" prefHeight="200.0" prefWidth="315.0">
          <columns>
             <TableColumn fx:id="testIdColumn" prefWidth="77.99999618530273" text="exam code" />
             <TableColumn fx:id="testNameColumn" minWidth="0.0" prefWidth="74.00003814697266" text="exam name" />
@@ -37,21 +61,21 @@
             <TableColumn fx:id="medianColumn" prefWidth="92.66668701171875" text="median" />
          </columns>
       </TableView>
-      <Button fx:id="showDistributionBtn" layoutX="544.0" layoutY="541.0" mnemonicParsing="false" onAction="#ShowDistribution" text="show" />
-      <TableView fx:id="table" layoutX="25.0" layoutY="319.0" prefHeight="200.0" prefWidth="633.0" visible="false">
+      <Button fx:id="showDistributionBtn" layoutX="542.0" layoutY="602.0" mnemonicParsing="false" onAction="#ShowDistribution" text="show" />
+      <TableView fx:id="table" layoutX="88.0" layoutY="375.0" prefHeight="200.0" prefWidth="633.0" visible="false">
          <columns>
             <TableColumn fx:id="columnA" prefWidth="204.66666221618652" text="C1" />
             <TableColumn fx:id="columnB" prefWidth="428.00001525878906" text="C2" />
          </columns>
       </TableView>
-      <TableView fx:id="tableExams" layoutX="41.0" layoutY="319.0" prefHeight="200.0" prefWidth="650.0" visible="false">
+      <TableView fx:id="tableExams" layoutX="88.0" layoutY="375.0" prefHeight="200.0" prefWidth="650.0" visible="false">
          <columns>
             <TableColumn fx:id="columnAExam" prefWidth="144.66669082641602" text="C1" />
             <TableColumn fx:id="columnBExam" prefWidth="194.6666717529297" text="C2" />
             <TableColumn fx:id="columnCExam" prefWidth="310.6667175292969" text="Column X" />
          </columns>
       </TableView>
-      <TableView fx:id="distributaionStudents" layoutX="359.0" layoutY="583.0" prefHeight="200.0" prefWidth="428.0">
+      <TableView fx:id="distributaionStudents" layoutX="348.0" layoutY="637.0" prefHeight="200.0" prefWidth="428.0">
          <columns>
             <TableColumn fx:id="zeroToTenColumn" prefWidth="42.0" text="0-10" />
             <TableColumn fx:id="TenToTwentyColumn" prefWidth="42.0" text="11-20" />
@@ -65,7 +89,7 @@
             <TableColumn fx:id="nintyToOneHundredColumn" prefWidth="49.333251953125" text="91-100" />
          </columns>
       </TableView>
-      <TableView fx:id="spcificDistTable" layoutX="393.0" layoutY="244.0" prefHeight="65.0" prefWidth="419.0">
+      <TableView fx:id="spcificDistTable" layoutX="364.0" layoutY="285.0" prefHeight="65.0" prefWidth="419.0">
          <columns>
             <TableColumn fx:id="zeroTenSpecifc" prefWidth="35.0" text="0-10" />
             <TableColumn fx:id="tenTwentySpecific" prefWidth="40.0" text="11-20" />
@@ -79,11 +103,6 @@
             <TableColumn fx:id="nintyHundredSpecific" prefWidth="75.0" text="91-100" />
          </columns>
       </TableView>
-      <Label fx:id="warningLbl" layoutX="312.0" layoutY="217.0" text="error">
-         <font>
-            <Font size="9.0" />
-         </font>
-      </Label>
-      <Button fx:id="ResetExtentionBtn" layoutX="691.0" layoutY="119.0" mnemonicParsing="false" onAction="#ResetExtention" prefHeight="25.0" prefWidth="81.0" text="Reset" />
+      <Label fx:id="warningLbl" layoutX="495.0" layoutY="248.0" text="error" />
    </children>
 </AnchorPane>

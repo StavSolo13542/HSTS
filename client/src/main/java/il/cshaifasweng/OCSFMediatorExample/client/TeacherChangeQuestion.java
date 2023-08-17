@@ -157,7 +157,9 @@ public class TeacherChangeQuestion implements Initializable {
     }
 
     @FXML
-    void saveQuestionBtn(ActionEvent event) {
+
+    // return 1 if successfully saved
+    int saveQuestionBtn(ActionEvent event) {
         /*String question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "true" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
         SimpleClient.sendMessage("save basic question" + question_without_courses);
         System.out.println("Pressed button to save basic question!");
@@ -166,40 +168,46 @@ public class TeacherChangeQuestion implements Initializable {
         {
             SimpleClient.sendMessage("save course-question" + question_text_field.getText() + "```" + course);
         }*/
+
+        String answer1 = answer1_text_field.getText();
+        String answer2 = answer2_text_field.getText();
+        String answer3 = answer3_text_field.getText();
+        String answer4 = answer4_text_field.getText();
+
         if (subjects_choice_box.getSelectionModel().isEmpty())
         {
             System.out.println(" Must choose a subject.");
             EventBus.getDefault().post(new InputErrorEvent(" Must choose a subject."));
             msg = null;
-            return;
+            return 0;
         }
         if (question_choice_box.getSelectionModel().isEmpty())
         {
             System.out.println(" Must choose a question.");
             EventBus.getDefault().post(new InputErrorEvent(" Must choose a question."));
             msg = null;
-            return;
+            return 0;
         }
         if (question_text_field.getText().equals(""))
         {
             System.out.println(" Question cannot be empty.");
             EventBus.getDefault().post(new InputErrorEvent(" Question cannot be empty."));
             msg = null;
-            return;
+            return 0;
         }
-        if (answer1_text_field.getText().equals("") || answer2_text_field.getText().equals("") || answer3_text_field.getText().equals("") || answer4_text_field.getText().equals(""))
+        if (answer1.equals("") || answer2.equals("") || answer3.equals("") || answer4.equals(""))
         {
             System.out.println(" Answer cannot be empty.");
             EventBus.getDefault().post(new InputErrorEvent(" Answer cannot be empty."));
             msg = null;
-            return;
+            return 0;
         }
         if (correct_answer.getText().equals(""))
         {
             System.out.println(" Correct answer number cannot be empty.");
             EventBus.getDefault().post(new InputErrorEvent(" Correct answer number cannot be empty."));
             msg = null;
-            return;
+            return 0;
         }
         if (!(checkAnswerNumberOk(this.correct_answer.getText()) && Integer.valueOf(this.correct_answer.getText()) >= 1 && Integer.valueOf(this.correct_answer.getText()) <= 4))
         {
@@ -216,12 +224,18 @@ public class TeacherChangeQuestion implements Initializable {
 //                e.printStackTrace();
 //            }
             msg = null;
-            return;
+            return 0;
         }
-        String final_code = question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + String.valueOf((correct_answer.getText().equals("1") ? "true" : "false")) +
-                "---" + answer2_text_field.getText() + "///" + String.valueOf((correct_answer.getText().equals("2") ? "true" : "false")) +
-                "---" + answer3_text_field.getText() + "///" + String.valueOf((correct_answer.getText().equals("3") ? "true" : "false")) +
-                "---" + answer4_text_field.getText() + "///" + String.valueOf((correct_answer.getText().equals("4") ? "true" : "false")) +
+        if (answer1.equals(answer2) || answer1.equals(answer3) || answer1.equals(answer4) ||
+                answer2.equals(answer3) || answer2.equals(answer4) || answer3.equals(answer4)) {
+            System.out.println("Answers must be unique!");
+            EventBus.getDefault().post(new InputErrorEvent(" Answers must be unique"));
+            return 0;
+        }
+        String final_code = question_text_field.getText() + "---" + answer1 + "///" + String.valueOf((correct_answer.getText().equals("1") ? "true" : "false")) +
+                "---" + answer2 + "///" + String.valueOf((correct_answer.getText().equals("2") ? "true" : "false")) +
+                "---" + answer3 + "///" + String.valueOf((correct_answer.getText().equals("3") ? "true" : "false")) +
+                "---" + answer4 + "///" + String.valueOf((correct_answer.getText().equals("4") ? "true" : "false")) +
                 "---" + this.subject_name;
         final_code = this.question_name + "```" + final_code;
         System.out.println("FINAL code after update: " + final_code);
@@ -229,7 +243,7 @@ public class TeacherChangeQuestion implements Initializable {
 
         // Open another "teacher_change_question.fxml"
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_change_question.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -238,13 +252,27 @@ public class TeacherChangeQuestion implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Display a success message using a dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText("Question saved successfully!");
+
+        alert.showAndWait();
+        return 1;
     }
 
     @FXML
     void AnotherQuestionBtn(ActionEvent event) {
+        // Save the question first, if failed don't leave page
+        if (saveQuestionBtn(event) == 0) {
+            return;
+        }
+
         // Open another "teacher_change_question.fxml"
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_change_question .fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_change_question.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();

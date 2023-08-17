@@ -71,7 +71,6 @@ public class TeacherAddQuestion implements Initializable {
     @FXML
     private ChoiceBox<String> subjects_choice_box;
 
-
     @FXML
     private Label teacher_name;
 
@@ -80,6 +79,8 @@ public class TeacherAddQuestion implements Initializable {
     private int correctAnsNum;
 
     private String subject_name;
+
+    private String textAreaString = "";
 
 
     // Methods
@@ -124,13 +125,14 @@ public class TeacherAddQuestion implements Initializable {
 
     @FXML
     void coursesBtnPushed(ActionEvent event) {
-        String textAreaString = "";
+        //String textAreaString = "";       // We use a global variable instead
         List<String> selectedCourses = courses_list_view.getSelectionModel().getSelectedItems();
         for (String item : selectedCourses)
         {
             textAreaString += String.format("%s%n",(String) item);
         }
         selected_courses_text_area.setText(textAreaString);
+        courses_list_view.getItems().removeAll(selectedCourses);
     }
 
     @FXML
@@ -164,60 +166,74 @@ public class TeacherAddQuestion implements Initializable {
     }
 
     @FXML
-    void saveQuestionBtn(ActionEvent event) {
+    // return 1 if successfully saved
+    int saveQuestionBtn(ActionEvent event) {
+        String answer1 = answer1_text_field.getText();
+        String answer2 = answer2_text_field.getText();
+        String answer3 = answer3_text_field.getText();
+        String answer4 = answer4_text_field.getText();
+
         if (question_text_field.getText().equals(""))
         {
             System.out.println("empty question!");
-            EventBus.getDefault().post(new InputErrorEvent(" empty question"));
-            return;
+            EventBus.getDefault().post(new InputErrorEvent(" Empty question"));
+            return 0;
         }
-        if (answer1_text_field.getText().equals("") || answer2_text_field.getText().equals("") || answer3_text_field.getText().equals("") || answer4_text_field.getText().equals(""))
+        if (answer1.equals("") || answer2.equals("") || answer3.equals("") || answer4.equals(""))
         {
             System.out.println("empty answer!");
-            EventBus.getDefault().post(new InputErrorEvent(" empty answer(s)"));
-            return;
+            EventBus.getDefault().post(new InputErrorEvent(" Empty answer(s)"));
+            return 0;
         }
         if (correct_ans_text_field.getText().equals(""))
         {
             System.out.println("empty answer number!");
-            EventBus.getDefault().post(new InputErrorEvent(" must select correct answer"));
-            return;
+            EventBus.getDefault().post(new InputErrorEvent(" Must select correct answer"));
+            return 0;
         }
+        if (answer1.equals(answer2) || answer1.equals(answer3) || answer1.equals(answer4) ||
+                answer2.equals(answer3) || answer2.equals(answer4) || answer3.equals(answer4)) {
+            System.out.println("Answers must be unique!");
+            EventBus.getDefault().post(new InputErrorEvent(" Answers must be unique"));
+            return 0;
+        }
+
         try{
             int real_correct_answer = Integer.parseInt(correct_ans_text_field.getText());
             if (real_correct_answer <= 0 || real_correct_answer >=5)
             {
                 System.out.println("correct answer must be in the range 1-4!");
-                EventBus.getDefault().post(new InputErrorEvent(" correct answer out of range"));
-                return;
+                EventBus.getDefault().post(new InputErrorEvent(" Correct answer number out of range"));
+                return 0;
             }
         }
         catch (NumberFormatException nfe){
             System.out.println("incorrect format for answer number!");
-            EventBus.getDefault().post(new InputErrorEvent(" incorrect format for answer selection"));
-            return;
+            EventBus.getDefault().post(new InputErrorEvent(" Incorrect format for answer selection"));
+            return 0;
         }
         if (courses_list_view.getSelectionModel().getSelectedItems().isEmpty())
         {
             System.out.println("no course selected!");
-            EventBus.getDefault().post(new InputErrorEvent(" must select at least one course"));
-            return;
+            EventBus.getDefault().post(new InputErrorEvent(" Must select at least one course"));
+            return 0;
         }
         String question_without_courses = "";
         if (Integer.parseInt(correct_ans_text_field.getText()) == 1) {
-            question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "true" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
+            question_without_courses =  question_text_field.getText() + "---" + answer1 + "///" + "true" + "---" + answer2 + "///" + "false" + "---" + answer3 + "///" + "false" + "---" + answer4 + "///" + "false" + "---" + subject_name;
         }
         else if (Integer.parseInt(correct_ans_text_field.getText()) == 2) {
-            question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "false" + "---" + answer2_text_field.getText() + "///" + "true" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
+            question_without_courses =  question_text_field.getText() + "---" + answer1 + "///" + "false" + "---" + answer2 + "///" + "true" + "---" + answer3 + "///" + "false" + "---" + answer4 + "///" + "false" + "---" + subject_name;
         }
         else if (Integer.parseInt(correct_ans_text_field.getText()) == 3) {
-            question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "false" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "true" + "---" + answer4_text_field.getText() + "///" + "false" + "---" + subject_name;
+            question_without_courses =  question_text_field.getText() + "---" + answer1 + "///" + "false" + "---" + answer2 + "///" + "false" + "---" + answer3 + "///" + "true" + "---" + answer4 + "///" + "false" + "---" + subject_name;
         }
         else if (Integer.parseInt(correct_ans_text_field.getText()) == 4) {
-            question_without_courses =  question_text_field.getText() + "---" + answer1_text_field.getText() + "///" + "false" + "---" + answer2_text_field.getText() + "///" + "false" + "---" + answer3_text_field.getText() + "///" + "false" + "---" + answer4_text_field.getText() + "///" + "true" + "---" + subject_name;
+            question_without_courses =  question_text_field.getText() + "---" + answer1 + "///" + "false" + "---" + answer2 + "///" + "false" + "---" + answer3 + "///" + "false" + "---" + answer4 + "///" + "true" + "---" + subject_name;
         }
         else {
             System.out.println("Error! No correct answer was chosen");
+            return 0;
 
         }
         SimpleClient.sendMessage("save basic question" + question_without_courses);
@@ -239,12 +255,23 @@ public class TeacherAddQuestion implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Display a success message using a dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText("Question saved successfully!");
+
+        alert.showAndWait();
+        return 1;
     }
 
     @FXML
     void AnotherQuestionBtn(ActionEvent event) {
-        // Save the question first
-        saveQuestionBtn(event);
+        // Save the question first, if failed don't leave page
+        if (saveQuestionBtn(event) == 0) {
+            return;
+        }
         // Open a new "teacher_add_question.fxml"
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_add_question.fxml"));

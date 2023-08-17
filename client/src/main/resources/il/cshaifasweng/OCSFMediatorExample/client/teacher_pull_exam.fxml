@@ -7,57 +7,71 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="856.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.TeacherPullExamFromDrawer">
     <children>
-        <Label layoutX="175.0" layoutY="25.0" prefHeight="66.0" prefWidth="290.0" text="Teacher Page">
-            <font>
-                <Font name="System Bold" size="45.0" />
-            </font>
-        </Label>
-        <Label layoutX="24.0" layoutY="91.0" text="Name: ">
+      <BorderPane layoutX="10.0" layoutY="15.0" prefHeight="124.0" prefWidth="609.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <right>
+            <Pane prefHeight="95.0" prefWidth="596.0" style="-fx-background-color: #ecfcec;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="78.0" layoutY="14.0" prefHeight="66.0" prefWidth="441.0" text="Pull Exam From Drawer" textFill="#336633">
+                     <font>
+                        <Font name="System Bold" size="40.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </right>
+      </BorderPane>
+      <BorderPane layoutX="10.0" layoutY="147.0" prefHeight="693.0" prefWidth="609.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <center>
+            <Pane prefHeight="662.0" prefWidth="595.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+               <children>
+                    <Label layoutX="115.0" layoutY="18.0" prefHeight="20.0" prefWidth="99.0" text="Set Exam Code:">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                  </Label>
+                    <Label layoutX="367.0" layoutY="18.0" prefHeight="20.0" prefWidth="122.0" text="Start Date &amp; Time:">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label layoutX="120.0" layoutY="118.0" prefHeight="20.0" prefWidth="89.0" text="Choose Exam:">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <Label layoutX="408.0" layoutY="118.0" prefHeight="20.0" prefWidth="41.0" text="Mode:">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                    <ChoiceBox fx:id="mode" layoutX="329.0" layoutY="150.0" prefHeight="38.0" prefWidth="197.0" />
+                    <ChoiceBox fx:id="exam" layoutX="73.0" layoutY="151.0" prefHeight="38.0" prefWidth="183.0" />
+               </children>
+            </Pane>
+         </center>
+      </BorderPane>
+        <Label layoutX="37.0" layoutY="98.0" text="Name: ">
             <font>
                 <Font size="15.0" />
             </font>
         </Label>
-        <Label fx:id="teacher_name" layoutX="75.0" layoutY="91.0" prefHeight="20.0" prefWidth="131.0" text="Teacher Name">
+        <Label fx:id="teacher_name" layoutX="88.0" layoutY="98.0" prefHeight="20.0" prefWidth="131.0" text="Teacher Name">
             <font>
                 <Font size="14.0" />
             </font>
         </Label>
-        <Label layoutX="165.0" layoutY="101.0" prefHeight="66.0" prefWidth="311.0" text="Pull Exam From Drawer">
-            <font>
-                <Font name="System Bold" size="28.0" />
-            </font>
-        </Label>
-        <Button fx:id="another_exam_btn" layoutX="48.0" layoutY="816.0" mnemonicParsing="false" onAction="#pullAnotherExam" prefHeight="25.0" prefWidth="136.0" text="Pull Another Exam" />
-        <Button fx:id="go_back_button" layoutX="459.0" layoutY="816.0" mnemonicParsing="false" onAction="#viewLastPage" prefHeight="25.0" prefWidth="136.0" text="Go Back" />
-        <Label layoutX="447.0" layoutY="167.0" prefHeight="20.0" prefWidth="122.0" text="Start Date &amp; Time:">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </Label>
-        <Label layoutX="27.0" layoutY="247.0" prefHeight="20.0" prefWidth="89.0" text="Choose Exam:">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </Label>
-        <ChoiceBox fx:id="mode" layoutX="409.0" layoutY="238.0" prefHeight="38.0" prefWidth="197.0" />
-        <Label layoutX="342.0" layoutY="247.0" prefHeight="20.0" prefWidth="54.0" text="Mode:">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </Label>
-        <TextArea fx:id="time" layoutX="539.0" layoutY="192.0" prefHeight="26.0" prefWidth="73.0" promptText="HH:MM" />
-        <TextArea fx:id="exam_code" layoutX="124.0" layoutY="182.0" prefHeight="38.0" prefWidth="183.0" promptText="eg. 10g6" />
-        <Label layoutX="25.0" layoutY="191.0" prefHeight="20.0" prefWidth="99.0" text="Set Exam Code:">
-            <font>
-                <Font size="14.0" />
-            </font></Label>
+        <Button fx:id="another_exam_btn" layoutX="42.0" layoutY="786.0" mnemonicParsing="false" onAction="#pullAnotherExam" prefHeight="25.0" prefWidth="136.0" text="Pull Another Exam" />
+        <Button fx:id="go_back_button" layoutX="453.0" layoutY="786.0" mnemonicParsing="false" onAction="#viewLastPage" prefHeight="25.0" prefWidth="136.0" text="Go Back" />
+        <TextArea fx:id="time" layoutX="468.0" layoutY="210.0" prefHeight="26.0" prefWidth="73.0" promptText="HH:MM" />
+        <TextArea fx:id="exam_code" layoutX="88.0" layoutY="210.0" prefHeight="38.0" prefWidth="183.0" promptText="eg. 10g6" />
         <Accordion layoutX="337.0" layoutY="317.0" />
-        <ChoiceBox fx:id="exam" layoutX="124.0" layoutY="238.0" prefHeight="38.0" prefWidth="183.0" />
-      <Button fx:id="pulled_exam" layoutX="253.0" layoutY="816.0" mnemonicParsing="false" onAction="#saveExambtn" prefHeight="25.0" prefWidth="136.0" text="Save pulled exam" />
-      <DatePicker fx:id="date_picker" layoutX="404.0" layoutY="198.0" prefHeight="26.0" prefWidth="122.0" promptText="Pick a date" />
+      <Button fx:id="pulled_exam" layoutX="247.0" layoutY="786.0" mnemonicParsing="false" onAction="#saveExamBtn" prefHeight="25.0" prefWidth="136.0" text="Save pulled exam" />
+      <DatePicker fx:id="date_picker" layoutX="333.0" layoutY="216.0" prefHeight="26.0" prefWidth="122.0" promptText="Pick a date" />
     </children>
 </AnchorPane>

@@ -13,6 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 import java.io.IOException;
 import java.net.URL;
@@ -154,50 +156,70 @@ public class TeacherCheckExam implements Initializable {
 
     }
 
+    // Check new grade is between 0 - 100 and that exists a note
+    boolean checkValid(String curr_grade, String note, String name) {
+        this.grade_ok = checkGradeOk(curr_grade);
+        if (!this.grade_ok) {
+            System.out.println(" Grade is not in a correct format, student - " + name);
+            EventBus.getDefault().post(new InputErrorEvent(" Grade is not in a correct format, student - " + name));
+            msg = null;
+            return false;
+        }
+
+        if (this.note_to_student.getText().equals("")) {
+            System.out.println(" Note to student is empty, student - " + name);
+            EventBus.getDefault().post(new InputErrorEvent(" Note to student is empty, student - " + name));
+            msg = null;
+            return false;
+        }
+        return true;
+    }
+
     @FXML
     void saveBtn(ActionEvent event) {
+
         String[] split_students_name = this.student_choice_box.getValue().split(" ");
+        System.out.println("split_students_name: " + split_students_name[0]);
         String curr_grade = this.grade.getText();
         String curr_note = this.note_to_student.getText();
+        String curr_name = this.student_choice_box.getValue();
 
         // Check new grade is between 0 - 100 and that exists a note
         this.out_string[this.pupil_index] = split_students_name[split_students_name.length - 1] + "```" + curr_grade + "```" + curr_note;
         System.out.println("Grade and note: " + curr_grade + ", " + curr_note);
-        this.grade_ok = checkGradeOk(curr_grade) && this.grade_ok;
-        if (!this.grade_ok) {
-            System.out.println(" Grade is not in a correct format.");
-            EventBus.getDefault().post(new InputErrorEvent(" Grade is not in a correct format."));
-            msg = null;
-            return;
-        }
 
-        if (this.note_to_student.getText().equals("")) {
-            System.out.println(" Note to student is empty.");
-            EventBus.getDefault().post(new InputErrorEvent(" Note to student is empty."));
-            msg = null;
-            return;
+        if (!checkValid(curr_grade, curr_note, curr_name)) {
+            return;         // page is not valid
         }
-
-//        else {
-//            try {
-//                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
-//                Parent root = loader.load();
-//                Scene nextScene = new Scene(root);
-//                Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-//                currentStage.setScene(nextScene);
-//                currentStage.show();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+//        this.grade_ok = checkGradeOk(curr_grade);
+//        if (!this.grade_ok) {
+//            System.out.println(" Grade is not in a correct format.");
+//            EventBus.getDefault().post(new InputErrorEvent(" Grade is not in a correct format."));
 //            msg = null;
-//            return; }
-
+//            return;
+//        }
+//
+//        if (this.note_to_student.getText().equals("")) {
+//            System.out.println(" Note to student is empty.");
+//            EventBus.getDefault().post(new InputErrorEvent(" Note to student is empty."));
+//            msg = null;
+//            return;
+//        }
         String description_string = exam_name.split("@")[1];
         for (String pup: this.out_string)
         {
             description_string += ("___" + pup);
         }
         SimpleClient.sendMessage("SaVe UPdAted GRADes" + description_string);
+        // Display a success message using a dialog
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText("Exams saved successfully!");
+
+        alert.showAndWait();
+
+
 
 //        // Open another "teacher_check_exam.fxml"
 //        try {
@@ -392,12 +414,22 @@ public class TeacherCheckExam implements Initializable {
 //        ObservableList<String> observableList1 = FXCollections.observableArrayList(pupilList);
 //        student_choice_box.setItems(observableList1);
 //        msg = null;
-        if (this.pupil_index != -1)
+        if (this.pupil_index != -1)     // switching student
         {
+            String curr_grade = this.grade.getText();
+            String curr_note = this.note_to_student.getText();
+            String curr_name = details_for_each_student[pupil_index].split("___")[0];
+
+            if (!checkValid(curr_grade, curr_note, curr_name)) {
+                // Prevent the selection change
+                student_choice_box.getSelectionModel().select(this.pupil_index);
+                return;         // page is not valid so we won't switch
+            }
+
 //            String[] split_students_name = this.student_choice_box.getValue().split(" ");
-            this.out_string[this.pupil_index] = this.prev_id + "```" + this.grade.getText() + "```" + this.note_to_student.getText();
-            this.grade_ok = this.grade_ok && checkGradeOk(this.grade.getText());
+            this.out_string[this.pupil_index] = this.prev_id + "```" + curr_grade + "```" + curr_note;
         }
+
         this.pupil_index = student_choice_box.getSelectionModel().getSelectedIndex();
 //        System.out.println(this.pupil_index);
         if (!this.used[this.pupil_index]){

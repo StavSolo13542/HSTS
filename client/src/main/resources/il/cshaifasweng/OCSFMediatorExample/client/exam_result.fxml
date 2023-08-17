@@ -4,24 +4,34 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="782.0" prefWidth="1076.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ExamResultController">
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="856.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ExamResultController">
    <children>
-      <Label alignment="CENTER" layoutY="148.0" prefHeight="53.0" prefWidth="1076.0" text="Your Exam Results">
-         <font>
-            <Font name="System Bold" size="36.0" />
-         </font>
-      </Label>
-      <Button fx:id="go_back_button" layoutX="982.0" layoutY="113.0" mnemonicParsing="false" onAction="#viewLastPage" text="Go Back">
+      <BorderPane layoutX="12.0" layoutY="123.0" prefHeight="92.0" prefWidth="777.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <right>
+            <Pane prefHeight="74.0" prefWidth="767.0" style="-fx-background-color: #ecfcec;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="188.0" layoutY="5.0" prefHeight="72.0" prefWidth="391.0" text="Your Exam Results" textAlignment="CENTER" textFill="#336633" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="45.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </right>
+      </BorderPane>
+      <Button fx:id="go_back_button" layoutX="688.0" layoutY="65.0" mnemonicParsing="false" onAction="#viewLastPage" text="Go Back">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <ScrollPane layoutY="199.0" prefHeight="588.0" prefWidth="1076.0">
+      <ScrollPane layoutY="226.0" prefHeight="829.0" prefWidth="800.0">
          <content>
-            <VBox fx:id="examPane" prefHeight="590.0" prefWidth="1078.0" />
+            <VBox fx:id="examPane" prefHeight="802.0" prefWidth="798.0" />
          </content>
       </ScrollPane>
    </children>

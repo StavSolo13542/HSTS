@@ -264,11 +264,6 @@ public class PrincipalPrimaryController {
         //SimpleClient.sendMessage("RequestMoreTime");
     }
 
-
-
-
-
-
     @FXML
     void ResetTable(ActionEvent event) {
         examIdTb.setText("");
@@ -877,11 +872,11 @@ public class PrincipalPrimaryController {
         pickAreaCb.getItems().add("teacher");
         pickAreaCb.getItems().add("course");
         pickAreaCb.getItems().add("student");
-        columnA.setText("question");
-        columnB.setText("answers");
-        columnAExam.setText("id");
-        columnBExam.setText("code");
-        columnCExam.setText("exam name");
+        columnA.setText("Question");
+        columnB.setText("Answers");
+        columnAExam.setText("ID");
+        columnBExam.setText("Code");
+        columnCExam.setText("Exam Name");
         table.setVisible(false);
         tableExams.setVisible(false);
         zeroToTenColumn.setText("0-10");

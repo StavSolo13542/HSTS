@@ -6,15 +6,30 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="856.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.TeacherBuildExam">
    <children>
-      <Label layoutX="175.0" layoutY="25.0" prefHeight="66.0" prefWidth="290.0" text="Teacher Page">
-         <font>
-            <Font name="System Bold" size="45.0" />
-         </font>
-      </Label>
+      <BorderPane layoutX="11.0" layoutY="15.0" prefHeight="124.0" prefWidth="609.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <right>
+            <Pane prefHeight="95.0" prefWidth="596.0" style="-fx-background-color: #ecfcec;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="183.0" layoutY="14.0" prefHeight="66.0" prefWidth="230.0" text="Start Exam" textFill="#336633">
+                     <font>
+                        <Font name="System Bold" size="45.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </right>
+      </BorderPane>
+      <BorderPane layoutX="11.0" layoutY="147.0" prefHeight="693.0" prefWidth="609.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <right>
+            <Pane prefHeight="662.0" prefWidth="595.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER" />
+         </right>
+      </BorderPane>
       <Label layoutX="24.0" layoutY="91.0" text="Name: ">
          <font>
             <Font size="15.0" />
@@ -25,13 +40,8 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="241.0" layoutY="102.0" prefHeight="66.0" prefWidth="148.0" text="Start Exam">
-         <font>
-            <Font name="System Bold" size="28.0" />
-         </font>
-      </Label>
-      <Button fx:id="another_exam_btn" layoutX="48.0" layoutY="816.0" mnemonicParsing="false" onAction="#AnotherExamBtn" prefHeight="25.0" prefWidth="136.0" text="Pull Another Exam" />
-      <Button fx:id="go_back_button" layoutX="459.0" layoutY="816.0" mnemonicParsing="false" onAction="#viewLastPage" prefHeight="25.0" prefWidth="136.0" text="Go Back" />
+      <Button fx:id="another_exam_btn" layoutX="48.0" layoutY="774.0" mnemonicParsing="false" onAction="#AnotherExamBtn" prefHeight="25.0" prefWidth="136.0" text="Pull Another Exam" />
+      <Button fx:id="go_back_button" layoutX="459.0" layoutY="774.0" mnemonicParsing="false" onAction="#viewLastPage" prefHeight="25.0" prefWidth="136.0" text="Go Back" />
       <Label fx:id="teacher_id11" layoutX="340.0" layoutY="191.0" prefHeight="20.0" prefWidth="122.0" text="Start Date &amp; Time:">
          <font>
             <Font size="14.0" />

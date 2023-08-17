@@ -180,7 +180,6 @@ public class TeacherBuildExam implements Initializable {
 
     @FXML
     void coursesBtnPushed(ActionEvent event) {
-        String textAreaString = "";
         List<String> selectedQuestions = questions_list_view.getSelectionModel().getSelectedItems();
         for (String item : selectedQuestions)
         {
@@ -190,7 +189,9 @@ public class TeacherBuildExam implements Initializable {
         System.out.println("after loop on items");
         questions_table.setItems(selectedQ);
         System.out.println(selectedQ);
+        questions_list_view.getItems().removeAll(selectedQuestions); // Remove selected items from the ListView
     }
+
     @Subscribe
     public void updateQuestions(RefreshQuestionsEvent event) {
         SimpleClient.sendMessage("Get All Questions For Exam" + this.course_name);
@@ -213,32 +214,32 @@ public class TeacherBuildExam implements Initializable {
     }
 
     @FXML
-    void saveExamBtn(ActionEvent event) {
+    int saveExamBtn(ActionEvent event) {
         if (exam_name.getText().equals(""))
         {
             System.out.println("blanc exam name!");
-            EventBus.getDefault().post(new InputErrorEvent(" exam name cannot be empty"));
-            return;
+            EventBus.getDefault().post(new InputErrorEvent(" Exam name cannot be empty"));
+            return 0;
         }
         if (duration_test_area.getText().equals(""))
         {
             System.out.println("blanc time duration!");
-            EventBus.getDefault().post(new InputErrorEvent(" exam duration cannot be empty"));
-            return;
+            EventBus.getDefault().post(new InputErrorEvent(" Exam duration cannot be empty"));
+            return 0;
         }
         try{
             int test_int_format = Integer.parseInt(duration_test_area.getText());
             if (test_int_format <= 0)
             {
                 System.out.println("duration must be at least 1 minute!");
-                EventBus.getDefault().post(new InputErrorEvent(" duration must be at least 1 minute"));
-                return;
+                EventBus.getDefault().post(new InputErrorEvent(" Duration must be at least 1 minute"));
+                return 0;
             }
         }
         catch (NumberFormatException nfe){
             System.out.println("incorrect format for duration!");
-            EventBus.getDefault().post(new InputErrorEvent(" incorrect format for duration"));
-            return;
+            EventBus.getDefault().post(new InputErrorEvent(" Incorrect format for duration"));
+            return 0;
         }
         if (note_to_teachers.getText().equals(""))
         {
@@ -263,21 +264,21 @@ public class TeacherBuildExam implements Initializable {
                 if (real_grade <= 0)
                 {
                     System.out.println("points must be above 0!");
-                    EventBus.getDefault().post(new InputErrorEvent(" points must be above 0"));
-                    return;
+                    EventBus.getDefault().post(new InputErrorEvent(" Score must be above 0"));
+                    return 0;
                 }
             }
             catch (NumberFormatException nfe){
                 System.out.println("incorrect format for points!");
-                EventBus.getDefault().post(new InputErrorEvent(" incorrect format for points"));
-                return;
+                EventBus.getDefault().post(new InputErrorEvent(" Incorrect format for score"));
+                return 0;
             }
         }
         if (total_grade != 100)
         {
             System.out.println("total grade does not add up to 100!");
-            EventBus.getDefault().post(new InputErrorEvent(" total grade does not add up to 100"));
-            return;
+            EventBus.getDefault().post(new InputErrorEvent(" Total grade does not add up to 100"));
+            return 0;
         }
         SimpleClient.sendMessage("save basic exam" + exam_without_questions);
         System.out.println("Pressed button to save basic exam!\n\n");
@@ -289,7 +290,7 @@ public class TeacherBuildExam implements Initializable {
         }
         // Open another "teacher_build_exam.fxml" page
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_build_exam.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -298,6 +299,15 @@ public class TeacherBuildExam implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Display a success message using a dialog
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText("Exam saved successfully!");
+
+        alert.showAndWait();
+        return 1;
     }
 
     @FXML
@@ -337,8 +347,10 @@ public class TeacherBuildExam implements Initializable {
 
     @FXML
     void AnotherExamBtn(ActionEvent event) {
-        // Save the exam first
-        saveExamBtn(event);
+        // Save the exam first, if failed don't leave page
+        if (saveExamBtn(event) == 0) {
+            return;
+        }
 
         // Open a new "teacher_build_exam.fxml"
         try {
