@@ -96,6 +96,7 @@ public class TeacherCheckExam implements Initializable {
 
     public static Boolean checkGradeOk(String the_grade)
     {
+        System.out.println("in checkGradeOk. the_grade: " + the_grade);
         try {
             int grade = Integer.parseInt(the_grade); // Try parsing the input as an integer
             boolean isValidNumber = (grade >= 0) && (grade <= 100); // Check if the parsed number is within the range
