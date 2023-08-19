@@ -224,7 +224,7 @@ public class SimpleClient extends AbstractClient {
 //			 client = new SimpleClient("0.tcp.eu.ngrok.io", 13010);
 
 			// works only for pcs in the same LAN
-			client = new SimpleClient("localhost", 3100);
+			client = new SimpleClient("localhost", 3200);
 			//client = new SimpleClient("0.tcp.eu.ngrok.io", 10214);
 		}
 		return client;
