@@ -141,6 +141,11 @@ public class SimpleClient extends AbstractClient {
 			System.out.println("now we are back at the client for QUestioNs");
 			EventBus.getDefault().post(new test(new Message("ToUpdateQuestion" + msg_string)));
 		}
+		else if (msg_string.startsWith("Hhere are all QUestioNs")){
+			msg_string = msg_string.replaceFirst("Hhere are all QUestioNs", "");
+			System.out.println("now we are back at the client for QUestioNs");
+			EventBus.getDefault().post(new RefreshQuestionsEvent("updateQuestions2", msg_string));
+		}
 		else if (msg_string.startsWith("Here are all courses1")){
 			System.out.println("after Here are all courses1");
 			msg_string = msg_string.replaceFirst("Here are all courses1", "");
@@ -180,9 +185,19 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
 		}
 		else if (msg_string.startsWith("new question")){
-			EventBus.getDefault().post(new RefreshQuestionsEvent());
+			EventBus.getDefault().post(new RefreshQuestionsEvent("updateQuestions1", null));
 		}
-
+		else if (msg_string.startsWith("new exam")){
+			EventBus.getDefault().post(new UpdateExamEvent("updateExams1", null));
+		}
+		else if (msg_string.startsWith("Hhere are all questions1"))
+		{
+			EventBus.getDefault().post(new RefreshQuestionsEvent("updateQuestions2", msg_string.replaceFirst("Hhere are all questions1", "")));
+		}
+		else if (msg_string.startsWith("Hhere are All exams1"))
+		{
+			EventBus.getDefault().post(new UpdateExamEvent("updateExams2", msg_string.replaceFirst("Hhere are All exams1", "")));
+		}
 	}
 	//Send received message to the server
 	static public void sendMessage(String msg){

@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-public class RefreshQuestionsEvent {
+public class UpdateExamEvent {
     private String code;
     private String message;
     public String getCode()
@@ -13,7 +13,7 @@ public class RefreshQuestionsEvent {
         return this.message;
     }
 
-    public RefreshQuestionsEvent(String _code, String _message)
+    public UpdateExamEvent(String _code, String _message)
     {
         this.code = _code;
         this.message = _message;
