@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.greenrobot.eventbus.Subscribe;
 
 import javax.persistence.Column;
 import java.io.IOException;
@@ -86,6 +87,7 @@ public class TeacherChangeQuestion implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        EventBus.getDefault().register(this);
         //EventBus.getDefault().register(this);
         // initialize subjects_choice_box
         teacher_name.setText(SimpleClient.name);
@@ -358,6 +360,36 @@ public class TeacherChangeQuestion implements Initializable {
         ObservableList<String> observableList = FXCollections.observableArrayList(real_questions);
         question_choice_box.setItems(observableList);
         msg = null;
+    }
+
+    @Subscribe
+    public void updateQuestions1(RefreshQuestionsEvent event) {
+        if (!event.getCode().equals("updateQuestions1"))
+        {
+            return;
+        }
+        SimpleClient.sendMessage("gget all QUestions" + this.subject_name);
+    }
+
+    @Subscribe
+    public void updateQuestions2(RefreshQuestionsEvent event) {
+        if (!event.getCode().equals("updateQuestions2"))
+        {
+            return;
+        }
+        System.out.println("after second while loop");
+        String[] questions = event.getMessage().split("___");
+        this.questionList = Arrays.asList(questions);
+        List<String> real_questions = new ArrayList<String>();
+        for (String q : questionList)
+        {
+            real_questions.add(q.split("---")[0]);
+        }
+
+        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+        ObservableList<String> observableList = FXCollections.observableArrayList(real_questions);
+        question_choice_box.setItems(observableList);
+//        msg = null;
     }
 
     @FXML

@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -189,8 +190,33 @@ public class TeacherPullExamFromDrawer {
         return true;
     }
 
+    @Subscribe
+    public void updateExams1(UpdateExamEvent event) {
+        if (!event.getCode().equals("updateExams1"))
+        {
+            return;
+        }
+        SimpleClient.sendMessage("Gget All exAms" + SimpleClient.name);
+    }
+
+    @Subscribe
+    public void updateExams2(UpdateExamEvent event) {
+        if (!event.getCode().equals("updateExams2"))
+        {
+            return;
+        }
+        System.out.println("after first while loop of adding exam to readyExam");
+        String[] Exams = event.getMessage().split("___");
+        List<String> subjectList = Arrays.asList(Exams);
+
+        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+        ObservableList<String> observableList = FXCollections.observableArrayList(subjectList);
+        exam.setItems(observableList);
+    }
+
     @FXML
     void initialize() {
+        EventBus.getDefault().register(this);
         this.teacher_name.setText(SimpleClient.name);
         exam.setOnAction(this::addExam);
         List<String> modes = new ArrayList<String>();
@@ -205,6 +231,22 @@ public class TeacherPullExamFromDrawer {
         SimpleClient.sendMessage("Get All exAms" + SimpleClient.name);
         while (msg == null) {
             System.out.print("");
+        }
+        if (msg.equals("None"))
+        {
+            System.out.println(" No exams for pulling.");
+            EventBus.getDefault().post(new InputErrorEvent(" No exams for pulling"));
+            msg = null;
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+                Parent root = loader.load();
+                Scene nextScene = new Scene(root);
+                Stage currentStage = (Stage) this.another_exam_btn.getScene().getWindow();
+                currentStage.setScene(nextScene);
+                currentStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         System.out.println("after first while loop of adding exam to readyExam");
         String[] Exams = msg.split("___");

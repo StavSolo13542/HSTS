@@ -237,10 +237,10 @@ public class SimpleServer extends AbstractServer {
 		try {
 			transaction = session.beginTransaction();
 
-			String primarey_key_query = "SELECT id FROM pupils WHERE real_id = '" + id + "';";
+			String primarey_key_query = "SELECT id FROM Pupils WHERE real_id = '" + id + "';";
 			String primarey_key =  session.createNativeQuery(primarey_key_query).getSingleResult().toString();
 			// Retrieve a row by id
-			String queryString = "SELECT * FROM grades WHERE pupil_id = " + primarey_key + ";";
+			String queryString = "SELECT * FROM Grades WHERE pupil_id = " + primarey_key + ";";
 			List<Grade> grades = session.createNativeQuery(queryString, Grade.class).list();
 			for (Grade grade : grades)
 			{
@@ -333,9 +333,9 @@ public class SimpleServer extends AbstractServer {
 			// Query to determine the role based on name and password
 			String query = "SELECT " +
 					"		CASE " +
-					"        WHEN EXISTS (SELECT * FROM pupils WHERE name = :username AND password = :password) THEN 'student' " +
-					"        WHEN EXISTS (SELECT * FROM teachers WHERE name = :username AND password = :password) THEN 'teacher' " +
-					"        WHEN EXISTS (SELECT * FROM principals WHERE name = :username AND password = :password) THEN 'principal' " +
+					"        WHEN EXISTS (SELECT * FROM Pupils WHERE name = :username AND password = :password) THEN 'student' " +
+					"        WHEN EXISTS (SELECT * FROM Teachers WHERE name = :username AND password = :password) THEN 'teacher' " +
+					"        WHEN EXISTS (SELECT * FROM Principals WHERE name = :username AND password = :password) THEN 'principal' " +
 					"        ELSE NULL " +
 					"    END AS role";
 
@@ -513,6 +513,12 @@ public class SimpleServer extends AbstractServer {
 			String data = connectToDatabase_Exams(msgString.replaceFirst("Get All exAms", ""));
 			sendMessage("Here are All exams1" + data.substring(3), client);
 		}
+		else if (msgString.startsWith("Gget All exAms"))
+		{
+			System.out.println("after Gget All Exams For readyExam");
+			String data = connectToDatabase_Exams(msgString.replaceFirst("Gget All exAms", ""));
+			sendMessage("Hhere are All exams1" + data.substring(3), client);
+		}
 		else if (msgString.startsWith("get all REaDy Exams"))
 		{
 			System.out.println("after get all REaDy Exams");
@@ -557,6 +563,12 @@ public class SimpleServer extends AbstractServer {
 			String data = connectToDatabase_Questions_according_to_subject(msgString.replaceFirst("get all QUestions", ""));
 			sendMessage("Here are all QUestioNs" + data.substring(3), client);
 		}
+		else if (msgString.startsWith("gget all QUestions"))
+		{
+			System.out.println("after gget all QUestions");
+			String data = connectToDatabase_Questions_according_to_subject(msgString.replaceFirst("gget all QUestions", ""));
+			sendMessage("Hhere are all QUestioNs" + data.substring(3), client);
+		}
 		else if (msgString.startsWith("save Update Question"))
 		{
 			System.out.println("after save Update Question");
@@ -578,6 +590,12 @@ public class SimpleServer extends AbstractServer {
 			System.out.println("after Get All Questions For Exam");
 			String data = connectToDatabase_Questions(msgString.replaceFirst("Get All Questions For Exam", ""));
 			sendMessage("Here are all questions1" + data.substring(3), client);
+		}
+		else if (msgString.startsWith("Gget All Questions For Exam"))
+		{
+			System.out.println("after Gget All Questions For Exam");
+			String data = connectToDatabase_Questions(msgString.replaceFirst("Gget All Questions For Exam", ""));
+			sendMessage("Hhere are all questions1" + data.substring(3), client);
 		}
 		else if (msgString.startsWith("save basic question"))
 		{
@@ -609,6 +627,12 @@ public class SimpleServer extends AbstractServer {
 		{
 			for (ConnectionToClient i : connected_users.values()) {
 				sendMessage("new question", i);
+			}
+		}
+		else if (msgString.startsWith("new exam added"))
+		{
+			for (ConnectionToClient i : connected_users.values()) {
+				sendMessage("new exam", i);
 			}
 		}
 	}
@@ -1383,7 +1407,7 @@ public class SimpleServer extends AbstractServer {
 					{
 						strings += ("___" + e.getName());
 					}
-					return strings;
+					return strings.equals("") ? "___None": strings;
 				}
 			}
 			////////////////////////////////////////////
@@ -1535,9 +1559,10 @@ public class SimpleServer extends AbstractServer {
 					List<Exam> exams = new ArrayList<Exam>();
 					List<Course> all_good_courses = sub.getCourses();
 					List<Question> all_good_questions = new ArrayList<Question>();
-					for (Course c : all_good_courses){
-						all_good_questions.addAll(c.getQuestions());
-					}
+					all_good_questions.addAll(sub.getQuestions());
+//					for (Course c : all_good_courses){
+//						all_good_questions.addAll(c.getQuestions());
+//					}
 					String strings = "";
 					for (Question question : all_good_questions) {
 

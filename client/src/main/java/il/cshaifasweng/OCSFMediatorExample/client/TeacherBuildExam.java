@@ -193,19 +193,40 @@ public class TeacherBuildExam implements Initializable {
     }
 
     @Subscribe
-    public void updateQuestions(RefreshQuestionsEvent event) {
-        SimpleClient.sendMessage("Get All Questions For Exam" + this.course_name);
-        while (msg == null){
-            System.out.print("");
+    public void updateQuestions1(RefreshQuestionsEvent event) {
+        if (!event.getCode().equals("updateQuestions1"))
+        {
+            return;
         }
-        System.out.println("after second while loop");
-        String[] courses = msg.split("___");
+        SimpleClient.sendMessage("Gget All Questions For Exam" + this.course_name);
+//        while (msg == null){
+//            System.out.print("");
+//        }
+//        System.out.println("after second while looppppp");
+//        String[] courses = msg.split("___");
+//        List<String> questionList = Arrays.asList(courses);
+//
+//        // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
+//        ObservableList<String> observableList1 = FXCollections.observableArrayList(questionList);
+//        questions_list_view.setItems(observableList1);
+//        msg = null;
+//        System.out.println("after message = null");
+    }
+
+    @Subscribe
+    public void updateQuestions2(RefreshQuestionsEvent event) {
+        if (!event.getCode().equals("updateQuestions2"))
+        {
+            return;
+        }
+        System.out.println("after second while looppppp");
+        String[] courses = event.getMessage().split("___");
         List<String> questionList = Arrays.asList(courses);
 
         // Create a new ObservableList and pass the arrayArrayList as an argument to the FXCollections.observableArrayList() method
         ObservableList<String> observableList1 = FXCollections.observableArrayList(questionList);
         questions_list_view.setItems(observableList1);
-        msg = null;
+//        msg = null;
         System.out.println("after message = null");
     }
     @FXML
@@ -288,6 +309,7 @@ public class TeacherBuildExam implements Initializable {
             System.out.println("save exam-question" + exam_name.getText() + "```" + question + "```" + grade + "end of msg");
             SimpleClient.sendMessage("save exam-question" + exam_name.getText() + "```" + question + "```" + grade);         // TODO: need to change 10 to teacher-chosen points for the question
         }
+        SimpleClient.sendMessage("new exam added");
         // Open another "teacher_build_exam.fxml" page
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_build_exam.fxml"));
