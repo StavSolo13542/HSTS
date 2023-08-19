@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import org.greenrobot.eventbus.EventBus;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
