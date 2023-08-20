@@ -87,7 +87,7 @@
          </font>
       </Label>
       <Button fx:id="courses_button" layoutX="317.0" layoutY="586.0" mnemonicParsing="false" onAction="#coursesBtnPushed" text="Select -&gt;" />
-      <TextArea fx:id="selected_courses_text_area" layoutX="400.0" layoutY="480.0" prefHeight="199.0" prefWidth="207.0" />
+      <TextArea fx:id="selected_courses_text_area" editable="false" layoutX="400.0" layoutY="480.0" prefHeight="199.0" prefWidth="207.0" />
       <Label fx:id="teacher_id11122" layoutX="24.0" layoutY="478.0" prefHeight="20.0" prefWidth="173.0" text="Enter Correct Answer (digit)">
          <font>
             <Font size="14.0" />

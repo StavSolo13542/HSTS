@@ -212,7 +212,7 @@ public class TeacherAddQuestion implements Initializable {
             EventBus.getDefault().post(new InputErrorEvent(" Incorrect format for answer selection"));
             return 0;
         }
-        if (courses_list_view.getSelectionModel().getSelectedItems().isEmpty())
+        if (selected_courses_text_area.getText().isEmpty())
         {
             System.out.println("no course selected!");
             EventBus.getDefault().post(new InputErrorEvent(" Must select at least one course"));
@@ -238,7 +238,7 @@ public class TeacherAddQuestion implements Initializable {
         }
         SimpleClient.sendMessage("save basic question" + question_without_courses);
         System.out.println("Pressed button to save basic question!");
-        List<String> selectedCourses = courses_list_view.getSelectionModel().getSelectedItems();
+        String[] selectedCourses = selected_courses_text_area.getText().split("\n");
         for (String course : selectedCourses)
         {
             SimpleClient.sendMessage("save course-question" + question_text_field.getText() + "```" + course);
