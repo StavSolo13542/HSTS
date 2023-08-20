@@ -326,7 +326,7 @@ public class TeacherPullExamFromDrawer {
         SimpleClient.sendMessage("save readyExam" + exam_final_code);
         System.out.println("Pressed button to save readyExam!");
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_pull_exam.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -356,7 +356,7 @@ public class TeacherPullExamFromDrawer {
 
         // Open another "teacher_pull_exam.fxml"
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_pull_exam.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
