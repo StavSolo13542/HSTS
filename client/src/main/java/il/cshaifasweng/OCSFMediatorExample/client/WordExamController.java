@@ -1,19 +1,15 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Answer;
-import il.cshaifasweng.OCSFMediatorExample.entities.Exam;
 import il.cshaifasweng.OCSFMediatorExample.entities.Question;
 import il.cshaifasweng.OCSFMediatorExample.entities.ReadyExam;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -27,10 +23,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class WordExamController {
     private ReadyExam exam;
@@ -61,109 +57,114 @@ public class WordExamController {
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("Choose test directory");
         File selectedDirectory = chooser.showDialog(App.getStage());
-        String path = selectedDirectory.getPath();
-        //Check the generated path. If it is not there, create it.
-        if (!Paths.get(path + "\\test").toFile().exists()) Files.createDirectories(Paths.get(path + "\\test"));
-        //Create Word docs.
-        Platform.runLater(() -> {
-            examHeaderLabel.setText("Answer the questions in the directory you chose and submit your answers file before your time runs out!");
-            //Blank Document
-            XWPFDocument document = new XWPFDocument();
-            XWPFParagraph title = document.createParagraph();
-            title.setAlignment(ParagraphAlignment.CENTER);
-            XWPFRun titleRun = title.createRun();
-            titleRun.setText(exam.getExam().getName());
-            titleRun.setColor("009933");
-            titleRun.setBold(true);
-            titleRun.setFontFamily("Ariel");
-            titleRun.setFontSize(20);
+        if (selectedDirectory == null) EventBus.getDefault().post(new InputErrorEvent(" You need to choose a directory"));
+        else{
+            String path = selectedDirectory.getPath();
+            //Check the generated path. If it is not there, create it.
+            if (!Paths.get(path + "\\test").toFile().exists()) Files.createDirectories(Paths.get(path + "\\test"));
+            //Create Word docs.
+            Platform.runLater(() -> {
 
-            try {
-                //Write the Document in file system
-                FileOutputStream out = new FileOutputStream(path + "\\test\\questions" +  ".docx");
-                XWPFParagraph paragraph = document.createParagraph();
-                XWPFRun run = paragraph.createRun();
-                run.setFontSize(16);
-                run.setFontFamily("Ariel");
-                run.setText(exam.getExam().getNote_to_students());
-                List<Question> questions = exam.getExam().getQuestions();
-                for (int i = 0; i < questions.size(); i++) {
-                    String question_str;
-                    Question question = questions.get(i);
-                    question_str = "Question " + (i + 1) + ":\n" + question.getText();
-                    paragraph = document.createParagraph();
-                    run = paragraph.createRun();
-                    run.setFontSize(14);
+                //Blank Document
+                XWPFDocument document = new XWPFDocument();
+                XWPFParagraph title = document.createParagraph();
+                title.setAlignment(ParagraphAlignment.CENTER);
+                XWPFRun titleRun = title.createRun();
+                titleRun.setText(exam.getExam().getName());
+                titleRun.setColor("009933");
+                titleRun.setBold(true);
+                titleRun.setFontFamily("Ariel");
+                titleRun.setFontSize(20);
+
+                try {
+                    //Write the Document in file system
+                    FileOutputStream out = new FileOutputStream(path + "\\test\\questions" +  ".docx");
+                    XWPFParagraph paragraph = document.createParagraph();
+                    XWPFRun run = paragraph.createRun();
+                    run.setFontSize(16);
                     run.setFontFamily("Ariel");
-                    List<Answer> answers = question.getAnswers();
-                    for (int j = 0; j < answers.size(); j++) {
-                        question_str += "\nAnswer " + (j + 1) + ": " + answers.get(j).getAnswer_text();
-                    }
-                    String[] lines = question_str.split("\n");
-                    run.setText(lines[0], 0); // set first line into XWPFRun
-                    for(int j=1;j<lines.length;j++) {
-                        // add break and insert new text
-                        run.addBreak();
-                        run.setText(lines[j]);
-                    }
-
-                }
-                document.write(out);
-                //Close document
-                out.close();
-                System.out.println(path + "\\test\\questions" +  ".docx" + " written successfully");
-                submitBtn.setVisible(true);
-                dirBtn.setVisible(false);
-                timerLabel.setVisible(true);
-            } catch (FileNotFoundException e) {
-                EventBus.getDefault().post(new InputErrorEvent("There was an error, please submit the directory again"));
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                EventBus.getDefault().post(new InputErrorEvent("There was an error, please submit the directory again"));
-                throw new RuntimeException(e);
-            }
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
-            start_time = dtf.format(now);
-
-        });
-        remaining_time[0] = exam.getExam().getDuration_in_minutes();
-        Timer myTimer = new Timer();
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                if (remaining_time[1] == 0){
-                    if (remaining_time[0] == 0){
-                        myTimer.cancel();
-                        try {
-                            SubmitAnswersForced();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                    run.setText(exam.getExam().getNote_to_students());
+                    List<Question> questions = exam.getExam().getQuestions();
+                    for (int i = 0; i < questions.size(); i++) {
+                        String question_str;
+                        Question question = questions.get(i);
+                        question_str = "Question " + (i + 1) + ":\n" + question.getText();
+                        paragraph = document.createParagraph();
+                        run = paragraph.createRun();
+                        run.setFontSize(14);
+                        run.setFontFamily("Ariel");
+                        List<Answer> answers = question.getAnswers();
+                        for (int j = 0; j < answers.size(); j++) {
+                            question_str += "\nAnswer " + (j + 1) + ": " + answers.get(j).getAnswer_text();
                         }
-                    }
-                    else{
-                        remaining_time[1] = 59;
-                        remaining_time[0]--;
-                    }
-                }
-                else{
-                    remaining_time[1]--;
-                }
-                Platform.runLater(() -> {
-                    timerLabel.setText("Remaining Time: ");
-                    if (remaining_time[0] < 10) timerLabel.setText(timerLabel.getText() + "0");
-                    timerLabel.setText(timerLabel.getText() + remaining_time[0] + ":");
-                    if (remaining_time[1] < 10) timerLabel.setText(timerLabel.getText() + "0");
-                    timerLabel.setText(timerLabel.getText() + remaining_time[1]);
+                        String[] lines = question_str.split("\n");
+                        run.setText(lines[0], 0); // set first line into XWPFRun
+                        for(int j=1;j<lines.length;j++) {
+                            // add break and insert new text
+                            run.addBreak();
+                            run.setText(lines[j]);
+                        }
 
-                });
-            }
-        };
-        myTimer.scheduleAtFixedRate(task,0,1000);
+                    }
+                    document.write(out);
+                    //Close document
+                    out.close();
+                    System.out.println(path + "\\test\\questions" +  ".docx" + " written successfully");
+                    submitBtn.setVisible(true);
+                    dirBtn.setVisible(false);
+                    timerLabel.setVisible(true);
+                    examHeaderLabel.setText("Answer the questions in the directory you chose and submit your answers file before your time runs out!");
+                        remaining_time[0] = exam.getActual_solving_time();
+                        Timer myTimer = new Timer();
+                        TimerTask task = new TimerTask() {
+                            @Override
+                            public void run() {
+                                if (remaining_time[1] == 0) {
+                                    if (remaining_time[0] == 0) {
+                                        myTimer.cancel();
+                                        try {
+                                            SubmitAnswersForced();
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    } else {
+                                        remaining_time[1] = 59;
+                                        remaining_time[0]--;
+                                    }
+                                } else {
+                                    remaining_time[1]--;
+                                }
+                                Platform.runLater(() -> {
+                                    timerLabel.setText("Remaining Time: ");
+                                    if (remaining_time[0] < 10) timerLabel.setText(timerLabel.getText() + "0");
+                                    timerLabel.setText(timerLabel.getText() + remaining_time[0] + ":");
+                                    if (remaining_time[1] < 10) timerLabel.setText(timerLabel.getText() + "0");
+                                    timerLabel.setText(timerLabel.getText() + remaining_time[1]);
+                                });
 
+                            }
+                        };
+                        myTimer.scheduleAtFixedRate(task, 0, 1000);
+
+                } catch (FileNotFoundException e) {
+                    EventBus.getDefault().post(new InputErrorEvent(" There was an error, please submit the directory again"));
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    EventBus.getDefault().post(new InputErrorEvent(" There was an error, please submit the directory again"));
+                    throw new RuntimeException(e);
+                }
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+                start_time = dtf.format(now);
+
+            });
+
+        }
     }
+
     void SubmitAnswersForced() throws IOException {
-        SubmitAnswers(null);
+        EventBus.getDefault().post(new InputErrorEvent(" Your time has ended"));
+        EventBus.getDefault().post(new SwitchScreenEvent("student_primary"));
     }
     void SubmitAnswers(File answers) throws IOException {
         try{
