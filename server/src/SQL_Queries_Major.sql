@@ -4,7 +4,7 @@ show tables from HSTS;
 
 select * from Principals;
 select * from Teachers;
-select * from StudentsWithGrades;
+select * from Pupils;
 
 select * from Subjects;
 select * from Courses;

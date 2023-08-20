@@ -5,35 +5,73 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="820.0" prefWidth="1368.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ExamController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="856.0" prefWidth="1170.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.ExamController">
    <children>
-      <Label fx:id="examHeaderLabel" alignment="CENTER" layoutX="1.0" layoutY="14.0" prefHeight="53.0" prefWidth="1367.0" text="Enter your id in order to start the exam. good luck!">
-         <font>
-            <Font name="System Bold" size="36.0" />
-         </font>
-      </Label>
-      <Label fx:id="idLabel" layoutX="38.0" layoutY="103.0" prefHeight="35.0" prefWidth="833.0" text="Enter your id here: (note that the timer will start when you will submit your id)">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <TextField fx:id="idTF" layoutX="38.0" layoutY="152.0">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </TextField>
-      <Button fx:id="idBtn" layoutX="38.0" layoutY="210.0" mnemonicParsing="false" onAction="#SubmitId" text="Submit id">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Button>
-      <ScrollPane fx:id="examPane" layoutX="1.0" layoutY="131.0" prefHeight="588.0" prefWidth="1367.0" visible="false">
-         <content>
-            <VBox fx:id="examContentPane" prefHeight="589.0" prefWidth="1368.0">
+      <BorderPane layoutX="10.0" layoutY="15.0" prefHeight="124.0" prefWidth="922.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <left>
+            <Pane prefHeight="114.0" prefWidth="1145.0" style="-fx-background-color: #ecfcec;" BorderPane.alignment="CENTER">
                <children>
+                  <Label fx:id="examHeaderLabel" layoutX="333.0" layoutY="24.0" prefHeight="66.0" prefWidth="480.0" text="Enter ID to Start Exam" textFill="#336633" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="45.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </left>
+      </BorderPane>
+      <BorderPane layoutX="11.0" layoutY="147.0" prefHeight="693.0" prefWidth="1155.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <right>
+            <Pane prefHeight="683.0" prefWidth="1144.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="456.0" layoutY="422.0" prefHeight="42.0" prefWidth="198.0" text="Good Luck!" textFill="#336633" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="idLabel1" layoutX="519.0" layoutY="49.0" prefHeight="45.0" prefWidth="75.0" text="Note!" textAlignment="CENTER" textFill="#cd122e">
+                     <font>
+                        <Font name="System Bold" size="28.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="idLabel11" layoutX="317.0" layoutY="88.0" prefHeight="35.0" prefWidth="475.0" text="The timer will start when you submit your id!" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="idTF" layoutX="456.0" layoutY="249.0">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </TextField>
+                  <Button fx:id="idBtn" layoutX="509.0" layoutY="307.0" mnemonicParsing="false" onAction="#SubmitId" text="Submit ID">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Button>
+                  <Label fx:id="idLabel" layoutX="63.0" layoutY="148.0" prefHeight="35.0" prefWidth="201.0" text="Enter your ID here:" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </right>
+      </BorderPane>
+      <ScrollPane fx:id="examPane" layoutX="1.0" layoutY="149.0" prefHeight="838.0" prefWidth="1170.0" visible="false">
+         <content>
+            <VBox fx:id="examContentPane" prefHeight="589.0" prefWidth="1368.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Label fx:id="timerLabel" alignment="CENTER" prefHeight="35.0" prefWidth="1170.0" text="Label" visible="false">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
                   <Label fx:id="instructionsLabel" prefHeight="107.0" prefWidth="934.0" text="Exam Instructions:">
                      <font>
                         <Font size="24.0" />
@@ -43,15 +81,10 @@
             </VBox>
          </content>
       </ScrollPane>
-      <Button fx:id="answersBtn" layoutX="38.0" layoutY="755.0" mnemonicParsing="false" onAction="#SubmitAnswersOnTime" text="Submit answers" visible="false">
+      <Button fx:id="answersBtn" layoutX="20.0" layoutY="750.0" mnemonicParsing="false" onAction="#SubmitAnswersOnTime" text="Submit answers" visible="false">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Label fx:id="timerLabel" alignment="CENTER" layoutX="2.0" layoutY="76.0" prefHeight="35.0" prefWidth="1367.0" text="Label" visible="false">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
    </children>
 </AnchorPane>

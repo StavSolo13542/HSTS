@@ -13,6 +13,8 @@ import javafx.scene.text.Font;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -20,8 +22,9 @@ import java.util.TimerTask;
 
 public class ExamController {
     private final int[] remaining_time = {0,0};
-    private String name;
     private ReadyExam exam;
+    private String id;
+    private String start_time;
     private ArrayList<ComboBox<String>> answers_list;
     @FXML
     private Label examHeaderLabel;
@@ -48,14 +51,20 @@ public class ExamController {
     @FXML
     void SubmitId(ActionEvent event) {
         String id = idTF.getText();
-        String message = "StartExam " + id + " " + SimpleClient.name;
-        System.out.println("the message is: " + message);//for debugging
+        if (SimpleClient.EmptyCheck(id)){
+            String message = "StartExam " + id;
+            System.out.println("the message is: " + message);//for debugging
 
-        SimpleClient.sendMessage(message);
+            SimpleClient.Validate(message);
+        }
+
     }
     @Subscribe
     public void StartExam(StartExamEvent event){
-        name = event.getMessage();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        start_time = dtf.format(now);
+        id = event.getMessage();
         exam = event.getExam();
         answersBtn.setVisible(true);
         answers_list = new ArrayList<>();
@@ -83,7 +92,7 @@ public class ExamController {
                 answers_list.add(answer_select);
             }
         });
-        remaining_time[0] = exam.getExam().getDuration_in_minutes();
+        remaining_time[0] += exam.getActual_solving_time();
         Timer myTimer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
@@ -114,6 +123,11 @@ public class ExamController {
         myTimer.scheduleAtFixedRate(task,0,1000);
 
     }
+    @Subscribe
+    public void UpdateTime(TimeExtensionEvent event) {
+        Integer minutes = Integer.parseInt(event.getMessage());
+        remaining_time[0] += minutes;
+    }
     @FXML
     void SubmitAnswersOnTime(ActionEvent event) {
         SubmitAnswers();
@@ -124,9 +138,9 @@ public class ExamController {
     void SubmitAnswers() {
         String answers = "";
         for (int i = 0; i < answers_list.size(); i++){
-            answers += (answers_list.get(i).getSelectionModel().getSelectedIndex() + 1) + " ";
+            answers += (answers_list.get(i).getSelectionModel().getSelectedIndex() + 1);
         }
-        String message = "SubmitAnswers " + name + " " + exam.getId() + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]) + " " + answers;
+        String message = "SubmitAnswers " + SimpleClient.real_id + " " + exam.getId() + " " + answers + " " + start_time + " " + (exam.getExam().getDuration_in_minutes() - remaining_time[0]);
         System.out.println("the message is: " + message);//for debugging
         SimpleClient.sendMessage(message);
         EventBus.getDefault().post(new SuccessEvent("Your test was submitted successfully"));

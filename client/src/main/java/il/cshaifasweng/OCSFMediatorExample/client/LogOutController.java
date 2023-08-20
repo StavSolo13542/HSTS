@@ -18,7 +18,7 @@ public class LogOutController {
     }
     @FXML
     void LogOut(ActionEvent event) {
-        String message = "LogOut " + SimpleClient.name + " " + SimpleClient.role;
+        String message = "LogOut " + SimpleClient.real_id + " " + SimpleClient.role;
 
         System.out.println("the message is: " + message);//for debugging
 

@@ -61,7 +61,6 @@ public class Exam {
         this.readyExams = new ArrayList<ReadyExam>();
         this.points = new ArrayList<Exam_Question_points>();
     }
-
     public List<Exam_Question_points> getPoints() {
         return points;
     }
@@ -190,5 +189,35 @@ public class Exam {
     public Exam()
     {
 
+    }
+    public Exam(String[] desc, int index) {
+        this.questions = new ArrayList<>();
+        String s = "";
+        int i = 1;
+        while (!desc[index + i].equals("questions_list:")) s += desc[index + i++] + " ";
+        this.name = s;
+        i += 1;
+        while(!desc[index + i].equals("note_to_students")){
+            if (desc[index + i].equals("question_starts_here")){
+                questions.add(new Question(desc,index+i));
+            }
+            i++;
+        }
+        s = "";
+        i++;
+        while (!desc[index + i].equals("exam_ends_here")) s += desc[index + i++] + " ";
+        this.note_to_students = s;
+    }
+    @Override
+    public String toString() {
+        String s= "";
+        s += "name: "+name +
+        " questions_list: " ;
+        for(Question q:questions)
+        {
+            s += q.toString();
+        }
+        s += " note_to_students "+ note_to_students + " exam_ends_here ";
+        return s;
     }
 }

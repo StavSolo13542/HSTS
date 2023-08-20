@@ -133,7 +133,7 @@ public abstract class AbstractClient implements Runnable
     //Create the sockets and the data streams
     try
     {
-      System.out.println("host: " + host + "port: " + port);//added for debugging
+      System.out.println("host: " + host + " port: " + port);//added for debugging
 
       clientSocket= new Socket(host, port);
       System.out.println("clientSocket.getOutputStream(): " + clientSocket.getOutputStream().toString());

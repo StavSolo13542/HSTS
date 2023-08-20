@@ -34,10 +34,13 @@ public class StudentPrimaryController {
     @FXML
     void EnterExam(ActionEvent event) {
         String code = codeTF.getText();
-        String message = "EnterExam " + code;
-        System.out.println("the message is: " + message);//for debugging
+        if (SimpleClient.EmptyCheck(code)){
+            String message = "EnterExam " + code + " " + SimpleClient.real_id;
+            System.out.println("the message is: " + message);//for debugging
 
-        SimpleClient.sendMessage(message);
+            SimpleClient.sendMessage(message);
+        }
+
     }
 
     @FXML
