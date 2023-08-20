@@ -5,15 +5,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="134.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.LogOutController">
    <children>
-      <Label fx:id="welcomeLabel" layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="261.0">
+      <Label fx:id="welcomeLabel" layoutX="20.0" layoutY="12.0" prefHeight="49.0" prefWidth="169.0" wrapText="true">
          <font>
-            <Font size="24.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Button fx:id="logOutBtn" layoutX="14.0" layoutY="67.0" mnemonicParsing="false" onAction="#LogOut" text="Log Out">
+      <Button fx:id="logOutBtn" layoutX="20.0" layoutY="65.0" mnemonicParsing="false" onAction="#LogOut" text="Log Out">
          <font>
             <Font size="16.0" />
          </font>

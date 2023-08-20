@@ -97,4 +97,18 @@ public class ReadyExam {
     {
 
     }
+    public ReadyExam(String[] desc, int index)
+    {
+        this.id = Integer.parseInt(desc[index + 1]);
+        this.online = Boolean.valueOf(desc[index + 3]);
+        this.four_digit_code = desc[index + 5];
+        this.actual_solving_time = Integer.parseInt(desc[index + 7]);
+        this.exam = new Exam(desc, index + 9);
+    }
+    @Override
+    public String toString() {
+        String s = "";
+        s += "id: "+id+" online: "+online+ " exam_code: " + this.four_digit_code + " time: " + this.actual_solving_time + " exam: " + exam.toString();
+        return s;
+    }
 }

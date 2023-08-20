@@ -140,25 +140,34 @@ public class Question {
     public void setSubject(Subject subject) {
         this.subject = subject;
     }
-
+    public Question(String[] desc, int index) {
+        this.answers = new ArrayList<>();
+        this.question_code_number = desc[index + 1];
+        int i = 2;
+        while(!desc[index + i].equals("Question:")){
+            if (desc[index + i].equals("answer_starts_here")){
+                this.answers.add(new Answer(desc,index+i));
+            }
+            i++;
+        }
+        i++;
+        String s = "";
+        while(!desc[index + i].equals("question_ends_here")) {
+            s += desc[i + index] + " ";
+            i++;
+        }
+        this.text = s;
+    }
     @Override
     public String toString() {
-        String courses = "Courses' Name: ";
-        for (Course course : this.courses)
-        {
-            courses += course + ", ";
-        }
-        String all_answers = "All answers: ";
-        Answer correct_answer = null;
+        String s = "";
+        s += "question_starts_here " + question_code_number + " ";
         for (Answer answer : this.answers)
         {
-            if (answer.getIs_correct())
-                correct_answer = answer;
-            all_answers += answer + ", ";
+            s += answer.toString();
         }
-        return "Subject: " + this.subject + "\nQuestion: " +
-                this.text + "\n" + all_answers + "\nCorrect answer index: " +
-                correct_answer + "\n" + courses +"\n";
+        s += " Question: " + this.text + " question_ends_here ";
+        return s;
     }
 
     public void updateCode()
@@ -177,5 +186,29 @@ public class Question {
     public Question()
     {
 
+    }
+
+    public Question(String text, Answer ans1, Answer ans2, Answer ans3, Answer ans4, Subject subject) {
+        this.text = text;
+        this.answers = new ArrayList<Answer>();
+        this.answers.add(ans1);
+        ans1.setQuestion(this);
+        this.answers.add(ans2);
+        ans2.setQuestion(this);
+        this.answers.add(ans3);
+        ans3.setQuestion(this);
+        this.answers.add(ans4);
+        ans4.setQuestion(this);
+        //this.correct_answer = correct_answer;
+        this.subject = subject;   // TODO: Gui people, make sure you don't allow adding a course from a different subject
+        subject.addQuestion(this);
+        this.courses = new ArrayList<Course>();
+        /*this.courses.add(course);
+        course.addQuestion(this);*/
+
+        this.question_code_number = "need to update- check appropriate function- updateCode()";
+        this.exams = new ArrayList<Exam>();
+        this.correct_grades = new ArrayList<Grade>();
+        this.points = new ArrayList<Exam_Question_points>();
     }
 }

@@ -12,27 +12,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleClient extends AbstractClient {
-	
+
 	private static SimpleClient client = null;
 	public static String name = "";
 	public static String role = "";
+	public static String real_id = "";
 	public static ReadyExam currExam;
 	public static Grade currGrade;
 	private SimpleClient(String host, int port) {
 		super(host, port);
-	}
+		EventBus.getDefault().register(this);
 
+	}
 	@Override
 	//Use EventBus to activate the relevant method based on the message
 	protected void handleMessageFromServer(Object msg) {
-		if(!EventBus.getDefault().isRegistered(this)) EventBus.getDefault().register(this);
+		System.out.println("received message: " + msg.toString());
 		String msg_string = msg.toString();
 		msg_string = msg_string.replace("[", "").replace("]", "").replace(",","");
 		if (msg_string.startsWith("InputError")){
 			EventBus.getDefault().post(new InputErrorEvent(msg_string));
 		}
 		else if (msg_string.startsWith("LogIn")){
-			String[] parts = msg_string.split(" ");
+			String[] parts = msg_string.split("@");
+
+			real_id = parts[3];
+
 			name = parts[2];
 			role = parts[1];
 			System.out.println("in login from server message"); // for debugging
@@ -40,92 +45,159 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(new SwitchScreenEvent(role+"_primary"));
 		}
 		else if (msg_string.startsWith("EnterExam")){
-			Subject astro = new Subject("Astrophysics");
-			Course speeds = new Course("Velocity in space", astro);
-			Answer ans1 = new Answer("1 km/h", false);          // new answers
-			Answer ans2 = new Answer("2 km/h", false);
-			Answer ans3 = new Answer("3 km/h", false);
-			Answer ans4 = new Answer("4 km/h", true);
-			Answer ans5 = new Answer("laptop", false);
-			Answer ans6 = new Answer("table", false);
-			Answer ans7 = new Answer("Cruise ship", true);
-			Answer ans8 = new Answer("tent", false);
-			Question q1 = new Question("which is bigger?", ans1, ans2, ans3, ans4, astro, speeds);// new questions
-			Question q2 = new Question("which number is bigger?", ans5, ans6, ans7, ans8, astro, speeds);
-			Teacher t1 = new Teacher("Malki", "Malki_password", true);
-			// new exam
-			Exam ex1 = new Exam("first exam", speeds, 1, "hello students!", "hello teacher!", t1);
-			ex1.updateCode(); // Important!!! after creating + saving + flushing the exam, you have to call this function and then save + flush again
-            /*
-            This part is important and tricky. normally you would think that adding a question to the exam would look like:
-            ex1.addQuestion(q1, 70);
-            (BTW: now adding a question also requires to give that question points- 70 points in this case)
-            BUT YOU SHOULD NOT ADD QUESTIONS LIKE THIS!!!!!!!!!!
-            the points of this question on this exam are loaded into a different entity called Exam_question_points.
-            this entity is created automatically each time you add a question, but in order for it to be saved in the tables
-            I made the addQuestion function return this entity- and then it has to be saved by the session.
-            SO THE OVERALL COMMAND TO ADD A QUESTION TO AN EXAM IS:
-            session.save(ex1.addQuestion(q1, 70));
-             */
-			ex1.addQuestion(q1, 70);
-			ex1.addQuestion(q2, 30);
-
-			currExam = new ReadyExam(ex1, "10a4", true, "14/6/2023 13:30");  // new "Out of the drawer" exam
+			String[] parts = msg_string.split(" ");
+			currExam = new ReadyExam(parts,1);  // new "Out of the drawer" exam
 			if (!currExam.getOnline()) {
 				EventBus.getDefault().post(new SwitchScreenEvent("word_exam"));
 			}
 			else EventBus.getDefault().post(new SwitchScreenEvent("exam"));
 
 		}
-		else if (msg_string.startsWith("StartExam")){
-			EventBus.getDefault().post(new StartExamEvent(name,currExam));
-
-		}
 		else if (msg_string.startsWith("LogOut")) {
 			name = "";
 			role = "";
+			real_id = "";
 			EventBus.getDefault().post(new SwitchScreenEvent("log_in"));
 		}
 		else if (msg_string.startsWith("StudentGrades")) {
-			Subject astro = new Subject("Astrophysics");
-			Course speeds = new Course("Velocity in space", astro);
-			Answer ans1 = new Answer("1 km/h", false);          // new answers
-			Answer ans2 = new Answer("2 km/h", false);
-			Answer ans3 = new Answer("3 km/h", false);
-			Answer ans4 = new Answer("4 km/h", true);
-			Answer ans5 = new Answer("laptop", false);
-			Answer ans6 = new Answer("table", false);
-			Answer ans7 = new Answer("Cruise ship", true);
-			Answer ans8 = new Answer("tent", false);
-			Question q1 = new Question("which is bigger?", ans1, ans2, ans3, ans4, astro, speeds);// new questions
-			Question q2 = new Question("which number is bigger?", ans5, ans6, ans7, ans8, astro, speeds);
-			Teacher t1 = new Teacher("Malki", "Malki_password", true);
-			// new exam
-			Exam ex1 = new Exam("first exam", speeds, 1, "hello students!", "hello teacher!", t1);
-			ex1.updateCode(); // Important!!! after creating + saving + flushing the exam, you have to call this function and then save + flush again
-            /*
-            This part is important and tricky. normally you would think that adding a question to the exam would look like:
-            ex1.addQuestion(q1, 70);
-            (BTW: now adding a question also requires to give that question points- 70 points in this case)
-            BUT YOU SHOULD NOT ADD QUESTIONS LIKE THIS!!!!!!!!!!
-            the points of this question on this exam are loaded into a different entity called Exam_question_points.
-            this entity is created automatically each time you add a question, but in order for it to be saved in the tables
-            I made the addQuestion function return this entity- and then it has to be saved by the session.
-            SO THE OVERALL COMMAND TO ADD A QUESTION TO AN EXAM IS:
-            session.save(ex1.addQuestion(q1, 70));
-             */
-			ex1.addQuestion(q1, 70);
-			ex1.addQuestion(q2, 30);
-
-			ReadyExam exam = new ReadyExam(ex1, "10a4", true, "14/6/2023 13:30");  // new "Out of the drawer" exam
-			ArrayList<Question> correct_Questions = new ArrayList<>();
-			correct_Questions.add(q1);
-			Grade grade = new Grade(exam,new Pupil("Michael","326283869","Michael_password",true),correct_Questions,"5 points bonus");
 			ArrayList<Grade> grades = new ArrayList<>();
-			grades.add(grade);
+			String[] parts = msg_string.split(" ");
+			for(int i = 0; i < parts.length; i++){
+				if (parts[i].equals("grade_starts_here")){
+					Grade grade = new Grade(parts,i);
+					grades.add(grade);
+				}
+			}
 			EventBus.getDefault().post(new StudentGradesEvent(grades));
 		}
-
+		else if(msg_string.startsWith("number of question"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("number of Exams"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("question in exam"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("Student names are"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("Courses names are"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("RequestMoreTime"))
+		{
+			System.out.println("im in request more time"+msg_string);
+			EventBus.getDefault().post(new ExtensionEvent(msg_string));
+		}
+		else if(msg_string.startsWith("TimeExtension"))
+		{
+			String[] parts = msg_string.split(" ");
+			EventBus.getDefault().post(new TimeExtensionEvent(parts[1]));
+		}
+		else if(msg_string.startsWith("RefreshGrades"))
+		{
+			EventBus.getDefault().post(new RefreshGradesEvent());
+		}
+		else if(msg_string.startsWith("Teachers names are"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("All the distrubutions"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if(msg_string.startsWith("all the grades are:"))
+		{
+			EventBus.getDefault().post(new test(new Message(msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all subjects")){
+			msg_string = msg_string.replaceFirst("Here are all subjects", "");
+//			System.out.println("now we are back at the client");
+			EventBus.getDefault().post(new test(new Message("ToAddQuestion" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all SUbjects")){
+			msg_string = msg_string.replaceFirst("Here are all SUbjects", "");
+			System.out.println("now we are back at the client for SUbjects");
+			EventBus.getDefault().post(new test(new Message("ToUpdateQuestion" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all SUbJects")){
+			msg_string = msg_string.replaceFirst("Here are all SUbJects", "");
+			System.out.println("now we are back at the client for SUbJects");
+			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE Are all SUbJects")){
+			msg_string = msg_string.replaceFirst("HerE Are all SUbJects", "");
+			System.out.println("now we are back at the client for SUbJects extend time");
+			EventBus.getDefault().post(new test(new Message("ToTeacherExtendTime" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all QUestioNs")){
+			msg_string = msg_string.replaceFirst("Here are all QUestioNs", "");
+			System.out.println("now we are back at the client for QUestioNs");
+			EventBus.getDefault().post(new test(new Message("ToUpdateQuestion" + msg_string)));
+		}
+		else if (msg_string.startsWith("Hhere are all QUestioNs")){
+			msg_string = msg_string.replaceFirst("Hhere are all QUestioNs", "");
+			System.out.println("now we are back at the client for QUestioNs");
+			EventBus.getDefault().post(new RefreshQuestionsEvent("updateQuestions2", msg_string));
+		}
+		else if (msg_string.startsWith("Here are all courses1")){
+			System.out.println("after Here are all courses1");
+			msg_string = msg_string.replaceFirst("Here are all courses1", "");
+			EventBus.getDefault().post(new test(new Message("ToBuildExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all questions1")){
+			System.out.println("after Here are all questions1");
+			msg_string = msg_string.replaceFirst("Here are all questions1", "");
+			EventBus.getDefault().post(new test(new Message("ToBuildExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are all courses")){
+			msg_string = msg_string.replaceFirst("Here are all courses", "");
+			EventBus.getDefault().post(new test(new Message("ToAddQuestion" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE arE all courses")){
+			msg_string = msg_string.replaceFirst("HerE arE all courses", "");
+			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE ARE all courses")){
+			msg_string = msg_string.replaceFirst("HerE ARE all courses", "");
+			EventBus.getDefault().post(new test(new Message("ToTeacherExtendTime" + msg_string)));
+		}
+		else if (msg_string.startsWith("Here are All exams1")){
+			msg_string = msg_string.replaceFirst("Here are All exams1", "");
+			EventBus.getDefault().post(new test(new Message("ToPullExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE are All REaDy Exams")){
+			msg_string = msg_string.replaceFirst("HerE are All REaDy Exams", "");
+			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE ARe All REaDy Exams")){
+			msg_string = msg_string.replaceFirst("HerE ARe All REaDy Exams", "");
+			EventBus.getDefault().post(new test(new Message("ToTeacherExtendTime" + msg_string)));
+		}
+		else if (msg_string.startsWith("HerE are all details relevant to ReadyEXAm")){
+			msg_string = msg_string.replaceFirst("HerE are all details relevant to ReadyEXAm", "");
+			EventBus.getDefault().post(new test(new Message("ToCheckExam" + msg_string)));
+		}
+		else if (msg_string.startsWith("new question")){
+			EventBus.getDefault().post(new RefreshQuestionsEvent("updateQuestions1", null));
+		}
+		else if (msg_string.startsWith("new exam")){
+			EventBus.getDefault().post(new UpdateExamEvent("updateExams1", null));
+		}
+		else if (msg_string.startsWith("Hhere are all questions1"))
+		{
+			EventBus.getDefault().post(new RefreshQuestionsEvent("updateQuestions2", msg_string.replaceFirst("Hhere are all questions1", "")));
+		}
+		else if (msg_string.startsWith("Hhere are All exams1"))
+		{
+			EventBus.getDefault().post(new UpdateExamEvent("updateExams2", msg_string.replaceFirst("Hhere are All exams1", "")));
+		}
 	}
 	//Send received message to the server
 	static public void sendMessage(String msg){
@@ -134,13 +206,14 @@ public class SimpleClient extends AbstractClient {
 			System.out.println("SimpleClient.getClient host, port: " + SimpleClient.getClient().getHost() + ", " +SimpleClient.getClient().getPort());
 
 			SimpleClient.getClient().sendToServer(message);
+			System.out.println("after SimpleClient.getClient().sendToServer(message)");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	static public void postMessage(String msg) {
 		if (msg.startsWith("StartExam")){
-			EventBus.getDefault().post(new StartExamEvent(name,currExam));
+			EventBus.getDefault().post(new StartExamEvent(real_id,currExam));
 
 		}
 	}
@@ -150,8 +223,9 @@ public class SimpleClient extends AbstractClient {
 			// from Michael's pc, works for pcs in different places (different LANs)
 //			 client = new SimpleClient("0.tcp.eu.ngrok.io", 13010);
 
-			 // works only for pcs in the same LAN
-			 client = new SimpleClient("localhost", 3100);
+			// works only for pcs in the same LAN
+			client = new SimpleClient("localhost", 3200);
+			//client = new SimpleClient("4.tcp.eu.ngrok.io", 12232);
 		}
 		return client;
 	}
@@ -180,5 +254,22 @@ public class SimpleClient extends AbstractClient {
 			alert.setHeaderText("Success:");
 			alert.show();
 		});
+	}
+	public static void Validate(String msg){
+		if (msg.startsWith("StartExam")){
+			String[] parts = msg.split(" ");
+			String id = parts[1];
+			if (id.equals(real_id)) postMessage("StartExam");
+			else EventBus.getDefault().post(new InputErrorEvent("InputError identification details are incorrect"));
+
+
+		}
+	}
+	public static boolean EmptyCheck(String val){
+		if (val.isEmpty()){
+			EventBus.getDefault().post(new InputErrorEvent("InputError you need to fill all the fields in the form"));
+			return false;
+		}
+		return  true;
 	}
 }

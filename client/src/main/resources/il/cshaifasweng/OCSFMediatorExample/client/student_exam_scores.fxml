@@ -5,15 +5,30 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="856.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.StudentExamScoresController">
    <children>
-      <Label layoutX="190.0" layoutY="157.0" text="Grades Page">
-         <font>
-            <Font name="System Bold" size="45.0" />
-         </font>
-      </Label>
+      <BorderPane layoutX="11.0" layoutY="131.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="88.0" prefWidth="609.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <center>
+            <Pane prefHeight="78.0" prefWidth="345.0" style="-fx-background-color: #ecfcec;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="168.0" layoutY="6.0" prefHeight="66.0" prefWidth="263.0" text="Grades Page" textFill="#336633">
+                     <font>
+                        <Font name="System Bold" size="45.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </center>
+      </BorderPane>
+      <BorderPane layoutX="11.0" layoutY="230.0" prefHeight="610.0" prefWidth="609.0" style="-fx-border-color: #336633; -fx-border-width: 5px; -fx-border-radius: 5px;">
+         <right>
+            <Pane prefHeight="612.0" prefWidth="595.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER" />
+         </right>
+      </BorderPane>
       <TableView fx:id="gradesTBL" layoutX="128.0" layoutY="279.0" prefHeight="342.0" prefWidth="388.0">
          <columns>
             <TableColumn fx:id="examCol" prefWidth="84.0" text="Exam Name" />
@@ -24,7 +39,7 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <Button fx:id="go_back_button" layoutX="515.0" layoutY="122.0" mnemonicParsing="false" onAction="#viewLastPage" text="Go Back">
+      <Button fx:id="go_back_button" layoutX="516.0" layoutY="67.0" mnemonicParsing="false" onAction="#viewLastPage" text="Go Back">
          <font>
             <Font size="16.0" />
          </font>
