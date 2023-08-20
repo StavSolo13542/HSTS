@@ -296,7 +296,7 @@ public class TeacherPullExamFromDrawer {
             System.out.println(" Time & Date are not in a correct format / exam set ro begin in less than a minute.");
             EventBus.getDefault().post(new InputErrorEvent(" Time & Date are not in a correct format / exam set ro begin in less than a minute."));
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_pull_exam.fxml"));
                 Parent root = loader.load();
                 Scene nextScene = new Scene(root);
                 Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -356,7 +356,7 @@ public class TeacherPullExamFromDrawer {
 
         // Open another "teacher_pull_exam.fxml"
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_pull_exam.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_primary.fxml"));
             Parent root = loader.load();
             Scene nextScene = new Scene(root);
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
